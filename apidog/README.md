@@ -78,6 +78,23 @@ Files will be saved into `apidog/api_specs/`. This path is useful when your
 VS Code environment has access to OpenAI Agents and your MCP connector but
 you don't want to spawn the Apidog MCP server locally.
 
+## Alternative: Push via OpenAI Agents (Hosted MCP)
+Push local specs (in `apidog/api_specs/`) to Apidog via hosted MCP. Requires
+`OPENAI_API_KEY` and an Agents connector with `updateEndpoint` and optionally
+`createEndpoint` allowed.
+
+```bash
+export OPENAI_API_KEY="sk-..."
+
+# Dry-run: show how many changes would be applied
+npm run apidog:push:agents
+
+# Apply changes (updates + creates when allowed)
+npm run apidog:push:agents -- --force
+```
+
+If create is not allowed, new local endpoints will be skipped with a warning.
+
 ## Push Endpoints (sync up)
 Compare local JSON files to the live Apidog project and push changes:
 
