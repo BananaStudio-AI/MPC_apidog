@@ -23,6 +23,7 @@ MPC_apidog/
 │   ├── types.ts       # TypeScript interface definitions
 │   └── endpoints.json # Local cache of API endpoints (generated)
 ├── scripts/           # Automation utilities
+│   ├── add_endpoint.js    # Add new API endpoint interactively
 │   ├── pull_endpoints.js  # Fetch endpoints from Apidog
 │   └── push_endpoints.js  # Update endpoints in Apidog
 ├── mcp/               # MCP server configuration
@@ -85,6 +86,67 @@ The server will:
 - Connect to your Apidog project
 - Expose MCP tools for API operations
 - Provide real-time API schema information
+
+### Adding API Endpoints via Terminal
+
+Create new API endpoints interactively from the command line:
+
+```bash
+node scripts/add_endpoint.js
+```
+
+**Interactive workflow:**
+1. Enter endpoint name (e.g., "Get User Profile")
+2. Select HTTP method (GET/POST/PUT/DELETE/PATCH)
+3. Specify API path (e.g., "/api/v1/users/{id}")
+4. Add optional description
+5. Choose or create a collection
+6. Add parameters with types and validation
+7. Review and confirm
+
+**What happens:**
+1. Script guides you through endpoint creation
+2. Validates all input fields
+3. Saves endpoint to local JSON file
+4. Shows next steps for syncing with Apidog
+
+**Use cases:**
+- Quickly prototype new API endpoints
+- Define endpoints before implementation
+- Create endpoints without leaving terminal
+- Standardize endpoint structure across team
+
+**Example session:**
+```
+🚀 Add New API Endpoint to Apidog
+
+Endpoint Name: Get User Profile
+HTTP Method (GET/POST/PUT/DELETE/PATCH) [GET]: GET
+API Path: /api/v1/users/{userId}
+Description: Retrieve user profile information
+Collection Name [Default Collection]: User Management
+
+Add parameters? (y/N): y
+
+📝 Adding parameters:
+  Parameter name: userId
+  Type (string/number/boolean/object/array) [string]: string
+  Required? (y/N): y
+  Description: Unique user identifier
+  ✓ Parameter added
+
+  Parameter name: [Enter to finish]
+
+📋 Endpoint Summary:
+   Name: Get User Profile
+   Method: GET
+   Path: /api/v1/users/{userId}
+   Collection: User Management
+   Parameters: 1
+
+✅ Add this endpoint? (Y/n): y
+✅ Endpoint added successfully!
+```
 
 ### Pulling Endpoints from Apidog
 
@@ -261,6 +323,34 @@ Choose the configuration that fits your needs. Both support environment variable
    git diff apis/endpoints.json
    git add apis/endpoints.json
    git commit -m "Update endpoints from Apidog"
+   ```
+
+### Adding New Endpoints Workflow
+
+1. **Create endpoint interactively**
+   ```bash
+   node scripts/add_endpoint.js
+   ```
+
+2. **Review the generated endpoint**
+   ```bash
+   cat apis/endpoints.json
+   # or open in your editor
+   ```
+
+3. **Push to Apidog**
+   ```bash
+   node scripts/push_endpoints.js
+   ```
+
+4. **Verify in Apidog UI**
+   - Check that endpoint appears correctly
+   - Test the new endpoint
+
+5. **Commit to version control**
+   ```bash
+   git add apis/endpoints.json
+   git commit -m "Add new endpoint: [endpoint name]"
    ```
 
 ### Deployment Workflow

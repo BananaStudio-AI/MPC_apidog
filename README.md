@@ -43,6 +43,26 @@ The MCP server provides auto-documented endpoints for:
 - **BananaStudio Internal** - Internal services
 - **Utilities** - Helper functions
 
+### ➕ Add API Endpoint via Terminal
+
+Create new API endpoints interactively from the terminal:
+
+```bash
+node scripts/add_endpoint.js
+```
+
+**Interactive prompts:**
+- Endpoint name, HTTP method, and path
+- Optional description and collection
+- Add parameters with types and validation
+- Review and confirm before saving
+
+**What it does:**
+- Guides you through endpoint creation
+- Validates input and structure
+- Saves to local JSON file
+- Ready to sync with `push_endpoints.js`
+
 ### 📥 Pull Endpoints from Apidog
 
 Fetch all API endpoints and save them locally:
@@ -90,6 +110,7 @@ MPC_apidog/
 │   ├── types.ts              # TypeScript interface definitions
 │   └── endpoints.json        # Local API endpoint cache (generated)
 ├── scripts/                   # Automation utilities
+│   ├── add_endpoint.js       # Add new API endpoint interactively
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog
 ├── mcp/                       # MCP server configuration
@@ -151,6 +172,9 @@ const endpoint: ApiEndpoint = {
 
 ### Initial Setup
 1. Configure credentials → 2. Pull endpoints → 3. Commit to version control
+
+### Adding New Endpoints
+1. Run `node scripts/add_endpoint.js` → 2. Fill in details interactively → 3. Push to Apidog → 4. Verify in UI
 
 ### Development Cycle  
 1. Make changes in Apidog → 2. Pull locally → 3. Review & commit

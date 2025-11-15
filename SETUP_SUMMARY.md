@@ -12,6 +12,7 @@ MPC_apidog/
 │   ├── types.ts              # TypeScript interfaces for type-safe API operations
 │   └── endpoints.example.json # Sample endpoint structure
 ├── scripts/                   # Automation utilities  
+│   ├── add_endpoint.js       # Add new API endpoint interactively
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog
 ├── mcp/                       # MCP server configuration (empty, ready for custom configs)
@@ -26,6 +27,16 @@ MPC_apidog/
 - **`mcp.json`** - Alternative MCP configuration (BananaStudio Hub)
 
 ### 📜 Scripts
+
+#### add_endpoint.js
+- **Purpose**: Create new API endpoints interactively from terminal
+- **Usage**: `node scripts/add_endpoint.js`
+- **Features**:
+  - Interactive CLI prompts
+  - Validates endpoint details
+  - Supports parameters and collections
+  - Saves to local JSON file
+  - Ready to sync with push_endpoints.js
 
 #### pull_endpoints.js
 - **Purpose**: Fetch API endpoints from Apidog
