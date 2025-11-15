@@ -122,16 +122,37 @@ async function main() {
     console.error('OPENAI_API_KEY not set. Export your key first.');
     process.exit(1);
   }
-  const FORCE = process.argv.includes('--force');
+  const argv = process.argv.slice(2);
+  const hasFlag = (f) => argv.includes(f);
+  const getFlag = (name, def) => {
+    const idx = argv.findIndex((a) => a === name || a.startsWith(`${name}=`));
+    if (idx === -1) return def;
+    const item = argv[idx];
+    if (item.includes('=')) return item.split('=').slice(1).join('=');
+    const next = argv[idx + 1];
+    return next && !next.startsWith('--') ? next : def;
+  };
+
+  const FORCE = hasFlag('--force');
+  const SCHEMA_MODE = hasFlag('--schema-mode');
+  const MATCH_BY_NAME = hasFlag('--match-by-name');
+  const serverLabel = getFlag('--server-label', 'BananaStudio API Hub');
+  const connectorId = getFlag('--connector-id', 'connector_apidog');
+  const requireApproval = getFlag('--require-approval', 'auto');
+  const allowedTools = (getFlag('--allowed-tools', 'listModules,listEndpoints,getEndpoint,updateEndpoint,createEndpoint') || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
   const root = process.cwd();
   const dir = path.resolve(root, 'apidog', 'api_specs');
 
   const { Runner, hostedMcpTool } = await getAgents();
   const apidog = hostedMcpTool({
-    serverLabel: 'BananaStudio API Hub',
-    allowedTools: ['listModules', 'listEndpoints', 'getEndpoint', 'updateEndpoint', 'createEndpoint'],
-    connectorId: 'connector_apidog',
-    requireApproval: 'auto',
+    serverLabel,
+    allowedTools,
+    connectorId,
+    requireApproval,
   });
   const runner = new Runner();
 
@@ -147,9 +168,16 @@ async function main() {
   const toUpdate = [];
   const toCreate = [];
   for (const [id, entry] of local) {
-    const remoteMatch = findRemoteMatch(entry, remote);
+    const remoteMatch = MATCH_BY_NAME ? remote.byName.get(entry.spec?.name) : findRemoteMatch(entry, remote);
     if (!remoteMatch) {
       toCreate.push(entry);
+      continue;
+    }
+    if (SCHEMA_MODE) {
+      const remoteSchema = remoteMatch?.schema ?? remoteMatch;
+      if (!isEqual(entry.spec, remoteSchema)) {
+        toUpdate.push({ local: entry, remote: remoteMatch, mode: 'schema' });
+      }
       continue;
     }
     if (!isEqual(entry.spec, remoteMatch)) {
@@ -168,7 +196,11 @@ async function main() {
       console.warn('Skipping update without remote id');
       continue;
     }
-    await runner.callTool(apidog, 'updateEndpoint', { endpointId, endpoint: u.local.spec });
+    if (u.mode === 'schema') {
+      await runner.callTool(apidog, 'updateEndpoint', { endpointId, schema: u.local.spec });
+    } else {
+      await runner.callTool(apidog, 'updateEndpoint', { endpointId, endpoint: u.local.spec });
+    }
     console.log(`✅ Updated ${u.local.spec.name || endpointId}`);
   }
 

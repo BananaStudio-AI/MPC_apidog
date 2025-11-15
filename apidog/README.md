@@ -95,6 +95,21 @@ npm run apidog:push:agents -- --force
 
 If create is not allowed, new local endpoints will be skipped with a warning.
 
+### Flags
+- `--schema-mode`: Compare local JSON to `remote.schema` and send `{ schema: ... }` when updating (matches your snippet).
+- `--match-by-name`: Match endpoints by name only; otherwise uses id/name/method+path.
+- `--server-label`, `--connector-id`, `--require-approval`, `--allowed-tools`: Override connector settings, e.g.:
+
+```bash
+npm run apidog:push:agents -- \
+  --schema-mode \
+  --match-by-name \
+  --server-label="BananaStudio API Hub" \
+  --connector-id="connector_apidog" \
+  --require-approval=manual \
+  --allowed-tools=listEndpoints,updateEndpoint
+```
+
 ## Push Endpoints (sync up)
 Compare local JSON files to the live Apidog project and push changes:
 
