@@ -27,16 +27,15 @@ async function ensureOutDir() {
 }
 
 async function connectMCP() {
-  let sdk;
+  let Client, StdioClientTransport;
   try {
-    sdk = await import('@modelcontextprotocol/sdk');
+    ({ Client } = await import('@modelcontextprotocol/sdk/client'));
+    ({ StdioClientTransport } = await import('@modelcontextprotocol/sdk/client/stdio.js'));
   } catch (err) {
-    console.error('Missing dependency @modelcontextprotocol/sdk. Install with:');
+    console.error('Missing or incompatible @modelcontextprotocol/sdk. Install/update with:');
     console.error('  npm i -S @modelcontextprotocol/sdk');
     process.exit(1);
   }
-  const { Client } = sdk;
-  const { StdioClientTransport } = sdk;
 
   const isWindows = platform() === 'win32';
   const command = isWindows ? 'cmd' : 'npx';
@@ -78,20 +77,55 @@ async function discoverEndpointsTool(client) {
   for (const c of candidates) {
     if (tools.tools.find((x) => x.name === c)) return c;
   }
+  const oasTool = tools.tools.find((t) => t.name.startsWith('read_project_oas'));
+  if (oasTool) return oasTool.name;
+  const available = tools.tools.map((t) => t.name).join(', ');
   throw new Error(
-    'Could not find an endpoints listing tool via MCP. Set APIDOG_LIST_TOOL env var to the correct tool name.'
+    `Could not find an endpoints listing tool via MCP. Set APIDOG_LIST_TOOL env var to the correct tool name. Available tools: ${available}`
   );
 }
 
 async function callTool(client, name, args = {}) {
   const res = await client.callTool({ name, arguments: args });
-  // Expecting JSON output in first content block
-  const block = res.content?.[0];
-  if (block?.type === 'json') return block.json;
-  if (block?.type === 'text') {
+  const tryParseText = async (text) => {
+    try { return JSON.parse(text); } catch {}
     try {
-      return JSON.parse(block.text);
+      const YAML = await import('yaml').then(m => m.default || m);
+      return YAML.parse(text);
     } catch {}
+    return undefined;
+  };
+  const blobsToObj = async (b64) => {
+    const buf = Buffer.from(b64, 'base64');
+    const text = buf.toString('utf8');
+    return tryParseText(text);
+  };
+  const contents = Array.isArray(res.content) ? res.content : [];
+  for (const block of contents) {
+    if (block?.type === 'json') return block.json;
+    if (block?.type === 'text') {
+      const obj = await tryParseText(block.text);
+      if (obj) return obj;
+    }
+    if (block?.type === 'blob' && block.blob?.data) {
+      const obj = await blobsToObj(block.blob.data);
+      if (obj) return obj;
+    }
+    if (block?.type === 'resource' && block.resource?.uri) {
+      const rr = await client.readResource({ uri: block.resource.uri });
+      const rcs = Array.isArray(rr.content) ? rr.content : [];
+      for (const rb of rcs) {
+        if (rb?.type === 'json') return rb.json;
+        if (rb?.type === 'text') {
+          const obj = await tryParseText(rb.text);
+          if (obj) return obj;
+        }
+        if (rb?.type === 'blob' && rb.blob?.data) {
+          const obj = await blobsToObj(rb.blob.data);
+          if (obj) return obj;
+        }
+      }
+    }
   }
   throw new Error(`Unexpected tool result format for ${name}`);
 }
@@ -111,6 +145,49 @@ async function writeEndpointFiles(endpoints) {
   return byId.size;
 }
 
+function oasToEndpoints(oas) {
+  const out = [];
+  if (!oas || typeof oas !== 'object' || !oas.paths) return out;
+  for (const [p, methods] of Object.entries(oas.paths)) {
+    if (!methods || typeof methods !== 'object') continue;
+    for (const [m, spec] of Object.entries(methods)) {
+      const method = String(m).toUpperCase();
+      if (!['GET','POST','PUT','PATCH','DELETE','HEAD','OPTIONS'].includes(method)) continue;
+      const ep = {
+        id: `${method}-${p}`.replace(/[^a-z0-9-_]/gi, '_'),
+        name: spec.summary || undefined,
+        method,
+        path: p,
+        summary: spec.summary,
+        description: spec.description,
+        tags: spec.tags,
+        deprecated: spec.deprecated,
+      };
+      const params = Array.isArray(spec.parameters) ? spec.parameters : [];
+      ep.query = params.filter(pr => pr && pr.in === 'query').map(pr => ({
+        name: pr.name,
+        required: pr.required,
+        description: pr.description,
+        schema: pr.schema
+      }));
+      ep.headers = params.filter(pr => pr && pr.in === 'header').map(pr => ({
+        name: pr.name,
+        required: pr.required,
+        description: pr.description,
+        schema: pr.schema
+      }));
+      if (spec.requestBody) {
+        ep.requestBody = spec.requestBody;
+      }
+      if (spec.responses) {
+        ep.responses = spec.responses;
+      }
+      out.push(ep);
+    }
+  }
+  return out;
+}
+
 async function main() {
   assertEnv();
   await ensureOutDir();
@@ -118,9 +195,18 @@ async function main() {
   try {
     const toolName = await discoverEndpointsTool(client);
     const data = await callTool(client, toolName, {});
-    const endpoints = Array.isArray(data?.endpoints) ? data.endpoints : data;
+    let endpoints = Array.isArray(data?.endpoints) ? data.endpoints : data;
     if (!Array.isArray(endpoints)) {
-      throw new Error('Tool did not return an array of endpoints.');
+      // Try to treat as OpenAPI document
+      const converted = oasToEndpoints(data);
+      if (converted.length === 0) {
+        // Dump raw for inspection
+        const dumpPath = path.join(OUT_DIR, '..', 'generated', 'oas_raw.json');
+        await fs.mkdir(path.dirname(dumpPath), { recursive: true });
+        await fs.writeFile(dumpPath, JSON.stringify(data, null, 2), 'utf8');
+        throw new Error('Tool did not return endpoints array or convertible OpenAPI document. Raw response saved to apidog/generated/oas_raw.json');
+      }
+      endpoints = converted;
     }
     const count = await writeEndpointFiles(endpoints);
     console.log(`Saved ${count} endpoint specs to ${OUT_DIR}`);

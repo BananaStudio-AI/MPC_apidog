@@ -25,16 +25,15 @@ function assertEnv() {
 }
 
 async function connectMCP() {
-  let sdk;
+  let Client, StdioClientTransport;
   try {
-    sdk = await import('@modelcontextprotocol/sdk');
+    ({ Client } = await import('@modelcontextprotocol/sdk/client'));
+    ({ StdioClientTransport } = await import('@modelcontextprotocol/sdk/client/stdio.js'));
   } catch (err) {
-    console.error('Missing dependency @modelcontextprotocol/sdk. Install with:');
+    console.error('Missing or incompatible @modelcontextprotocol/sdk. Install/update with:');
     console.error('  npm i -S @modelcontextprotocol/sdk');
     process.exit(1);
   }
-  const { Client } = sdk;
-  const { StdioClientTransport } = sdk;
 
   const isWindows = platform() === 'win32';
   const command = isWindows ? 'cmd' : 'npx';
