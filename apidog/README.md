@@ -62,9 +62,21 @@ npm run apidog:list-tools
 This prints the tool names and helps you set `APIDOG_LIST_TOOL`/`APIDOG_UPDATE_TOOL`.
 
 ## Alternative: Pull via OpenAI Agents (Hosted MCP)
-Use OpenAI Agents with a hosted MCP connector for Apidog. Requires an
-OpenAI API key and a configured connector (serverLabel "BananaStudio API Hub",
-connectorId "connector_apidog").
+Use OpenAI Agents with a hosted MCP connector for Apidog.
+
+### Prerequisites
+1. OpenAI API key: `export OPENAI_API_KEY="sk-..."`
+2. Apidog access token (same as for local MCP)
+3. **MCP connector must be created first** via OpenAI dashboard or API
+
+### Creating the Connector
+The hosted MCP approach requires a configured connector. You need to create one with:
+- **Server Label**: `BananaStudio_API_Hub` (no spaces, alphanumeric + `-` and `_` only)
+- **Connector ID**: `connector_apidog` (or customize in script)
+- **Authorization**: Your `APIDOG_ACCESS_TOKEN`
+- **Allowed Tools**: `listModules`, `listEndpoints`, `getEndpoint`
+
+Once configured, run:
 
 ```bash
 # Set your OpenAI API key

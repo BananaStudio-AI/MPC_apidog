@@ -41,34 +41,58 @@ async function main() {
     console.error('OPENAI_API_KEY not set. Export your key first.');
     process.exit(1);
   }
+  
+  if (!process.env.APIDOG_ACCESS_TOKEN) {
+    console.error('APIDOG_ACCESS_TOKEN not set. The MCP connector requires authorization.');
+    process.exit(1);
+  }
 
-  const { Runner, hostedMcpTool } = await getAgents();
+  const { Agent, run, hostedMcpTool } = await getAgents();
 
-  const apidog = hostedMcpTool({
-    serverLabel: 'BananaStudio API Hub',
-    allowedTools: ['listModules', 'listEndpoints', 'getEndpoint'],
-    connectorId: 'connector_apidog',
-    requireApproval: 'auto'
-  });
-
-  const runner = new Runner();
   const outDir = path.resolve('./apidog/api_specs');
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
+  const mcpTools = hostedMcpTool({
+    serverLabel: 'BananaStudio_API_Hub',
+    connectorId: 'connector_apidog',
+    authorization: process.env.APIDOG_ACCESS_TOKEN,
+    allowedTools: ['listModules', 'listEndpoints', 'getEndpoint'],
+    requireApproval: 'auto'
+  });
+
+  const agent = new Agent({
+    name: 'Apidog Sync Agent',
+    instructions: 'You are an API documentation agent. Use the MCP tools to fetch module and endpoint data.',
+    tools: [mcpTools]
+  });
+
   console.log('📡 Fetching modules...');
-  const modules = await runner.callTool(apidog, 'listModules', {});
+  const modulesResult = await run(agent, 'List all modules using the listModules tool');
+  
+  // Extract the tool call result from final message
+  const lastMsg = modulesResult.messages[modulesResult.messages.length - 1];
+  const modulesContent = lastMsg?.content;
+  const modules = typeof modulesContent === 'string' ? JSON.parse(modulesContent) : modulesContent;
   if (!modules || !Array.isArray(modules.modules)) {
     console.error('Unexpected response from listModules:', modules);
     process.exit(1);
   }
 
-  for (const mod of modules.modules) {
+  const moduleList = Array.isArray(modules?.modules) ? modules.modules : [];
+  
+  for (const mod of moduleList) {
     console.log(`📦 Module: ${mod.name || mod.id}`);
-    const endpoints = await runner.callTool(apidog, 'listEndpoints', { moduleId: mod.id });
+    const endpointsResult = await run(agent, `List endpoints for module ${mod.id} using the listEndpoints tool with moduleId=${mod.id}`);
+    const endpointsMsg = endpointsResult.messages[endpointsResult.messages.length - 1];
+    const endpointsContent = endpointsMsg?.content;
+    const endpoints = typeof endpointsContent === 'string' ? JSON.parse(endpointsContent) : endpointsContent;
     const list = Array.isArray(endpoints?.endpoints) ? endpoints.endpoints : [];
 
     for (const ep of list) {
-      const detail = await runner.callTool(apidog, 'getEndpoint', { endpointId: ep.id });
+      const detailResult = await run(agent, `Get endpoint details for ${ep.id} using the getEndpoint tool with endpointId=${ep.id}`);
+      const detailMsg = detailResult.messages[detailResult.messages.length - 1];
+      const detailContent = detailMsg?.content;
+      const detail = typeof detailContent === 'string' ? JSON.parse(detailContent) : detailContent;
       const base = sanitize(ep.name || `${ep.method}-${ep.path || ep.id}`);
       const filePath = path.join(outDir, `${base}.json`);
       fs.writeFileSync(filePath, JSON.stringify(detail, null, 2));
