@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "apidog:list-projects": "node apidog/scripts/list_projects.js",
     "apidog:auth-check": "node apidog/scripts/auth_check.js",
     "apidog:list-tools": "node apidog/scripts/list_tools.js",
     "apidog:pull": "node apidog/scripts/pull_endpoints.js",

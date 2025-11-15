@@ -68,9 +68,16 @@ async function main() {
         console.log('   - Generate new token: Account Settings → API Access Token');
       } else if (projectResponse.status === 403) {
         console.log('\n💡 403 Forbidden:');
-        console.log('   - Token lacks permissions for project', PROJECT_ID);
-        console.log('   - Verify project ID is correct');
-        console.log('   - Check token has project access in Apidog dashboard');
+        console.log('   Authentication succeeded, but token account lacks project access.');
+        console.log('   This is a project permission issue in Apidog, not a code bug.');
+        console.log('');
+        console.log('   Fix by doing ONE of:');
+        console.log('   1. Add your account to project', PROJECT_ID);
+        console.log('      → Apidog dashboard → Project Settings → Members');
+        console.log('      → Invite the account that owns this token');
+        console.log('   2. Verify project ID is correct');
+        console.log('      → Check APIDOG_PROJECT_ID in .env');
+        console.log('      → Confirm project exists and you have access');
       } else if (projectResponse.status === 404) {
         console.log('\n💡 404 Not Found:');
         console.log('   - Project', PROJECT_ID, 'does not exist');

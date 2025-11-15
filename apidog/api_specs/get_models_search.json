@@ -1,0 +1,35 @@
+{
+  "id": "GET_/models/search",
+  "method": "GET",
+  "path": "/models",
+  "summary": "GET Model search",
+  "authHeader": "Authorization",
+  "authExample": "Key {{FAL_API_KEY}}",
+  "response": {
+    "200": {
+      "example": {
+        "models": [
+          {
+            "endpoint_id": "fal-ai/flux/dev",
+            "metadata": {
+              "display_name": "FLUX.1 [dev]",
+              "category": "text-to-image",
+              "description": "Fast text-to-image generation",
+              "status": "active",
+              "tags": ["fast", "pro"],
+              "updated_at": "2025-01-15T12:00:00Z",
+              "is_favorited": false,
+              "thumbnail_url": "https://fal.media/files/example.jpg",
+              "model_url": "https://fal.run/fal-ai/flux/dev",
+              "date": "2024-08-01T00:00:00Z",
+              "highlighted": true,
+              "pinned": false
+            }
+          }
+        ],
+        "next_cursor": null,
+        "has_more": false
+      }
+    }
+  }
+}

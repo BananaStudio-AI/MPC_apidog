@@ -1,0 +1,9 @@
+{
+  "id": "GET-_",
+  "name": "GET Models Pricing",
+  "method": "GET",
+  "path": "/",
+  "summary": "GET Models Pricing",
+  "query": [],
+  "headers": []
+}

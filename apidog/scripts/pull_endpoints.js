@@ -198,6 +198,39 @@ async function main() {
     console.warn('   Run: npm run apidog:auth-check');
     console.warn('   Get token from: Account Settings → API Access Token\n');
   }
+
+  // Fast auth/project access pre-check to avoid long MCP startup waits when permissions are wrong
+  try {
+    const { default: fetch } = await import('node-fetch');
+    const projectUrl = `https://api.apidog.com/api/v1/projects/${PROJECT_ID}`;
+    const resp = await fetch(projectUrl, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
+    });
+    if (!resp.ok) {
+      let bodyText = await resp.text();
+      let body;
+      try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
+      if (resp.status === 403) {
+        console.error('🔒 Apidog returned 403 Forbidden before MCP start.');
+        console.error(`   Authentication succeeded, but the token account does not have access to project ${PROJECT_ID}.`);
+        console.error('   → Apidog dashboard → Project Settings → Members');
+        console.error("   → Ensure this token's account is added to the project");
+        console.error(`   → Confirm APIDOG_PROJECT_ID=${PROJECT_ID} is correct`);
+      } else if (resp.status === 401) {
+        console.error('❌ 401 Unauthorized from Apidog. Token invalid or expired.');
+      } else if (resp.status === 404) {
+        console.error(`❌ 404 Not Found. Project ${PROJECT_ID} does not exist or is not visible to this account.`);
+      } else {
+        console.error(`❌ Unexpected HTTP ${resp.status} from Apidog project check.`);
+      }
+      console.error('Response:', JSON.stringify(body, null, 2));
+      console.error('Aborting before MCP startup. Run: npm run apidog:auth-check after fixing.');
+      process.exit(1);
+    }
+  } catch (e) {
+    console.warn('⚠️  Skipping pre-check due to error:', e.message);
+  }
   
   await ensureOutDir();
   const client = await connectMCP();
@@ -233,6 +266,14 @@ async function main() {
           }
           if (data.AxiosError) {
             errorMsg += `\n   HTTP Error: ${data.AxiosError}`;
+            // Check for 403 specifically
+            if (data.AxiosError.includes('403')) {
+              errorMsg += `\n\n🔒 Apidog returned 403 Forbidden.`;
+              errorMsg += `\n   Authentication succeeded, but the token account does not have access to project ${PROJECT_ID}.`;
+              errorMsg += `\n   → Check Apidog → Project Settings → Members`;
+              errorMsg += `\n   → Ensure this token's account is added to the project`;
+              errorMsg += `\n   → Confirm APIDOG_PROJECT_ID=${PROJECT_ID} is correct`;
+            }
           }
           if (data.message) {
             errorMsg += `\n   Message: ${data.message}`;

@@ -180,6 +180,51 @@ npm run apidog:push -- --force
 - Set tool overrides if required:
   - `APIDOG_UPDATE_TOOL` for the endpoint update tool name.
 
+## Force Overwrite & Tool Discovery Troubleshooting
+If you see `Could not find list endpoints tool` or similar:
+
+1. List tools:
+  ```bash
+  npm run apidog:list-tools
+  ```
+2. Identify the exact tool names for listing & updating endpoints. Common patterns:
+  - `apidog.listEndpoints`, `Apidog.listEndpoints`, `project.listEndpoints`
+  - `apidog.updateEndpoint`, `Apidog.updateEndpoint`, `project.updateEndpoint`
+3. Export overrides (Linux/macOS):
+  ```bash
+  export APIDOG_LIST_TOOL="apidog.listEndpoints"
+  export APIDOG_UPDATE_TOOL="apidog.updateEndpoint"
+  ```
+  PowerShell:
+  ```powershell
+  $env:APIDOG_LIST_TOOL = "apidog.listEndpoints"
+  $env:APIDOG_UPDATE_TOOL = "apidog.updateEndpoint"
+  ```
+
+### Dry-Run vs Force
+The push scripts always perform a diff first:
+```bash
+# Dry-run (no changes applied)
+npm run apidog:push
+
+# Apply all detected additions/changes
+npm run apidog:push -- --force
+```
+
+For the agents variant:
+```bash
+# Dry-run
+npm run apidog:push:agents
+
+# Apply (updates + creates when allowed)
+npm run apidog:push:agents -- --force
+```
+
+If new endpoints are created locally but remote creation is not permitted, they will be skipped even with `--force` (look for `[ADD]` vs `[CHANGE]` markers). Use the agents script only if your connector allows `createEndpoint`.
+
+### Token Format Errors
+If you see a 403 plus `tokenFormat: invalid (contains colon)` in `generated/oas_raw.json`, ensure `APIDOG_ACCESS_TOKEN` matches the format required by Apidog (remove any extraneous separators such as colons added for copy-paste grouping).
+
 ## Validate Local Specs
 Validate JSON specs in `apidog/api_specs/` for required fields and structure.
 

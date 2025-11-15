@@ -1,0 +1,9 @@
+{
+  "id": "GET-_models",
+  "name": "GET Model search",
+  "method": "GET",
+  "path": "/models",
+  "summary": "GET Model search",
+  "query": [],
+  "headers": []
+}
