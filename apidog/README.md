@@ -113,12 +113,26 @@ npm run apidog:push:agents -- \
 ## Push Endpoints (sync up)
 Compare local JSON files to the live Apidog project and push changes:
 
+Linux/macOS:
 ```bash
 # dry-run: shows changes only
 APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js
 
 # apply changes
 APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js --force
+# or via npm
+npm run apidog:push -- --force
+```
+
+Windows PowerShell:
+```powershell
+$env:APIDOG_ACCESS_TOKEN = "<your_token_here>"
+
+# dry-run
+node apidog/scripts/push_endpoints.js
+
+# apply changes
+node apidog/scripts/push_endpoints.js --force
 # or via npm
 npm run apidog:push -- --force
 ```
