@@ -1,7 +1,7 @@
-# BananaStudio Copilot Instructions
+# BananaStudio API Hub Copilot Instructions
 
 ## Project Overview
-BananaStudio is an AI-driven creative pipeline integrating Comet Models, FAL API, OpenAI Agents, and automation workflows. The architecture is **MCP-first** — all API interactions go through the Apidog Model Context Protocol server.
+BananaStudio API Hub is an AI-driven creative pipeline integrating Comet Models, FAL API, OpenAI Agents, and automation workflows. The architecture is **MCP-first** — all API interactions go through the Apidog Model Context Protocol server.
 
 ## Architecture
 

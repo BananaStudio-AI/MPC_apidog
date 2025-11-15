@@ -53,7 +53,7 @@ async function main() {
   if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
   const mcpTools = hostedMcpTool({
-    serverLabel: 'BananaStudio_API_Hub',
+    serverLabel: 'BananaStudio API Hub',
     connectorId: 'connector_apidog',
     authorization: process.env.APIDOG_ACCESS_TOKEN,
     allowedTools: ['listModules', 'listEndpoints', 'getEndpoint'],

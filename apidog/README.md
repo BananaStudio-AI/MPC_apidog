@@ -70,11 +70,13 @@ Use OpenAI Agents with a hosted MCP connector for Apidog.
 3. **MCP connector must be created first** via OpenAI dashboard or API
 
 ### Creating the Connector
-The hosted MCP approach requires a configured connector. You need to create one with:
-- **Server Label**: `BananaStudio_API_Hub` (no spaces, alphanumeric + `-` and `_` only)
+The hosted MCP approach requires a configured connector. Create it with these **exact** settings:
+- **Server Label**: `BananaStudio API Hub` (match your Apidog project name exactly, spaces allowed for hosted connectors)
 - **Connector ID**: `connector_apidog` (or customize in script)
 - **Authorization**: Your `APIDOG_ACCESS_TOKEN`
 - **Allowed Tools**: `listModules`, `listEndpoints`, `getEndpoint`
+
+> **Note**: The server label validation differs between local MCP configs (which use the label as a key) and hosted connectors. For hosted connectors, use your actual Apidog project name.
 
 Once configured, run:
 

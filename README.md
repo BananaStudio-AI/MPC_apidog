@@ -1,3 +1,3 @@
-# BananaStudio
+# BananaStudio API Hub
 
-BananaStudio — AI-driven creative pipeline integrating Comet Models, FAL API, OpenAI Agents, and automation workflows.
+BananaStudio API Hub — AI-driven creative pipeline integrating Comet Models, FAL API, OpenAI Agents, and automation workflows.
