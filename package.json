@@ -2,5 +2,13 @@
   "name": "bananastudio",
   "version": "1.0.0",
   "type": "module",
-  "dependencies": {}
+  "scripts": {
+    "apidog:list-tools": "node apidog/scripts/list_tools.js",
+    "apidog:pull": "node apidog/scripts/pull_endpoints.js",
+    "apidog:push": "node apidog/scripts/push_endpoints.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.22.0",
+    "yaml": "^2.8.1"
+  }
 }

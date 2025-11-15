@@ -47,10 +47,19 @@ Export all endpoints from Apidog into `./api_specs` as JSON files:
 ```bash
 # from repo root
 APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/pull_endpoints.js
+# or with npm script
+npm run apidog:pull
 ```
 
 - The script discovers the correct MCP tool automatically. If needed, set:
   - `APIDOG_LIST_TOOL` to the exact tool name for listing endpoints.
+  - If your server exposes only OAS readers (e.g. `read_project_oas_*`), the script will extract endpoints from OpenAPI.
+
+### List Available MCP Tools
+```bash
+npm run apidog:list-tools
+```
+This prints the tool names and helps you set `APIDOG_LIST_TOOL`/`APIDOG_UPDATE_TOOL`.
 
 ## Push Endpoints (sync up)
 Compare local JSON files to the live Apidog project and push changes:
@@ -61,6 +70,8 @@ APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js
 
 # apply changes
 APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js --force
+# or via npm
+npm run apidog:push -- --force
 ```
 
 - Set tool overrides if required:
@@ -76,3 +87,4 @@ Use an editor with TypeScript support to get intellisense in `.js` scripts via J
 - Scripts are ESM (`type: module`) and expect Node 18+.
 - These scripts use the MCP SDK and spawn the Apidog MCP server under the hood.
 - The exact tool names depend on your Apidog project configuration; override via env vars if discovery fails.
+- If you see a 403 error during pull, your `APIDOG_ACCESS_TOKEN` likely lacks access to the project. Update `.env` and re-run. The raw tool response is saved to `apidog/generated/oas_raw.json` for debugging.
