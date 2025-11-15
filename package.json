@@ -7,7 +7,8 @@
     "apidog:pull": "node apidog/scripts/pull_endpoints.js",
     "apidog:push": "node apidog/scripts/push_endpoints.js",
     "apidog:pull:agents": "node apidog/scripts/pull_endpoints_agents.js",
-    "apidog:push:agents": "node apidog/scripts/push_endpoints_agents.js"
+    "apidog:push:agents": "node apidog/scripts/push_endpoints_agents.js",
+    "apidog:validate": "node apidog/scripts/validate_specs.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",

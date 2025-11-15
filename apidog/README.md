@@ -140,6 +140,15 @@ npm run apidog:push -- --force
 - Set tool overrides if required:
   - `APIDOG_UPDATE_TOOL` for the endpoint update tool name.
 
+## Validate Local Specs
+Validate JSON specs in `apidog/api_specs/` for required fields and structure.
+
+```bash
+npm run apidog:validate
+```
+
+The validator checks `id`, `name`, `method`, `path`, and basic shapes for `headers`, `queryParams`, and `responses`. It exits non-zero if any files are invalid, making it CI-friendly.
+
 ## Type Definitions
 TypeScript declaration file at `./types/apidog.d.ts` defines:
 - Endpoint, Schema, Module, QueryParam, Header, AuthConfig, Folder
