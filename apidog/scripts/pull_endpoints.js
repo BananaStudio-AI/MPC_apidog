@@ -190,6 +190,15 @@ function oasToEndpoints(oas) {
 
 async function main() {
   assertEnv();
+  
+  // Token format validation
+  if (TOKEN && TOKEN.includes(':')) {
+    console.warn('⚠️  WARNING: Token contains colon (:) which suggests wrong format!');
+    console.warn('   Apidog uses Bearer token auth, not key:secret format.');
+    console.warn('   Run: npm run apidog:auth-check');
+    console.warn('   Get token from: Account Settings → API Access Token\n');
+  }
+  
   await ensureOutDir();
   const client = await connectMCP();
   try {
@@ -200,11 +209,39 @@ async function main() {
       // Try to treat as OpenAPI document
       const converted = oasToEndpoints(data);
       if (converted.length === 0) {
-        // Dump raw for inspection
+        // Dump raw for inspection with enhanced error details
         const dumpPath = path.join(OUT_DIR, '..', 'generated', 'oas_raw.json');
         await fs.mkdir(path.dirname(dumpPath), { recursive: true });
-        await fs.writeFile(dumpPath, JSON.stringify(data, null, 2), 'utf8');
-        throw new Error('Tool did not return endpoints array or convertible OpenAPI document. Raw response saved to apidog/generated/oas_raw.json');
+        
+        // Enhanced error structure
+        const errorReport = {
+          timestamp: new Date().toISOString(),
+          error: 'Failed to extract endpoints',
+          toolUsed: toolName,
+          projectId: PROJECT_ID,
+          tokenFormat: TOKEN?.includes(':') ? 'invalid (contains colon)' : 'appears valid',
+          rawResponse: data
+        };
+        
+        await fs.writeFile(dumpPath, JSON.stringify(errorReport, null, 2), 'utf8');
+        
+        // Extract useful error info if present
+        let errorMsg = 'Tool did not return endpoints array or convertible OpenAPI document.';
+        if (data && typeof data === 'object') {
+          if (data.errorCode || data.errorMessage) {
+            errorMsg += `\n   Apidog Error ${data.errorCode || ''}: ${data.errorMessage || ''}`;
+          }
+          if (data.AxiosError) {
+            errorMsg += `\n   HTTP Error: ${data.AxiosError}`;
+          }
+          if (data.message) {
+            errorMsg += `\n   Message: ${data.message}`;
+          }
+        }
+        errorMsg += '\n   Raw response saved to apidog/generated/oas_raw.json';
+        errorMsg += '\n   Run: npm run apidog:auth-check';
+        
+        throw new Error(errorMsg);
       }
       endpoints = converted;
     }

@@ -19,7 +19,28 @@ APIDOG_ACCESS_TOKEN="<your_token_here>"
 APIDOG_PROJECT_ID=1128155
 ```
 
+### Getting Your Apidog Token
+**Important**: Apidog uses **Bearer token** authentication.
+
+1. Log into Apidog → **Account Settings** → **API Access Token**
+2. Generate or copy your **account-level API access token**
+3. The token should be a **single string without colons** (not `key:secret` format)
+4. Ensure the token has **project access** to project ID 1128155
+
 > Never commit real tokens. `.env` is already in `.gitignore`.
+
+### Verify Your Token
+Before running pull/push scripts, verify your token works:
+
+```bash
+npm run apidog:auth-check
+```
+
+This directly tests your token against Apidog's REST API and reports:
+- ✅ Token valid and has project access
+- ❌ Token issues (format, permissions, project access)
+
+If you see **403 "No project guest privilege"**, your token lacks access to the project. Generate a new token with proper permissions.
 
 ## MCP Server Config
 An MCP config is provided at `./mcp/apidog.json` for the server named "BananaStudio API Hub".
@@ -70,13 +91,18 @@ Use OpenAI Agents with a hosted MCP connector for Apidog.
 3. **MCP connector must be created first** via OpenAI dashboard or API
 
 ### Creating the Connector
-The hosted MCP approach requires a configured connector. Create it with these **exact** settings:
-- **Server Label**: `BananaStudio API Hub` (match your Apidog project name exactly, spaces allowed for hosted connectors)
+**Important**: MCP connector registration is not available via public API. You must create connectors through:
+1. **OpenAI Dashboard** (if available in your account)
+2. **OpenAI Support** (contact for enterprise connector setup)
+3. **Alternative**: Use local MCP workflows instead (`npm run apidog:pull`)
+
+If you have connector creation access, configure it with these settings:
+- **Server Label**: `BananaStudio API Hub` (match your Apidog project name exactly)
 - **Connector ID**: `connector_apidog` (or customize in script)
 - **Authorization**: Your `APIDOG_ACCESS_TOKEN`
-- **Allowed Tools**: `listModules`, `listEndpoints`, `getEndpoint`
+- **Allowed Tools**: `listModules`, `listEndpoints`, `getEndpoint`, `updateEndpoint`, `createEndpoint`
 
-> **Note**: The server label validation differs between local MCP configs (which use the label as a key) and hosted connectors. For hosted connectors, use your actual Apidog project name.
+A setup script is provided at `apidog/scripts/setup_connector.js` but requires a valid connector registration endpoint.
 
 Once configured, run:
 
@@ -173,4 +199,12 @@ Use an editor with TypeScript support to get intellisense in `.js` scripts via J
 - Scripts are ESM (`type: module`) and expect Node 18+.
 - These scripts use the MCP SDK and spawn the Apidog MCP server under the hood.
 - The exact tool names depend on your Apidog project configuration; override via env vars if discovery fails.
-- If you see a 403 error during pull, your `APIDOG_ACCESS_TOKEN` likely lacks access to the project. Update `.env` and re-run. The raw tool response is saved to `apidog/generated/oas_raw.json` for debugging.
+- **If you see a 403 error during pull**:
+  1. Run `npm run apidog:auth-check` to diagnose the issue
+  2. Common causes:
+     - Token format incorrect (should not contain `:` colon)
+     - Token lacks project access ("No project guest privilege")
+     - Wrong project ID in `APIDOG_PROJECT_ID`
+  3. Fix: Generate a new token from **Account Settings → API Access Token** with project 1128155 access
+  4. Update `.env` and re-run auth check
+- The raw tool response is saved to `apidog/generated/oas_raw.json` for debugging.

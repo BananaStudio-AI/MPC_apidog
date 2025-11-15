@@ -1,3 +1,10 @@
 {
-  "AxiosError": "Request failed with status code 403"
+  "timestamp": "2025-11-15T20:10:28.558Z",
+  "error": "Failed to extract endpoints",
+  "toolUsed": "read_project_oas_4x7qns",
+  "projectId": "1128155",
+  "tokenFormat": "invalid (contains colon)",
+  "rawResponse": {
+    "AxiosError": "Request failed with status code 403"
+  }
 }
