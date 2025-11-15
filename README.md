@@ -12,7 +12,15 @@ BananaStudio — AI-driven creative pipeline integrating Comet Models, FAL API, 
 
 ### Setup
 
-1. **Configure credentials**
+1. **Configure credentials** (choose one method)
+
+   **Option A: Interactive setup (recommended)**
+   ```bash
+   node scripts/configure_apidog.js
+   ```
+   This will guide you through setting up your credentials interactively.
+
+   **Option B: Manual setup**
    ```bash
    cp .env.example .env
    # Edit .env with your APIDOG_ACCESS_TOKEN and APIDOG_PROJECT_ID
@@ -24,6 +32,27 @@ BananaStudio — AI-driven creative pipeline integrating Comet Models, FAL API, 
    ```
 
 ## Core Features
+
+### 🔧 Configure Apidog API Credentials
+
+Set up your Apidog credentials interactively from the terminal:
+
+```bash
+node scripts/configure_apidog.js
+```
+
+**Interactive workflow:**
+- Detects existing configuration
+- Prompts for Project ID and Access Token
+- Validates required fields
+- Creates/updates `.env` file automatically
+- Shows masked credentials for security
+
+**What it does:**
+- Guides you through credential setup
+- No manual file editing required
+- Validates input before saving
+- Provides clear next steps
 
 ### 🚀 MCP Server Integration
 
@@ -110,6 +139,7 @@ MPC_apidog/
 │   ├── types.ts              # TypeScript interface definitions
 │   └── endpoints.json        # Local API endpoint cache (generated)
 ├── scripts/                   # Automation utilities
+│   ├── configure_apidog.js   # Configure API credentials interactively
 │   ├── add_endpoint.js       # Add new API endpoint interactively
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog

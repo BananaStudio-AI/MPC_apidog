@@ -12,6 +12,7 @@ MPC_apidog/
 │   ├── types.ts              # TypeScript interfaces for type-safe API operations
 │   └── endpoints.example.json # Sample endpoint structure
 ├── scripts/                   # Automation utilities  
+│   ├── configure_apidog.js   # Configure API credentials interactively
 │   ├── add_endpoint.js       # Add new API endpoint interactively
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog
@@ -27,6 +28,17 @@ MPC_apidog/
 - **`mcp.json`** - Alternative MCP configuration (BananaStudio Hub)
 
 ### 📜 Scripts
+
+#### configure_apidog.js
+- **Purpose**: Set up Apidog API credentials interactively
+- **Usage**: `node scripts/configure_apidog.js`
+- **Features**:
+  - Interactive credential setup
+  - Detects existing configuration
+  - Validates Project ID and Access Token
+  - Creates/updates .env file automatically
+  - Masks sensitive information
+  - No manual file editing needed
 
 #### add_endpoint.js
 - **Purpose**: Create new API endpoints interactively from terminal
@@ -88,7 +100,14 @@ Located in `apis/types.ts`:
 
 ## Next Steps
 
-1. **Set up credentials**
+1. **Set up credentials** (choose one method)
+   
+   **Interactive (recommended):**
+   ```bash
+   node scripts/configure_apidog.js
+   ```
+   
+   **Manual:**
    ```bash
    cp .env.example .env
    # Edit .env with your actual credentials

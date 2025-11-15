@@ -23,6 +23,7 @@ MPC_apidog/
 │   ├── types.ts       # TypeScript interface definitions
 │   └── endpoints.json # Local cache of API endpoints (generated)
 ├── scripts/           # Automation utilities
+│   ├── configure_apidog.js # Configure API credentials interactively
 │   ├── add_endpoint.js    # Add new API endpoint interactively
 │   ├── pull_endpoints.js  # Fetch endpoints from Apidog
 │   └── push_endpoints.js  # Update endpoints in Apidog
@@ -49,7 +50,20 @@ MPC_apidog/
    cd MPC_apidog
    ```
 
-2. **Set up environment variables**
+2. **Set up environment variables** (choose one method)
+
+   **Option A: Interactive configuration (recommended)**
+   ```bash
+   node scripts/configure_apidog.js
+   ```
+   This interactive script will:
+   - Prompt you for your Apidog Project ID
+   - Request your Apidog Access Token
+   - Detect and offer to update existing configuration
+   - Create or update the `.env` file automatically
+   - Show you the next steps
+
+   **Option B: Manual configuration**
    ```bash
    cp .env.example .env
    # Edit .env with your actual credentials
@@ -62,6 +76,70 @@ MPC_apidog/
    ```
 
 ## Usage
+
+### Configuring Apidog API Credentials
+
+Set up your credentials interactively:
+
+```bash
+node scripts/configure_apidog.js
+```
+
+**Interactive workflow:**
+1. Script checks for existing configuration
+2. Prompts for Apidog Project ID
+3. Requests Apidog Access Token
+4. Shows configuration summary
+5. Saves to `.env` file
+6. Displays next steps
+
+**Example session:**
+```
+╔══════════════════════════════════════════════════════════╗
+║     🔧 Apidog API Configuration Setup                  ║
+╚══════════════════════════════════════════════════════════╝
+
+This script will help you configure your Apidog credentials.
+
+You'll need:
+  1. Apidog Access Token (from your Apidog account settings)
+  2. Apidog Project ID (from your project URL or settings)
+
+📌 Step 1: Apidog Project ID
+   Find this in your Apidog project URL or settings page.
+   Example: If URL is "https://apidog.com/project/12345", ID is "12345"
+
+Project ID: 12345
+
+📌 Step 2: Apidog Access Token
+   Get this from: Account Settings → API Access → Generate Token
+   ⚠️  Warning: Token will be visible as you type
+
+Access Token: apd_xxxxxxxxxxxxxxxx
+
+📋 Configuration Summary:
+   Project ID: 12345
+   Access Token: apd_xxxx... (20 characters)
+
+Save this configuration? (Y/n): y
+
+✅ Configuration saved successfully!
+
+🚀 Next steps:
+   1. Start the MCP server:
+      ./setup-mcp.sh
+   2. Or use the automation scripts:
+      node scripts/pull_endpoints.js
+```
+
+**Features:**
+- Detects existing configuration
+- Offers to update or keep current settings
+- Validates required fields
+- Masks sensitive information in output
+- Creates properly formatted `.env` file
+- Never commits credentials (`.env` is gitignored)
+
 
 ### Starting the MCP Server
 
