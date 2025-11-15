@@ -61,6 +61,23 @@ npm run apidog:list-tools
 ```
 This prints the tool names and helps you set `APIDOG_LIST_TOOL`/`APIDOG_UPDATE_TOOL`.
 
+## Alternative: Pull via OpenAI Agents (Hosted MCP)
+Use OpenAI Agents with a hosted MCP connector for Apidog. Requires an
+OpenAI API key and a configured connector (serverLabel "BananaStudio API Hub",
+connectorId "connector_apidog").
+
+```bash
+# Set your OpenAI API key
+export OPENAI_API_KEY="sk-..."
+
+# Run the agents-based pull
+npm run apidog:pull:agents
+```
+
+Files will be saved into `apidog/api_specs/`. This path is useful when your
+VS Code environment has access to OpenAI Agents and your MCP connector but
+you don't want to spawn the Apidog MCP server locally.
+
 ## Push Endpoints (sync up)
 Compare local JSON files to the live Apidog project and push changes:
 

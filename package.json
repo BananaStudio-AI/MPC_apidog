@@ -5,10 +5,12 @@
   "scripts": {
     "apidog:list-tools": "node apidog/scripts/list_tools.js",
     "apidog:pull": "node apidog/scripts/pull_endpoints.js",
-    "apidog:push": "node apidog/scripts/push_endpoints.js"
+    "apidog:push": "node apidog/scripts/push_endpoints.js",
+    "apidog:pull:agents": "node apidog/scripts/pull_endpoints_agents.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",
+    "@openai/agents": "^0.3.2",
     "yaml": "^2.8.1"
   }
 }
