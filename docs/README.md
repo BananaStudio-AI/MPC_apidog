@@ -25,6 +25,7 @@ MPC_apidog/
 ├── scripts/           # Automation utilities
 │   ├── configure_apidog.js # Configure API credentials interactively
 │   ├── add_endpoint.js    # Add new API endpoint interactively
+│   ├── import_openapi.js  # Import OpenAPI/Swagger specifications
 │   ├── pull_endpoints.js  # Fetch endpoints from Apidog
 │   └── push_endpoints.js  # Update endpoints in Apidog
 ├── mcp/               # MCP server configuration
@@ -225,6 +226,67 @@ Add parameters? (y/N): y
 ✅ Add this endpoint? (Y/n): y
 ✅ Endpoint added successfully!
 ```
+
+### Importing OpenAPI Specifications
+
+Import existing OpenAPI/Swagger specifications to quickly add multiple endpoints:
+
+```bash
+# Import from JSON file
+node scripts/import_openapi.js api-spec.json
+
+# Import from YAML file (convert to JSON first)
+node scripts/import_openapi.js api-spec.json
+
+# Import from stdin
+cat openapi.json | node scripts/import_openapi.js --stdin
+```
+
+**What happens:**
+1. Script parses the OpenAPI specification
+2. Converts endpoints to internal format
+3. Creates or adds to collection based on tags
+4. Checks for duplicate endpoints
+5. Saves to `apis/endpoints.json`
+
+**Use cases:**
+- Import existing API documentation
+- Migrate from other API management tools
+- Quickly add multiple endpoints at once
+- Test with real API specifications
+
+**Example with the Comet Models API:**
+```bash
+$ node scripts/import_openapi.js comet-models-api.json
+
+📥 Importing OpenAPI Specification...
+
+Reading from: comet-models-api.json
+✓ Parsed OpenAPI 3.0.1
+  Title: Comet Models API
+  Version: 1.0.0
+
+📊 Found 1 endpoints
+✓ Created new collection: CometModels_API
+  ✓ GET /
+
+✅ Import complete!
+   Collection: CometModels_API
+   New endpoints: 1
+   Total in collection: 1
+
+💡 Next steps:
+   1. Review the imported endpoints
+   2. Push to Apidog: node scripts/push_endpoints.js
+```
+
+**Supported features:**
+- OpenAPI 3.0+ specifications
+- Path parameters, query parameters, headers
+- Request body definitions
+- Response schemas
+- Tags for collection organization
+- Base URL from servers section
 
 ### Pulling Endpoints from Apidog
 

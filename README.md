@@ -92,6 +92,25 @@ node scripts/add_endpoint.js
 - Saves to local JSON file
 - Ready to sync with `push_endpoints.js`
 
+### 📥 Import OpenAPI Specification
+
+Import existing OpenAPI/Swagger specifications:
+
+```bash
+# Import from file
+node scripts/import_openapi.js openapi-spec.json
+
+# Import from stdin
+cat openapi.yaml | node scripts/import_openapi.js --stdin
+```
+
+**What it does:**
+- Parses OpenAPI 3.0+ specifications
+- Converts to internal endpoint format
+- Adds to existing collections
+- Detects and skips duplicates
+- Shows import summary
+
 ### 📥 Pull Endpoints from Apidog
 
 Fetch all API endpoints and save them locally:
@@ -141,6 +160,7 @@ MPC_apidog/
 ├── scripts/                   # Automation utilities
 │   ├── configure_apidog.js   # Configure API credentials interactively
 │   ├── add_endpoint.js       # Add new API endpoint interactively
+│   ├── import_openapi.js     # Import OpenAPI/Swagger specifications
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog
 ├── mcp/                       # MCP server configuration

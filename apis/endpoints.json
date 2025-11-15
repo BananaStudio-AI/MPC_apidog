@@ -1,0 +1,40 @@
+{
+  "projectId": "",
+  "fetchedAt": "2025-11-15T21:45:07.514Z",
+  "collections": [
+    {
+      "id": "collection-1763243107514",
+      "name": "Imported APIs",
+      "description": "Imported from Comet Models API",
+      "endpoints": [
+        {
+          "id": "endpoint-1763243107513-wrw1842xs",
+          "name": "GET All Models",
+          "method": "GET",
+          "path": "/",
+          "description": "Retrieve all available models with pricing information",
+          "parameters": [
+            {
+              "name": "Authorization",
+              "type": "string",
+              "required": false,
+              "description": "API Key for authentication",
+              "in": "header"
+            }
+          ],
+          "importedFrom": "OpenAPI",
+          "importedAt": "2025-11-15T21:45:07.513Z",
+          "tags": [
+            "CometModels_API"
+          ],
+          "baseUrl": "https://api.fal.ai/v1/models/pricing",
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved models"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

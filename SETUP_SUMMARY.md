@@ -14,6 +14,7 @@ MPC_apidog/
 ├── scripts/                   # Automation utilities  
 │   ├── configure_apidog.js   # Configure API credentials interactively
 │   ├── add_endpoint.js       # Add new API endpoint interactively
+│   ├── import_openapi.js     # Import OpenAPI/Swagger specifications
 │   ├── pull_endpoints.js     # Fetch endpoints from Apidog
 │   └── push_endpoints.js     # Update endpoints in Apidog
 ├── mcp/                       # MCP server configuration (empty, ready for custom configs)
@@ -49,6 +50,16 @@ MPC_apidog/
   - Supports parameters and collections
   - Saves to local JSON file
   - Ready to sync with push_endpoints.js
+
+#### import_openapi.js
+- **Purpose**: Import OpenAPI/Swagger specifications
+- **Usage**: `node scripts/import_openapi.js <file.json>` or `--stdin`
+- **Features**:
+  - Parses OpenAPI 3.0+ specs
+  - Converts to internal format
+  - Auto-creates collections from tags
+  - Detects duplicate endpoints
+  - Supports JSON format (YAML requires conversion)
 
 #### pull_endpoints.js
 - **Purpose**: Fetch API endpoints from Apidog
