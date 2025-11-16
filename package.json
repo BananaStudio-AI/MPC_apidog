@@ -22,7 +22,8 @@
     "test:client-estimate": "tsx scripts/test_client_estimate.ts",
     "sync:api-hub-client": "tsx scripts/example_sync_model_catalog.ts",
     "sync:model-registry": "tsx scripts/sync_model_registry.ts",
-    "health:api-hub": "tsx scripts/healthcheck_api_hub.ts"
+    "health:api-hub": "tsx scripts/healthcheck_api_hub.ts",
+    "push:apidog": "tsx scripts/push_to_apidog.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",

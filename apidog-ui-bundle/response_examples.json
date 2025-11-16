@@ -1,0 +1,289 @@
+{
+  "version": "1.0.0",
+  "description": "Response examples for API Hub endpoints",
+  "endpoints": {
+    "/models": {
+      "GET": {
+        "200_comet": {
+          "description": "Successful response from Comet API",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "models": [
+              {
+                "id": "gpt-4-turbo",
+                "name": "GPT-4 Turbo",
+                "provider": "openai",
+                "context_length": 128000,
+                "input_price": 0.01,
+                "output_price": 0.03,
+                "capabilities": ["chat", "vision"],
+                "created_at": "2024-04-09T00:00:00Z"
+              },
+              {
+                "id": "claude-3-opus-20240229",
+                "name": "Claude 3 Opus",
+                "provider": "anthropic",
+                "context_length": 200000,
+                "input_price": 0.015,
+                "output_price": 0.075,
+                "capabilities": ["chat", "vision"],
+                "created_at": "2024-02-29T00:00:00Z"
+              }
+            ],
+            "total": 568
+          }
+        },
+        "200_fal": {
+          "description": "Successful response from FAL API (paginated)",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "models": [
+              {
+                "endpoint_id": "fal-ai/flux-pro",
+                "display_name": "FLUX.1 [pro]",
+                "category": "text-to-image",
+                "description": "FLUX.1 [pro] is a state of the art text-to-image model",
+                "status": "public",
+                "tags": ["image-generation", "flux"],
+                "thumbnail_url": "https://fal.media/files/...",
+                "model_url": "https://api.fal.ai/models/fal-ai/flux-pro",
+                "license_type": "commercial",
+                "date": "2024-08-01",
+                "highlighted": true,
+                "kind": "image"
+              }
+            ],
+            "next_cursor": "eyJwYWdlIjoyLCJsaW1pdCI6MTAwfQ==",
+            "total": 866
+          }
+        },
+        "401": {
+          "description": "Authentication failed - invalid or missing API key",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "Unauthorized",
+            "message": "Invalid or missing API key. Please provide a valid Bearer token (Comet) or Key (FAL).",
+            "status": 401
+          }
+        },
+        "404": {
+          "description": "Endpoint not found",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "Not Found",
+            "message": "The requested endpoint does not exist. Check API documentation.",
+            "status": 404
+          }
+        }
+      }
+    },
+    "/models/pricing": {
+      "GET": {
+        "200": {
+          "description": "Successful pricing response",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "pricing": [
+              {
+                "model_id": "gpt-4-turbo",
+                "input_price_per_token": 0.00001,
+                "output_price_per_token": 0.00003,
+                "currency": "USD"
+              },
+              {
+                "model_id": "fal-ai/flux-pro",
+                "price_per_request": 0.055,
+                "currency": "USD",
+                "parameters_affecting_cost": [
+                  "image_size",
+                  "num_images",
+                  "safety_checker"
+                ]
+              }
+            ],
+            "total_models": 1434
+          }
+        },
+        "401": {
+          "description": "Authentication failed",
+          "body": {
+            "error": "Unauthorized",
+            "message": "Invalid API key",
+            "status": 401
+          }
+        }
+      }
+    },
+    "/models/pricing/estimate": {
+      "POST": {
+        "200": {
+          "description": "Successful cost estimate",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "model_id": "fal-ai/flux-pro",
+            "estimated_cost": 0.055,
+            "currency": "USD",
+            "breakdown": {
+              "base_cost": 0.04,
+              "image_size_multiplier": 1.0,
+              "safety_checker_cost": 0.015
+            },
+            "parameters_used": {
+              "image_size": "landscape_4_3",
+              "num_images": 1,
+              "enable_safety_checker": true
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid request - missing or invalid parameters",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "error": "Bad Request",
+            "message": "Missing required field: model_id. Please provide a valid model identifier.",
+            "status": 400,
+            "validation_errors": [
+              {
+                "field": "model_id",
+                "message": "This field is required"
+              }
+            ]
+          }
+        },
+        "404": {
+          "description": "Model not found",
+          "body": {
+            "error": "Not Found",
+            "message": "Model 'invalid-model-id' not found in registry",
+            "status": 404
+          }
+        }
+      }
+    },
+    "/models/usage": {
+      "GET": {
+        "200": {
+          "description": "Successful usage records response",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "usage": [
+              {
+                "record_id": "usage_abc123",
+                "model_id": "fal-ai/flux-pro",
+                "timestamp": "2024-12-15T14:30:00Z",
+                "request_count": 150,
+                "total_cost": 8.25,
+                "currency": "USD",
+                "user_id": "user_xyz789"
+              },
+              {
+                "record_id": "usage_def456",
+                "model_id": "fal-ai/kling-video/v1/standard/text-to-video",
+                "timestamp": "2024-12-15T12:00:00Z",
+                "request_count": 25,
+                "total_cost": 47.5,
+                "currency": "USD",
+                "user_id": "user_xyz789"
+              }
+            ],
+            "total_records": 1247,
+            "next_cursor": "cursor_page2",
+            "date_range": {
+              "start": "2024-01-01",
+              "end": "2024-12-31"
+            }
+          }
+        },
+        "401": {
+          "description": "Authentication failed",
+          "body": {
+            "error": "Unauthorized",
+            "message": "Invalid FAL API key",
+            "status": 401
+          }
+        }
+      }
+    },
+    "/models/analytics": {
+      "GET": {
+        "200": {
+          "description": "Successful analytics response with aggregations",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "analytics": [
+              {
+                "model_id": "fal-ai/flux-pro",
+                "category": "text-to-image",
+                "metrics": {
+                  "request_count": 12450,
+                  "total_cost": 685.25,
+                  "avg_cost_per_request": 0.055,
+                  "avg_latency_ms": 3500,
+                  "p50_latency_ms": 3200,
+                  "p95_latency_ms": 5800,
+                  "p99_latency_ms": 7200
+                },
+                "period": {
+                  "start": "2024-01-01",
+                  "end": "2024-12-31"
+                }
+              },
+              {
+                "model_id": "fal-ai/kling-video/v1/standard/text-to-video",
+                "category": "text-to-video",
+                "metrics": {
+                  "request_count": 3200,
+                  "total_cost": 6080.0,
+                  "avg_cost_per_request": 1.9,
+                  "avg_latency_ms": 45000,
+                  "p50_latency_ms": 42000,
+                  "p95_latency_ms": 68000,
+                  "p99_latency_ms": 85000
+                },
+                "period": {
+                  "start": "2024-01-01",
+                  "end": "2024-12-31"
+                }
+              }
+            ],
+            "summary": {
+              "total_requests": 98750,
+              "total_cost": 15420.75,
+              "unique_models": 243,
+              "date_range": {
+                "start": "2024-01-01",
+                "end": "2024-12-31"
+              }
+            }
+          }
+        },
+        "400": {
+          "description": "Invalid query parameters",
+          "body": {
+            "error": "Bad Request",
+            "message": "Invalid date format. Use ISO 8601 (YYYY-MM-DD).",
+            "status": 400
+          }
+        }
+      }
+    }
+  }
+}

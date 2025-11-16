@@ -1,0 +1,183 @@
+{
+  "version": "1.0.0",
+  "description": "Request examples for API Hub endpoints",
+  "endpoints": {
+    "/models": {
+      "GET": {
+        "description": "Fetch models from both COMET and FAL APIs",
+        "examples": [
+          {
+            "name": "Fetch Comet LLMs",
+            "description": "Get all available Comet language models",
+            "headers": {
+              "Authorization": "Bearer YOUR_COMET_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "queryParams": {},
+            "notes": [
+              "Returns 568 LLM models (GPT-4, Claude, Gemini, DeepSeek, Qwen, etc.)",
+              "Response format: CometModelsResponse with models array"
+            ]
+          },
+          {
+            "name": "Fetch FAL Creative Models",
+            "description": "Get all available FAL creative generation models with pagination",
+            "headers": {
+              "Authorization": "Key YOUR_FAL_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "queryParams": {
+              "page_size": 100,
+              "cursor": "optional_cursor_for_next_page"
+            },
+            "notes": [
+              "Returns 866 creative models across 9 pages (image-to-image, text-to-video, etc.)",
+              "Response format: FalModelsResponse with models array and next_cursor",
+              "Categories: 281 image-to-image, 127 image-to-video, 116 text-to-image, 92 text-to-video, 88 video-to-video, 33 text-to-audio, 30 vision, 20 image-to-3d, 19 text-to-speech, 17 training, 6 llm"
+            ]
+          }
+        ]
+      }
+    },
+    "/models/pricing": {
+      "GET": {
+        "description": "Get pricing information for all models",
+        "examples": [
+          {
+            "name": "Fetch Model Pricing",
+            "description": "Get comprehensive pricing data across both APIs",
+            "headers": {
+              "Authorization": "Bearer YOUR_COMET_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "queryParams": {},
+            "notes": [
+              "Returns unified pricing for 1,434 total models",
+              "Comet: Token-based pricing (input/output tokens)",
+              "FAL: Request-based pricing with usage tiers"
+            ]
+          }
+        ]
+      }
+    },
+    "/models/pricing/estimate": {
+      "POST": {
+        "description": "Estimate cost for model usage (FAL API only)",
+        "examples": [
+          {
+            "name": "Estimate Image Generation Cost",
+            "description": "Calculate cost for flux-pro image generation",
+            "headers": {
+              "Authorization": "Key YOUR_FAL_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "model_id": "fal-ai/flux-pro",
+              "parameters": {
+                "prompt": "A stunning landscape painting",
+                "image_size": "landscape_4_3",
+                "num_images": 1,
+                "enable_safety_checker": true
+              }
+            },
+            "notes": [
+              "Returns estimated cost in USD",
+              "Includes breakdown by parameter (image size, inference steps, etc.)"
+            ]
+          },
+          {
+            "name": "Estimate Video Generation Cost",
+            "description": "Calculate cost for kling-video generation",
+            "headers": {
+              "Authorization": "Key YOUR_FAL_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "model_id": "fal-ai/kling-video/v1/standard/text-to-video",
+              "parameters": {
+                "prompt": "A cat playing piano",
+                "duration": "5",
+                "aspect_ratio": "16:9"
+              }
+            },
+            "notes": [
+              "Video models have higher costs due to compute requirements",
+              "Duration and resolution significantly impact pricing"
+            ]
+          },
+          {
+            "name": "Estimate LLM Cost",
+            "description": "Calculate cost for LLM inference (Comet)",
+            "headers": {
+              "Authorization": "Bearer YOUR_COMET_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "model_id": "gpt-4-turbo",
+              "parameters": {
+                "input_tokens": 1000,
+                "output_tokens": 500
+              }
+            },
+            "notes": [
+              "Comet pricing based on token count",
+              "Different models have different per-token rates"
+            ]
+          }
+        ]
+      }
+    },
+    "/models/usage": {
+      "GET": {
+        "description": "Get usage statistics for FAL models",
+        "examples": [
+          {
+            "name": "Fetch Usage Records",
+            "description": "Get historical usage data with filtering",
+            "headers": {
+              "Authorization": "Key YOUR_FAL_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "queryParams": {
+              "start_date": "2024-01-01",
+              "end_date": "2024-12-31",
+              "model_id": "fal-ai/flux-pro",
+              "limit": 100
+            },
+            "notes": [
+              "Returns paginated usage records",
+              "Includes request count, total cost, timestamps",
+              "Can filter by date range, model, or user"
+            ]
+          }
+        ]
+      }
+    },
+    "/models/analytics": {
+      "GET": {
+        "description": "Get aggregated analytics for model usage",
+        "examples": [
+          {
+            "name": "Fetch Analytics Dashboard Data",
+            "description": "Get comprehensive analytics with aggregations",
+            "headers": {
+              "Authorization": "Key YOUR_FAL_API_KEY",
+              "Content-Type": "application/json"
+            },
+            "queryParams": {
+              "start_date": "2024-01-01",
+              "end_date": "2024-12-31",
+              "group_by": "model_id",
+              "metrics": "request_count,total_cost,avg_latency"
+            },
+            "notes": [
+              "Returns aggregated metrics by model, date, or category",
+              "Useful for cost optimization and usage patterns",
+              "Includes percentile latency data"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

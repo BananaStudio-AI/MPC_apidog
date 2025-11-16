@@ -1,0 +1,304 @@
+{
+  "version": "1.0.0",
+  "description": "UI metadata for Apidog automatic UI generation",
+  "project": {
+    "name": "BananaStudio API Hub",
+    "description": "Unified API gateway for COMET LLMs (568 models) and FAL Creative Generation (866 models)",
+    "version": "1.0.0",
+    "base_urls": {
+      "comet": "https://api.cometapi.com/v1",
+      "fal": "https://api.fal.ai/v1"
+    }
+  },
+  "endpoints": {
+    "/models": {
+      "display_name": "Get All Models",
+      "category": "Model Discovery",
+      "description": "Fetch complete model catalog from both COMET (568 LLMs) and FAL (866 creative models)",
+      "ui_hints": {
+        "show_api_selector": true,
+        "api_options": ["COMET_API", "FAL_API"],
+        "default_api": "COMET_API",
+        "response_type": "table",
+        "highlighted_fields": ["id", "name", "provider", "category", "pricing"]
+      },
+      "parameters": {
+        "page_size": {
+          "display_name": "Page Size",
+          "description": "Number of models per page (FAL only, default: 100)",
+          "ui_control": "number",
+          "default": 100,
+          "min": 1,
+          "max": 100
+        },
+        "cursor": {
+          "display_name": "Pagination Cursor",
+          "description": "Cursor for next page (FAL only)",
+          "ui_control": "text",
+          "placeholder": "Leave empty for first page"
+        }
+      },
+      "automation": {
+        "cache_duration": "1h",
+        "pagination_strategy": "cursor",
+        "retry_on_failure": true,
+        "max_retries": 3
+      }
+    },
+    "/models/pricing": {
+      "display_name": "Get Model Pricing",
+      "category": "Pricing & Costs",
+      "description": "Get comprehensive pricing data for all 1,434 models across both APIs",
+      "ui_hints": {
+        "response_type": "table",
+        "highlighted_fields": ["model_id", "input_price", "output_price", "currency"],
+        "enable_filtering": true,
+        "enable_sorting": true
+      },
+      "automation": {
+        "cache_duration": "24h",
+        "background_refresh": true
+      }
+    },
+    "/models/pricing/estimate": {
+      "display_name": "Estimate Model Cost",
+      "category": "Pricing & Costs",
+      "description": "Calculate estimated cost for model usage with specific parameters",
+      "ui_hints": {
+        "request_form": "advanced",
+        "show_cost_breakdown": true,
+        "response_type": "card"
+      },
+      "parameters": {
+        "model_id": {
+          "display_name": "Model ID",
+          "description": "Model identifier (e.g., fal-ai/flux-pro, gpt-4-turbo)",
+          "ui_control": "autocomplete",
+          "required": true,
+          "validation": {
+            "pattern": "^[a-z0-9-/]+$",
+            "example": "fal-ai/flux-pro"
+          },
+          "autocomplete_source": "/models"
+        },
+        "parameters": {
+          "display_name": "Model Parameters",
+          "description": "Model-specific parameters affecting cost",
+          "ui_control": "json_editor",
+          "schema_source": "/models/{model_id}/schema"
+        }
+      },
+      "automation": {
+        "validate_before_submit": true,
+        "show_cost_preview": true
+      }
+    },
+    "/models/usage": {
+      "display_name": "Get Usage Records",
+      "category": "Analytics & Monitoring",
+      "description": "Retrieve historical usage data with filtering (FAL models only)",
+      "ui_hints": {
+        "response_type": "table",
+        "enable_date_filter": true,
+        "enable_export": true,
+        "chart_types": ["line", "bar"]
+      },
+      "parameters": {
+        "start_date": {
+          "display_name": "Start Date",
+          "description": "Filter usage from this date (ISO 8601)",
+          "ui_control": "date_picker",
+          "validation": {
+            "format": "date",
+            "example": "2024-01-01"
+          }
+        },
+        "end_date": {
+          "display_name": "End Date",
+          "description": "Filter usage until this date (ISO 8601)",
+          "ui_control": "date_picker",
+          "validation": {
+            "format": "date",
+            "example": "2024-12-31"
+          }
+        },
+        "model_id": {
+          "display_name": "Model ID",
+          "description": "Filter by specific model",
+          "ui_control": "autocomplete",
+          "autocomplete_source": "/models?api=FAL_API"
+        },
+        "limit": {
+          "display_name": "Limit",
+          "description": "Maximum records to return",
+          "ui_control": "number",
+          "default": 100,
+          "min": 1,
+          "max": 1000
+        }
+      },
+      "automation": {
+        "cache_duration": "5m",
+        "pagination_strategy": "cursor"
+      }
+    },
+    "/models/analytics": {
+      "display_name": "Get Analytics Dashboard",
+      "category": "Analytics & Monitoring",
+      "description": "Get aggregated analytics with metrics and visualizations",
+      "ui_hints": {
+        "response_type": "dashboard",
+        "chart_types": ["line", "bar", "pie"],
+        "metrics_display": "cards",
+        "enable_export": true
+      },
+      "parameters": {
+        "start_date": {
+          "display_name": "Start Date",
+          "description": "Analytics period start (ISO 8601)",
+          "ui_control": "date_picker",
+          "validation": {
+            "format": "date",
+            "example": "2024-01-01"
+          }
+        },
+        "end_date": {
+          "display_name": "End Date",
+          "description": "Analytics period end (ISO 8601)",
+          "ui_control": "date_picker",
+          "validation": {
+            "format": "date",
+            "example": "2024-12-31"
+          }
+        },
+        "group_by": {
+          "display_name": "Group By",
+          "description": "Grouping dimension for aggregation",
+          "ui_control": "select",
+          "options": ["model_id", "category", "date", "user_id"],
+          "default": "model_id"
+        },
+        "metrics": {
+          "display_name": "Metrics",
+          "description": "Metrics to include (comma-separated)",
+          "ui_control": "multi_select",
+          "options": [
+            "request_count",
+            "total_cost",
+            "avg_cost_per_request",
+            "avg_latency",
+            "p50_latency",
+            "p95_latency",
+            "p99_latency"
+          ],
+          "default": ["request_count", "total_cost", "avg_latency"]
+        }
+      },
+      "automation": {
+        "cache_duration": "15m",
+        "background_refresh": true,
+        "visualization_preset": "cost_optimization_dashboard"
+      }
+    }
+  },
+  "global_settings": {
+    "authentication": {
+      "comet": {
+        "type": "bearer",
+        "header": "Authorization",
+        "format": "Bearer {token}",
+        "env_variable": "COMET_API_KEY"
+      },
+      "fal": {
+        "type": "api_key",
+        "header": "Authorization",
+        "format": "Key {token}",
+        "env_variable": "FAL_API_KEY"
+      }
+    },
+    "rate_limiting": {
+      "comet": {
+        "requests_per_minute": 60,
+        "requests_per_day": 10000
+      },
+      "fal": {
+        "requests_per_minute": 100,
+        "requests_per_day": 50000
+      }
+    },
+    "error_handling": {
+      "retry_on": [429, 500, 502, 503, 504],
+      "retry_delay_ms": 1000,
+      "max_retries": 3,
+      "exponential_backoff": true
+    },
+    "ui_theme": {
+      "primary_color": "#FFD700",
+      "secondary_color": "#FFA500",
+      "accent_color": "#FF6B35",
+      "folder_icons": {
+        "COMET_API": "🤖",
+        "FAL_API": "🎨",
+        "BananaStudio_Internal": "🍌",
+        "Utilities": "🔧"
+      }
+    }
+  },
+  "documentation": {
+    "getting_started": {
+      "title": "BananaStudio API Hub - Quick Start",
+      "steps": [
+        {
+          "title": "Authenticate",
+          "description": "Set up API keys for COMET and FAL APIs",
+          "code": "export COMET_API_KEY='your_comet_key'\nexport FAL_API_KEY='your_fal_key'"
+        },
+        {
+          "title": "Discover Models",
+          "description": "Fetch available models from both APIs",
+          "endpoint": "/models",
+          "example": "GET /models with Authorization: Bearer/Key header"
+        },
+        {
+          "title": "Estimate Costs",
+          "description": "Calculate costs before running inference",
+          "endpoint": "/models/pricing/estimate",
+          "example": "POST with model_id and parameters"
+        },
+        {
+          "title": "Monitor Usage",
+          "description": "Track usage and optimize costs",
+          "endpoint": "/models/analytics",
+          "example": "GET with date range filters"
+        }
+      ]
+    },
+    "model_categories": {
+      "comet": {
+        "total": 568,
+        "types": ["LLM", "Chat", "Vision"],
+        "providers": ["OpenAI", "Anthropic", "Google", "Meta", "Mistral", "DeepSeek", "Alibaba"]
+      },
+      "fal": {
+        "total": 866,
+        "categories": {
+          "image-to-image": 281,
+          "image-to-video": 127,
+          "text-to-image": 116,
+          "text-to-video": 92,
+          "video-to-video": 88,
+          "text-to-audio": 33,
+          "vision": 30,
+          "image-to-3d": 20,
+          "text-to-speech": 19,
+          "training": 17,
+          "llm": 6
+        }
+      }
+    },
+    "pricing_notes": {
+      "comet": "Token-based pricing (input/output tokens priced separately)",
+      "fal": "Request-based pricing with parameter multipliers (image size, video duration, etc.)"
+    }
+  }
+}
