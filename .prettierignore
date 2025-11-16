@@ -1,0 +1,10 @@
+node_modules/
+dist/
+build/
+apidog/generated/
+apis/api-hub-client/
+apis/client/
+*.log
+.env
+.env.*
+!.env.example
