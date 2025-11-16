@@ -1,101 +1,280 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Default module",
-    "description": "",
-    "version": "1.0.0",
-    "x-download-time": "2025-11-15T20:50:08.896Z"
+    "title": "BananaStudio API Hub",
+    "description": "Unified OpenAPI for Comet and FAL APIs.",
+    "version": "1.0.0"
   },
   "servers": [
-    {
-      "url": "https://api.cometapi.com/v1",
-      "description": "Comet API"
-    },
-    {
-      "url": "https://api.fal.ai/v1",
-      "description": "FAL Platform API"
-    }
+    { "url": "https://api.cometapi.com/v1", "description": "Comet API" },
+    { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" }
   ],
   "paths": {
-    "/models/pricing": {
-      "get": {
-        "summary": "GET Models Pricing",
-        "tags": [
-          "FAL_API"
-        ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
-          }
-        ]
-      }
-    },
     "/models": {
       "get": {
         "summary": "GET Model search",
-        "tags": [
-          "FAL_API",
-          "COMET_API"
-        ],
+        "tags": ["FAL_API", "COMET_API"],
         "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+          { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" },
+          { "url": "https://api.cometapi.com/v1", "description": "Comet API" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comet or FAL models",
+            "content": {
+              "application/json": {
+                "oneOf": [
+                  { "$ref": "#/components/schemas/CometModelsResponse" },
+                  { "$ref": "#/components/schemas/FalModelsResponse" }
+                ]
+              }
+            }
           }
+        },
+        "security": [
+          { "CometAuth": [] },
+          { "FalAuth": [] }
         ]
+      }
+    },
+    "/models/pricing": {
+      "get": {
+        "summary": "GET Models Pricing",
+        "tags": ["FAL_API"],
+        "servers": [
+          { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pricing info",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FalPricingResponse" }
+              }
+            }
+          }
+        },
+        "security": [ { "FalAuth": [] } ]
       }
     },
     "/models/pricing/estimate": {
       "post": {
         "summary": "POST Estimated Cost (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "tags": ["FAL_API"],
         "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+          { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FalEstimatedCostRequest" }
+            }
           }
-        ]
+        },
+        "responses": {
+          "200": {
+            "description": "Estimated cost",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FalEstimatedCostResponse" }
+              }
+            }
+          }
+        },
+        "security": [ { "FalAuth": [] } ]
       }
     },
     "/models/usage": {
       "get": {
         "summary": "GET Usage (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "tags": ["FAL_API"],
         "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+          { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage records",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FalUsageResponse" }
+              }
+            }
           }
-        ]
+        },
+        "security": [ { "FalAuth": [] } ]
       }
     },
     "/models/analytics": {
       "get": {
         "summary": "GET Analytics (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "tags": ["FAL_API"],
         "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+          { "url": "https://api.fal.ai/v1", "description": "FAL Platform API" }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics records",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FalAnalyticsResponse" }
+              }
+            }
           }
-        ]
+        },
+        "security": [ { "FalAuth": [] } ]
       }
     }
   },
-  "webhooks": {},
   "components": {
     "schemas": {
-      "$ref": "/components/schemas/index.json"
+      "CometModel": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "provider": { "type": "string" },
+          "category": { "type": "string" },
+          "description": { "type": "string" },
+          "raw": { "type": "object" }
+        },
+        "required": ["id", "name", "provider", "raw"]
+      },
+      "CometModelsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CometModel" }
+          }
+        },
+        "required": ["data"]
+      },
+      "FalModel": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "provider": { "type": "string" },
+          "category": { "type": "string" },
+          "description": { "type": "string" },
+          "raw": { "type": "object" }
+        },
+        "required": ["id", "name", "provider", "raw"]
+      },
+      "FalModelsResponse": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FalModel" }
+          }
+        },
+        "required": ["models"]
+      },
+      "FalPricingResponse": {
+        "type": "object",
+        "properties": {
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "endpoint_id": { "type": "string" },
+                "unit_price": { "type": "number" },
+                "unit": { "type": "string" },
+                "currency": { "type": "string" }
+              },
+              "required": ["endpoint_id", "unit_price", "unit", "currency"]
+            }
+          },
+          "has_more": { "type": "boolean" },
+          "next_cursor": { "type": ["string", "null"] }
+        },
+        "required": ["prices", "has_more", "next_cursor"]
+      },
+      "FalEstimatedCostRequest": {
+        "type": "object",
+        "properties": {
+          "model_id": { "type": "string" },
+          "input": { "type": "object" }
+        },
+        "required": ["model_id", "input"]
+      },
+      "FalEstimatedCostResponse": {
+        "type": "object",
+        "properties": {
+          "estimated_cost": { "type": "number" },
+          "currency": { "type": "string" },
+          "unit": { "type": "string" }
+        },
+        "required": ["estimated_cost", "currency", "unit"]
+      },
+      "FalUsageRecord": {
+        "type": "object",
+        "properties": {
+          "model_id": { "type": "string" },
+          "usage": { "type": "number" },
+          "unit": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "required": ["model_id", "usage", "unit", "timestamp"]
+      },
+      "FalUsageResponse": {
+        "type": "object",
+        "properties": {
+          "records": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FalUsageRecord" }
+          }
+        },
+        "required": ["records"]
+      },
+      "FalAnalyticsRecord": {
+        "type": "object",
+        "properties": {
+          "model_id": { "type": "string" },
+          "metric": { "type": "string" },
+          "value": { "type": "number" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        },
+        "required": ["model_id", "metric", "value", "timestamp"]
+      },
+      "FalAnalyticsResponse": {
+        "type": "object",
+        "properties": {
+          "analytics": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FalAnalyticsRecord" }
+          }
+        },
+        "required": ["analytics"]
+      },
+      "UnifiedModelRecord": {
+        "type": "object",
+        "properties": {
+          "source": { "type": "string", "enum": ["comet", "fal"] },
+          "id": { "type": "string" },
+          "provider": { "type": ["string", "null"] },
+          "category": { "type": ["string", "null"] },
+          "raw": { "type": "object" }
+        },
+        "required": ["source", "id", "raw"]
+      }
     },
     "securitySchemes": {
-      "$ref": "/components/securitySchemes/index.json"
+      "CometAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer {COMET_API_KEY}"
+      },
+      "FalAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Key {FAL_API_KEY}"
+      }
     }
   },
   "security": []
