@@ -23,7 +23,8 @@
     "sync:api-hub-client": "tsx scripts/example_sync_model_catalog.ts",
     "sync:model-registry": "tsx scripts/sync_model_registry.ts",
     "health:api-hub": "tsx scripts/healthcheck_api_hub.ts",
-    "push:apidog": "tsx scripts/push_to_apidog.ts"
+    "push:apidog": "tsx scripts/push_to_apidog.ts",
+    "validate:push": "tsx scripts/validate_push_readiness.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",
