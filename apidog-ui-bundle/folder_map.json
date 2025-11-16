@@ -1,0 +1,141 @@
+{
+  "version": "1.0.0",
+  "description": "Apidog UI folder structure mapping for BananaStudio API Hub",
+  "folders": {
+    "COMET_API": {
+      "id": "comet-api-root",
+      "name": "COMET_API",
+      "description": "Comet API - 568 LLM Models",
+      "icon": "🧠",
+      "subfolders": {
+        "Models": {
+          "id": "comet-models",
+          "name": "Models",
+          "description": "LLM model listing and management",
+          "endpoints": [
+            {
+              "path": "/models",
+              "method": "GET",
+              "operationId": "getModels",
+              "server": "https://api.cometapi.com/v1",
+              "tags": ["COMET_API"]
+            }
+          ]
+        }
+      }
+    },
+    "FAL_API": {
+      "id": "fal-api-root",
+      "name": "FAL_API",
+      "description": "FAL Platform - 866 Creative AI Models",
+      "icon": "🎨",
+      "subfolders": {
+        "Models": {
+          "id": "fal-models",
+          "name": "Models",
+          "description": "Creative model listing",
+          "endpoints": [
+            {
+              "path": "/models",
+              "method": "GET",
+              "operationId": "getModels",
+              "server": "https://api.fal.ai/v1",
+              "tags": ["FAL_API"]
+            }
+          ]
+        },
+        "Pricing": {
+          "id": "fal-pricing",
+          "name": "Pricing",
+          "description": "Model pricing and cost estimation",
+          "endpoints": [
+            {
+              "path": "/models/pricing",
+              "method": "GET",
+              "operationId": "getModelsPricing",
+              "tags": ["FAL_API"]
+            },
+            {
+              "path": "/models/pricing/estimate",
+              "method": "POST",
+              "operationId": "estimateModelsPricing",
+              "tags": ["FAL_API"]
+            }
+          ]
+        },
+        "Analytics": {
+          "id": "fal-analytics",
+          "name": "Analytics",
+          "description": "Usage statistics and analytics",
+          "endpoints": [
+            {
+              "path": "/models/usage",
+              "method": "GET",
+              "operationId": "getModelsUsage",
+              "tags": ["FAL_API"]
+            },
+            {
+              "path": "/models/analytics",
+              "method": "GET",
+              "operationId": "getModelsAnalytics",
+              "tags": ["FAL_API"]
+            }
+          ]
+        }
+      }
+    },,
+    "BananaStudio_Internal": {
+      "id": "bananastudio-internal",
+      "name": "BananaStudio Internal",
+      "description": "Internal services and utilities",
+      "icon": "🍌",
+      "subfolders": {
+        "Registry": {
+          "id": "registry-services",
+          "name": "Model Registry",
+          "description": "Unified model registry (1,434 models)",
+          "endpoints": []
+        }
+      }
+    },
+    "Utilities": {
+      "id": "utilities",
+      "name": "Utilities",
+      "description": "Helper endpoints and health checks",
+      "icon": "🔧",
+      "subfolders": {
+        "Health": {
+          "id": "health-checks",
+          "name": "Health Checks",
+          "description": "API health monitoring",
+          "endpoints": []
+        }
+      }
+    }
+  },
+  "tags_to_folders": {
+    "COMET_API": "COMET_API/Models",
+    "FAL_API": "FAL_API/Models",
+    "BananaStudio_Internal": "BananaStudio_Internal/Registry",
+    "Utilities": "Utilities/Health"
+  },
+  "creative_ops_template": {
+    "naming_conventions": {
+      "folders": "PascalCase with spaces",
+      "endpoints": "Descriptive action + resource",
+      "parameters": "snake_case",
+      "schemas": "PascalCase"
+    },
+    "organization": {
+      "by_provider": true,
+      "by_functionality": true,
+      "flatten_depth": 2
+    },
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-11-16",
+      "total_endpoints": 6,
+      "total_schemas": 11
+    }
+  }
+}
