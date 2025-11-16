@@ -1,15 +1,36 @@
 {
   "mcpServers": {
-    "BananaStudio API Hub": {
+    "API_HUB": {
       "command": "npx",
       "args": [
         "-y",
         "apidog-mcp-server@latest",
-        "--project-id=1128155"
+        "--project-id=${APIDOG_PROJECT_ID_API_HUB}"
       ],
       "env": {
-        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}",
-        "CURSOR_API_KEY": "${CURSOR_API_KEY}"
+        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}"
+      }
+    },
+    "COMET_API": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "apidog-mcp-server@latest",
+        "--project-id=${APIDOG_PROJECT_ID_COMET}"
+      ],
+      "env": {
+        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}"
+      }
+    },
+    "FAL_API": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "apidog-mcp-server@latest",
+        "--project-id=${APIDOG_PROJECT_ID_FAL}"
+      ],
+      "env": {
+        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}"
       }
     }
   }

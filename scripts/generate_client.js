@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
-const OAS_FILE = path.join(ROOT, 'openapi', 'oas_merged.json');
-const OUTPUT_DIR = path.join(ROOT, 'apis', 'client');
+const OAS_FILE = process.env.OAS_FILE || path.join(ROOT, 'openapi', 'oas_merged.json');
+const OUTPUT_DIR = process.env.OUTPUT_DIR || path.join(ROOT, 'apis', 'client');
 
 async function ensureDir(dir) {
   await fs.mkdir(dir, { recursive: true });
