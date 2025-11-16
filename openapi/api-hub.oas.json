@@ -16,7 +16,7 @@
   "tags": [
     { "name": "COMET_API", "description": "Comet API - LLM model listing" },
     { "name": "FAL_API", "description": "FAL Platform - creative model & pricing endpoints" },
-    { "name": "BananaStudio_Internal", "description": "Internal services (reserved)" },
+    { "name": "BananaStudio_Internal", "description": "Internal services (health, status)" },
     { "name": "Utilities", "description": "Utility endpoints (reserved)" }
   ],
   "paths": {
@@ -84,18 +84,16 @@
                         { "endpoint_id": "fal-ai/flux-pro/v1.1-ultra", "metadata": { "display_name": "FLUX1.1 [pro] ultra", "category": "text-to-image", "description": "Ultra high quality text-to-image generation", "status": "active", "tags": ["flux","image-generation"] } },
                         { "endpoint_id": "fal-ai/stable-diffusion-v3-medium", "metadata": { "display_name": "Stable Diffusion 3 Medium", "category": "text-to-image", "description": "Balanced quality and speed image generation", "status": "active", "tags": ["stable-diffusion"] } }
                       ],
-                      "has_more": true,
-                      "next_cursor": "Mg==",
-                      "total_count": 866
+                      "page": { "has_more": true, "next_cursor": "Mg==", "total_count": 866 }
                     }
                   }
                 }
               }
             }
           },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-          "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "unauthorized": { "value": { "error": { "message": "Unauthorized", "type": "authentication_error" } } } } } } },
+          "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "forbidden": { "value": { "error": { "message": "Forbidden", "type": "authorization_error" } } } } } } },
+          "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "notFound": { "value": { "error": { "message": "Resource not found", "type": "invalid_request_error" } } } } } } }
         },
         "security": [ { "FalAuth": [] } ],
         "x-code-samples": [
@@ -116,8 +114,8 @@
         ],
         "responses": {
           "200": { "description": "Pricing list", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalPricingResponse" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-          "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "unauthorized": { "value": { "error": { "message": "Unauthorized", "type": "authentication_error" } } } } } } },
+          "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "forbidden": { "value": { "error": { "message": "Forbidden", "type": "authorization_error" } } } } } } }
         },
         "security": [ { "FalAuth": [] } ]
       }
@@ -145,8 +143,8 @@
         },
         "responses": {
           "200": { "description": "Cost estimate", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalEstimateResponse" } } } },
-          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "badRequest": { "value": { "error": { "message": "Invalid estimate payload", "type": "invalid_request_error" } } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "unauthorized": { "value": { "error": { "message": "Unauthorized", "type": "authentication_error" } } } } } } }
         },
         "security": [ { "FalAuth": [] } ]
       }
@@ -166,7 +164,7 @@
         ],
         "responses": {
           "200": { "description": "Usage stats", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalUsageResponse" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "unauthorized": { "value": { "error": { "message": "Unauthorized", "type": "authentication_error" } } } } } } }
         },
         "security": [ { "FalAuth": [] } ]
       }
@@ -185,8 +183,22 @@
         ],
         "responses": {
           "200": { "description": "Analytics data", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalAnalyticsResponse" } } } },
-          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "unauthorized": { "value": { "error": { "message": "Unauthorized", "type": "authentication_error" } } } } } } }
         },
+            "/internal/ping": {
+              "get": {
+                "summary": "Internal Health Ping",
+                "description": "Returns service health status and current server timestamp.",
+                "operationId": "internalPing",
+                "tags": ["BananaStudio_Internal"],
+                "responses": {
+                  "200": {
+                    "description": "Service is healthy",
+                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PingResponse" }, "examples": { "ok": { "value": { "status": "ok", "timestamp": "2025-11-16T12:00:00Z" } } } } }
+                  }
+                }
+              }
+            },
         "security": [ { "FalAuth": [] } ]
       }
     }
@@ -237,7 +249,8 @@
           "models": { "type": "array", "items": { "$ref": "#/components/schemas/FalModel" } },
           "has_more": { "type": "boolean", "nullable": true },
           "next_cursor": { "type": "string", "nullable": true },
-          "total_count": { "type": "integer", "nullable": true }
+          "total_count": { "type": "integer", "nullable": true },
+          "page": { "$ref": "#/components/schemas/CursorPage", "nullable": true }
         }
       },
       "FalPricingResponse": {
@@ -258,9 +271,27 @@
             }
           },
           "has_more": { "type": "boolean", "nullable": true },
-          "next_cursor": { "type": "string", "nullable": true }
+          "next_cursor": { "type": "string", "nullable": true },
+          "page": { "$ref": "#/components/schemas/CursorPage", "nullable": true }
         }
       },
+            "CursorPage": {
+              "type": "object",
+              "required": [],
+              "properties": {
+                "has_more": { "type": "boolean", "nullable": true },
+                "next_cursor": { "type": "string", "nullable": true },
+                "total_count": { "type": "integer", "nullable": true }
+              }
+            },
+            "PingResponse": {
+              "type": "object",
+              "required": ["status","timestamp"],
+              "properties": {
+                "status": { "type": "string" },
+                "timestamp": { "type": "string" }
+              }
+            },
       "FalEstimateRequest": {
         "type": "object",
         "required": ["estimate_type","endpoints"],
