@@ -24,6 +24,8 @@ Complete guide to working with Apidog MCP and OpenAPI specs.
 **Command**: `npm run apidog:pull`  
 **Script**: `apidog/scripts/pull_endpoints_oas.js`
 
+**Safety**: The script checks for uncommitted changes before proceeding. Use `--allow-uncommitted` to bypass.
+
 **Steps:**
 1. Connects to Apidog MCP server
 2. Discovers `read_project_oas_*` tool
@@ -45,6 +47,8 @@ cp apidog/generated/oas_raw.json openapi/oas_raw.json
 
 **Command**: `npm run apidog:push:oas -- --force`  
 **Script**: `apidog/scripts/push_endpoints_oas.js`
+
+**Safety**: The script checks for uncommitted changes before proceeding. Use `--allow-uncommitted` to bypass.
 
 **Steps:**
 1. Reads local endpoint specs from `apidog/api_specs/`

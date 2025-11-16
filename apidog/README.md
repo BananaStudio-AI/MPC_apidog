@@ -72,6 +72,12 @@ APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/pull_endpoints.js
 npm run apidog:pull
 ```
 
+**Safety Check**: Pull and push scripts now check for uncommitted changes before proceeding. This prevents accidental data loss by ensuring your work is saved before pulling new data. To bypass this check (not recommended), use the `--allow-uncommitted` flag:
+
+```bash
+npm run apidog:pull -- --allow-uncommitted
+```
+
 - The script discovers the correct MCP tool automatically. If needed, set:
   - `APIDOG_LIST_TOOL` to the exact tool name for listing endpoints.
   - If your server exposes only OAS readers (e.g. `read_project_oas_*`), the script will extract endpoints from OpenAPI.
@@ -161,6 +167,12 @@ APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js
 APIDOG_ACCESS_TOKEN="<your_token_here>" node apidog/scripts/push_endpoints.js --force
 # or via npm
 npm run apidog:push -- --force
+```
+
+**Safety Check**: All push and pull scripts verify that you don't have uncommitted changes. If you need to proceed anyway (e.g., during testing), add `--allow-uncommitted`:
+
+```bash
+npm run apidog:push -- --force --allow-uncommitted
 ```
 
 Windows PowerShell:
