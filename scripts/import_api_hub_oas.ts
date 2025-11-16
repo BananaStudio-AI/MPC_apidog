@@ -9,6 +9,10 @@
  */
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const APIDOG_BASE_URL = process.env.APIDOG_API_BASE_URL || 'https://api.apidog.com';
 const APIDOG_IMPORT_PATH = '/api/v1/projects/{projectId}/import-data';
@@ -56,13 +60,15 @@ async function main() {
   console.log(`🚀 Importing to Apidog project ${PROJECT_ID}...`);
   console.log(`   Endpoint: ${endpoint}`);
   
-  const payload: ImportPayload = {
-    input: {
-      type: 'openapi',
-      data: oasContent
-    },
-    options: {
-      mode: 'merge' // Use 'overwrite' if you want to replace everything
+  // Parse OAS to send as proper JSON object
+  const oasObject = JSON.parse(oasContent);
+  
+  const payload = {
+    importType: 'openapi',
+    importFormat: 'openapi3',
+    dataSchema: oasObject,
+    syncSetting: {
+      syncMethod: 'increment' // or 'all' for full overwrite
     }
   };
   

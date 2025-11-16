@@ -32,6 +32,27 @@
     - For vectorisation and search workflows.
     - For pricing, analytics, and reporting logic.
     - As a canonical source for model metadata in BananaStudio and other agents.
+
+## Registry Service
+
+- **For BananaStudio services and agents:**
+  - Import the registry service module to access the unified model catalog:
+    ```typescript
+    import { loadRegistry, findModelsBySource, searchModelsByIdOrName } from '../apis/model_registry/service';
+    
+    // Load all models
+    const allModels = await loadRegistry();
+    
+    // Filter by source
+    const cometModels = await findModelsBySource('comet');
+    const falModels = await findModelsBySource('fal');
+    
+    // Search by ID or name
+    const results = await searchModelsByIdOrName('gpt');
+    ```
+  - The service module caches the registry in memory after the first load for performance.
+  - If `data/model_registry.json` is missing, functions will throw a clear error prompting you to run `npm run sync:model-registry`.
+
 # API Hub (BananaStudio)
 
 This is the unified API Hub combining Comet and FAL model endpoints.
