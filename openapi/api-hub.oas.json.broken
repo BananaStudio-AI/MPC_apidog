@@ -412,6 +412,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -513,6 +520,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing/estimate' \\\n--header 'Authorization: Key YOUR_FAL_KEY' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"estimate_type\": \"unit_price\",\n  \"endpoints\": {\n    \"fal-ai/flux/dev\": {\n      \"unit_quantity\": 100\n    }\n  }\n}'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -630,6 +644,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/usage?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -732,6 +753,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/analytics?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     }
@@ -812,7 +840,11 @@
             }
           }
         },
-        "description": "Response format for Comet API model listing"
+        "description": "Response format for Comet API model listing",
+        "x-apidog-orders": [
+          "object",
+          "data"
+        ]
       },
       "FalModel": {
         "type": "object",
@@ -875,7 +907,11 @@
             }
           }
         },
-        "description": "FAL Platform creative model definition"
+        "description": "FAL Platform creative model definition",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "metadata"
+        ]
       },
       "FalModelsResponse": {
         "type": "object",
@@ -904,7 +940,13 @@
             "example": 866
           }
         },
-        "description": "Response format for FAL Platform model listing"
+        "description": "Response format for FAL Platform model listing",
+        "x-apidog-orders": [
+          "models",
+          "has_more",
+          "next_cursor",
+          "total_count"
+        ]
       },
       "FalPricingResponse": {
         "type": "object",
@@ -954,7 +996,12 @@
             "nullable": true
           }
         },
-        "description": "FAL Platform pricing information"
+        "description": "FAL Platform pricing information",
+        "x-apidog-orders": [
+          "prices",
+          "has_more",
+          "next_cursor"
+        ]
       },
       "FalEstimateRequest": {
         "type": "object",
@@ -990,7 +1037,11 @@
             }
           }
         },
-        "description": "FAL Platform cost estimation request"
+        "description": "FAL Platform cost estimation request",
+        "x-apidog-orders": [
+          "estimate_type",
+          "endpoints"
+        ]
       },
       "FalEstimateResponse": {
         "type": "object",
@@ -1022,7 +1073,13 @@
             }
           }
         },
-        "description": "FAL Platform cost estimation response"
+        "description": "FAL Platform cost estimation response",
+        "x-apidog-orders": [
+          "estimate_type",
+          "total_cost",
+          "currency",
+          "breakdown"
+        ]
       },
       "FalUsageRecord": {
         "type": "object",
@@ -1057,7 +1114,14 @@
             "example": "USD"
           }
         },
-        "description": "FAL Platform usage record for a specific date"
+        "description": "FAL Platform usage record for a specific date",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "date",
+          "requests",
+          "total_cost",
+          "currency"
+        ]
       },
       "FalUsageResponse": {
         "type": "object",
@@ -1081,7 +1145,12 @@
             "description": "Total cost across all records"
           }
         },
-        "description": "FAL Platform usage statistics response"
+        "description": "FAL Platform usage statistics response",
+        "x-apidog-orders": [
+          "usage",
+          "total_requests",
+          "total_cost"
+        ]
       },
       "FalAnalyticsRecord": {
         "type": "object",
@@ -1125,7 +1194,16 @@
             "description": "99th percentile duration"
           }
         },
-        "description": "FAL Platform analytics record for a model"
+        "description": "FAL Platform analytics record for a model",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "total_requests",
+          "success_rate",
+          "avg_duration_ms",
+          "p50_duration_ms",
+          "p95_duration_ms",
+          "p99_duration_ms"
+        ]
       },
       "FalAnalyticsResponse": {
         "type": "object",
@@ -1153,7 +1231,11 @@
             }
           }
         },
-        "description": "FAL Platform analytics dashboard response"
+        "description": "FAL Platform analytics dashboard response",
+        "x-apidog-orders": [
+          "analytics",
+          "period"
+        ]
       },
       "UnifiedModelRecord": {
         "type": "object",
@@ -1210,7 +1292,16 @@
             "description": "Additional provider-specific metadata"
           }
         },
-        "description": "Unified model record for cross-provider aggregation"
+        "description": "Unified model record for cross-provider aggregation",
+        "x-apidog-orders": [
+          "provider",
+          "model_id",
+          "display_name",
+          "category",
+          "description",
+          "pricing",
+          "metadata"
+        ]
       },
       "ErrorResponse": {
         "type": "object",
@@ -1244,7 +1335,10 @@
             }
           }
         },
-        "description": "Standard error response format"
+        "description": "Standard error response format",
+        "x-apidog-orders": [
+          "error"
+        ]
       }
     },
     "responses": {

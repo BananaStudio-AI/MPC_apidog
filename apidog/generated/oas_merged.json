@@ -1,4 +1,6 @@
 {
+  "fetchedAt": "2025-11-16T11:09:00.855Z",
+  "projectId": "1128155",
   "openapi": "3.1.0",
   "info": {
     "title": "Default module",
@@ -6,86 +8,180 @@
     "version": "1.0.0",
     "x-download-time": "2025-11-15T20:50:08.896Z"
   },
-  "servers": [
-    {
-      "url": "https://api.cometapi.com/v1",
-      "description": "Comet API"
-    },
-    {
-      "url": "https://api.fal.ai/v1",
-      "description": "FAL Platform API"
-    }
-  ],
   "paths": {
-    "/models/pricing": {
+    "/": {
+      "$ref": "/paths/_.json",
       "get": {
         "summary": "GET Models Pricing",
-        "tags": [
-          "FAL_API"
-        ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+        "description": "",
+        "deprecated": false,
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "next_cursor": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "has_more": {
+                  "type": "boolean"
+                },
+                "prices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "endpoint_id": {
+                        "type": "string"
+                      },
+                      "unit_price": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                      }
+                    },
+                    "required": [
+                      "endpoint_id",
+                      "unit_price",
+                      "unit",
+                      "currency"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "next_cursor",
+                "has_more",
+                "prices"
+              ]
+            }
           }
-        ]
+        },
+        "security": []
       }
     },
     "/models": {
+      "$ref": "/paths/_models.json",
       "get": {
         "summary": "GET Model search",
-        "tags": [
-          "FAL_API",
-          "COMET_API"
-        ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+        "description": "",
+        "deprecated": false,
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "models": [
+                {
+                  "endpoint_id": "fal-ai/flux/dev",
+                  "metadata": {
+                    "display_name": "FLUX.1 [dev]",
+                    "category": "text-to-image",
+                    "description": "Fast text-to-image generation",
+                    "status": "active",
+                    "tags": [
+                      "fast",
+                      "pro"
+                    ],
+                    "updated_at": "2025-01-15T12:00:00Z",
+                    "is_favorited": false,
+                    "thumbnail_url": "https://fal.media/files/example.jpg",
+                    "model_url": "https://fal.run/fal-ai/flux/dev",
+                    "date": "2024-08-01T00:00:00Z",
+                    "highlighted": true,
+                    "pinned": false
+                  }
+                }
+              ],
+              "next_cursor": null,
+              "has_more": false
+            }
           }
-        ]
-      }
-    },
-    "/models/pricing/estimate": {
-      "post": {
-        "summary": "POST Estimated Cost (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
-          }
-        ]
-      }
-    },
-    "/models/usage": {
-      "get": {
-        "summary": "GET Usage (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
-          }
-        ]
+        },
+        "security": []
       }
     },
     "/models/analytics": {
       "get": {
         "summary": "GET Analytics (FAL)",
+        "description": "Retrieve analytics for FAL models.",
+        "deprecated": false,
         "tags": [
           "FAL_API"
         ],
-        "servers": [
-          {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+        "parameters": [],
+        "responses": {},
+        "security": []
+      }
+    },
+    "/models/pricing": {
+      "get": {
+        "summary": "GET Models Pricing (FAL)",
+        "description": "Retrieve pricing for FAL models.",
+        "deprecated": false,
+        "tags": [
+          "FAL_API"
+        ],
+        "parameters": [],
+        "responses": {},
+        "security": []
+      }
+    },
+    "/models/usage": {
+      "get": {
+        "summary": "GET Usage (FAL)",
+        "description": "Retrieve usage metrics for FAL.",
+        "deprecated": false,
+        "tags": [
+          "FAL_API"
+        ],
+        "parameters": [],
+        "responses": {},
+        "security": []
+      }
+    },
+    "/models/pricing/estimate": {
+      "post": {
+        "summary": "POST Estimated Cost (FAL)",
+        "description": "Estimate cost for a FAL model invocation.",
+        "deprecated": false,
+        "tags": [
+          "FAL_API"
+        ],
+        "parameters": [],
+        "responses": {},
+        "security": []
+      }
+    },
+    "/v1/models/pricing/estimate": {
+      "post": {
+        "summary": "Estimate Model Pricing",
+        "description": "",
+        "deprecated": false,
+        "tags": [
+          "pricing"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "estimate_type": "unit_price",
+              "total_cost": 2.5,
+              "currency": "USD"
+            }
           }
-        ]
+        },
+        "security": []
       }
     }
   },
@@ -98,5 +194,6 @@
       "$ref": "/components/securitySchemes/index.json"
     }
   },
+  "servers": [],
   "security": []
 }
