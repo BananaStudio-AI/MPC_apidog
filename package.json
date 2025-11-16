@@ -1,7 +1,35 @@
 {
   "name": "bananastudio-api-hub",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "AI-driven creative pipeline integrating Comet API (568 LLMs) and FAL Platform (866 creative models) with unified OpenAPI specification, TypeScript client, and MCP server integration",
   "type": "module",
+  "keywords": [
+    "ai",
+    "api",
+    "llm",
+    "creative-ai",
+    "comet",
+    "fal",
+    "mcp",
+    "model-context-protocol",
+    "apidog",
+    "openapi",
+    "typescript"
+  ],
+  "author": "BananaStudio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BananaStudio/MPC_apidog.git"
+  },
+  "bugs": {
+    "url": "https://github.com/BananaStudio/MPC_apidog/issues"
+  },
+  "homepage": "https://github.com/BananaStudio/MPC_apidog#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "apidog:list-projects": "node apidog/scripts/list_projects.js",
     "apidog:auth-check": "node apidog/scripts/auth_check.js",
@@ -24,7 +52,14 @@
     "sync:api-hub-client": "tsx scripts/example_sync_model_catalog.ts",
     "sync:model-registry": "tsx scripts/sync_model_registry.ts",
     "health:api-hub": "tsx scripts/healthcheck_api_hub.ts",
-    "push:apidog": "tsx scripts/push_to_apidog.ts"
+    "push:apidog": "tsx scripts/push_to_apidog.ts",
+    "lint": "eslint . --ext .ts,.js,.mjs",
+    "lint:fix": "eslint . --ext .ts,.js,.mjs --fix",
+    "format": "prettier --write \"**/*.{ts,js,mjs,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,mjs,json,md}\"",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run lint && npm run format:check",
+    "prepare": "npm run check"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",
@@ -34,10 +69,14 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "apidog-mcp-server": "^0.0.16",
     "dotenv": "^17.2.3",
+    "eslint": "^8.57.0",
     "openapi-typescript": "^7.10.1",
     "openapi-typescript-codegen": "^0.29.0",
+    "prettier": "^3.1.0",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   }
