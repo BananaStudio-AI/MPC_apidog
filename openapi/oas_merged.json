@@ -1,222 +1,97 @@
 {
-  "ingestedAt": "2025-11-15T20:30:00Z",
-  "source": "manual-user-provided",
   "openapi": "3.0.1",
   "info": {
-    "title": "BananaStudio API Hub",
-    "description": "",
-    "version": "1.0.0"
+    "title": "FAL AI Models API",
+    "description": "Unified API for accessing FAL AI model catalog and pricing",
+    "version": "1.0.1"
   },
-  "tags": [],
+  "servers": [
+    {
+      "url": "https://api.fal.ai",
+      "description": "FAL AI Production API"
+    }
+  ],
+  "tags": [
+    {"name": "models"},
+    {"name": "pricing"}
+  ],
   "paths": {
-    "/": {
-      "get": {
-        "summary": "GET Models Pricing",
-        "description": "",
-        "deprecated": false,
-        "tags": [],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "next_cursor": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "has_more": {
-                  "type": "boolean"
-                },
-                "prices": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "endpoint_id": {
-                        "type": "string"
-                      },
-                      "unit_price": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "unit": {
-                        "type": "string"
-                      },
-                      "currency": {
-                        "type": "string",
-                        "minLength": 3,
-                        "maxLength": 3
-                      }
-                    },
-                    "required": [
-                      "endpoint_id",
-                      "unit_price",
-                      "unit",
-                      "currency"
-                    ]
-                  }
-                }
-              },
-              "required": [
-                "next_cursor",
-                "has_more",
-                "prices"
-              ]
-            }
-          }
-        },
-        "security": []
-      }
-    },
     "/models": {
       "get": {
-        "summary": "GET Model search",
-        "description": "",
-        "deprecated": false,
-        "tags": [],
-        "parameters": [],
+        "summary": "List Available Models",
+        "operationId": "listModels",
+        "tags": ["models"],
         "responses": {
           "200": {
-            "example": {
-              "models": [
-                {
-                  "endpoint_id": "fal-ai/flux/dev",
-                  "metadata": {
-                    "display_name": "FLUX.1 [dev]",
-                    "category": "text-to-image",
-                    "description": "Fast text-to-image generation",
-                    "status": "active",
-                    "tags": [
-                      "fast",
-                      "pro"
-                    ],
-                    "updated_at": "2025-01-15T12:00:00Z",
-                    "is_favorited": false,
-                    "thumbnail_url": "https://fal.media/files/example.jpg",
-                    "model_url": "https://fal.run/fal-ai/flux/dev",
-                    "date": "2024-08-01T00:00:00Z",
-                    "highlighted": true,
-                    "pinned": false
-                  }
-                }
-              ],
-              "next_cursor": null,
-              "has_more": false
-            }
-          }
-        },
-        "security": []
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "CometModelsResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "object": {
-                  "type": "string"
-                },
-                "created": {
-                  "type": "integer"
-                },
-                "owned_by": {
-                  "type": "string"
-                },
-                "permission": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string"
-                      },
-                      "object": {
-                        "type": "string"
-                      },
-                      "created": {
-                        "type": "integer"
-                      },
-                      "allow_create_engine": {
-                        "type": "boolean"
-                      },
-                      "allow_sampling": {
-                        "type": "boolean"
-                      },
-                      "allow_logprobs": {
-                        "type": "boolean"
-                      },
-                      "allow_search_indices": {
-                        "type": "boolean"
-                      },
-                      "allow_view": {
-                        "type": "boolean"
-                      },
-                      "allow_fine_tuning": {
-                        "type": "boolean"
-                      },
-                      "organization": {
-                        "type": "string"
-                      },
-                      "group": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "is_blocking": {
-                        "type": "boolean"
+            "description": "List of models",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "endpoint_id": {"type": "string"},
+                          "metadata": {
+                            "type": "object",
+                            "properties": {
+                              "display_name": {"type": "string"},
+                              "category": {"type": "string"},
+                              "description": {"type": "string"},
+                              "status": {"type": "string"},
+                              "tags": {"type": "array", "items": {"type": "string"}}
+                            }
+                          }
+                        }
                       }
-                    }
+                    },
+                    "next_cursor": {"type": "string", "nullable": true},
+                    "has_more": {"type": "boolean"}
                   }
-                },
-                "root": {
-                  "type": "string"
-                },
-                "parent": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "supported_endpoint_types": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "context_window": {
-                  "type": "number"
-                },
-                "input_price": {
-                  "type": "number"
-                },
-                "output_price": {
-                  "type": "number"
-                },
-                "description": {
-                  "type": "string"
                 }
               }
             }
-          },
-          "success": {
-            "type": "boolean"
           }
         }
       }
     },
-    "securitySchemes": {}
-  },
-  "servers": [
-    {
-      "url": "https://api.fal.ai/v1/models/pricing",
-      "description": "Development"
+    "/models/pricing": {
+      "get": {
+        "summary": "Get Model Pricing",
+        "operationId": "getModelsPricing",
+        "tags": ["pricing"],
+        "responses": {
+          "200": {
+            "description": "Pricing data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "next_cursor": {"type": "string", "nullable": true},
+                    "has_more": {"type": "boolean"},
+                    "prices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "endpoint_id": {"type": "string"},
+                          "unit_price": {"type": "number"},
+                          "unit": {"type": "string"},
+                          "currency": {"type": "string"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
-  ]
+  }
 }

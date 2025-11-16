@@ -13,12 +13,21 @@
     "apidog:pull:agents": "node apidog/scripts/pull_endpoints_agents.js",
     "apidog:push:agents": "node apidog/scripts/push_endpoints_agents.js",
     "apidog:validate": "node apidog/scripts/validate_specs.js",
-    "oas:sync": "node scripts/copy_oas_to_tracked.js"
+    "oas:sync": "node scripts/copy_oas_to_tracked.js",
+    "generate:client": "node scripts/generate_client.js",
+    "sync:model-catalog": "tsx scripts/sync_model_catalog.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",
     "@openai/agents": "^0.3.2",
     "node-fetch": "^3.3.2",
     "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "openapi-typescript": "^7.10.1",
+    "openapi-typescript-codegen": "^0.29.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
   }
 }

@@ -45,7 +45,14 @@ async function connectMCP() {
   });
 
   const client = new Client({ name: 'BananaStudio Pull OAS Script', version: '1.0.0' });
-  await client.connect(transport);
+  
+  // Add timeout to connection
+  const connectPromise = client.connect(transport);
+  const timeoutPromise = new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('MCP connection timeout after 20s')), 20000)
+  );
+  
+  await Promise.race([connectPromise, timeoutPromise]);
   return client;
 }
 
@@ -130,6 +137,7 @@ async function main() {
   const client = await connectMCP();
   
   try {
+    console.log('Listing available tools...');
     const tools = await client.listTools();
     const readTool = tools.tools.find(t => t.name.includes('read_project_oas') && !t.name.includes('ref'));
     
@@ -159,7 +167,11 @@ async function main() {
     await saveEndpoints(endpoints);
     
     console.log(`\n✅ Pull complete! Endpoint specs saved to ${SPEC_DIR}`);
+    console.log(`Run 'npm run oas:sync' to copy to openapi/ directory`);
     
+  } catch (err) {
+    console.error('\n❌ Error during pull:', err.message);
+    throw err;
   } finally {
     await client.close();
   }
