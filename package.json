@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
+    "apidog-mcp-server": "^0.0.16",
     "openapi-typescript": "^7.10.1",
     "openapi-typescript-codegen": "^0.29.0",
     "tsx": "^4.20.6",

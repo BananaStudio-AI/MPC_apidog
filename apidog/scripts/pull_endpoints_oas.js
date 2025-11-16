@@ -12,10 +12,40 @@ import path from 'node:path';
 const ROOT = path.resolve(process.cwd());
 const SPEC_DIR = path.join(ROOT, 'apidog', 'api_specs');
 const OAS_FILE = path.join(ROOT, 'apidog', 'generated', 'oas_raw.json');
-const PROJECT_ID = process.env.APIDOG_PROJECT_ID || '1128155';
-const TOKEN = process.env.APIDOG_ACCESS_TOKEN;
+
+function parseDotEnv(content) {
+  const env = {};
+  for (const rawLine of content.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq === -1) continue;
+    const key = line.slice(0, eq).trim();
+    let val = line.slice(eq + 1).trim();
+    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+      val = val.slice(1, -1);
+    }
+    env[key] = val;
+  }
+  return env;
+}
+
+async function maybeLoadDotEnv() {
+  if (process.env.APIDOG_ACCESS_TOKEN && process.env.APIDOG_PROJECT_ID) return;
+  try {
+    const dotEnvPath = path.join(ROOT, '.env');
+    const txt = await fs.readFile(dotEnvPath, 'utf8');
+    const envMap = parseDotEnv(txt);
+    for (const [k, v] of Object.entries(envMap)) {
+      if (process.env[k] == null) process.env[k] = v;
+    }
+  } catch {
+    // Silently ignore
+  }
+}
 
 function assertEnv() {
+  const TOKEN = process.env.APIDOG_ACCESS_TOKEN;
   if (!TOKEN) {
     console.error('Missing APIDOG_ACCESS_TOKEN in environment. Set it in .env');
     process.exit(1);
@@ -33,10 +63,12 @@ async function connectMCP() {
   }
 
   const isWindows = platform() === 'win32';
-  const command = isWindows ? 'cmd' : 'npx';
+  const command = isWindows ? 'cmd' : 'node';
+  const PROJECT_ID = process.env.APIDOG_PROJECT_ID || '1128155';
+  const TOKEN = process.env.APIDOG_ACCESS_TOKEN;
   const args = isWindows
-    ? ['/c', 'npx', '-y', 'apidog-mcp-server@latest', `--project-id=${PROJECT_ID}`]
-    : ['-y', 'apidog-mcp-server@latest', `--project-id=${PROJECT_ID}`];
+    ? ['/c', 'node', 'node_modules/apidog-mcp-server/lib/index.js', `--project-id=${PROJECT_ID}`]
+    : ['node_modules/apidog-mcp-server/lib/index.js', `--project-id=${PROJECT_ID}`];
 
   const transport = new StdioClientTransport({
     command,
@@ -120,6 +152,7 @@ async function saveEndpoints(endpoints) {
 async function saveRawOAS(oas) {
   await ensureDir(path.dirname(OAS_FILE));
   
+  const PROJECT_ID = process.env.APIDOG_PROJECT_ID || '1128155';
   const wrapped = {
     fetchedAt: new Date().toISOString(),
     projectId: PROJECT_ID,
@@ -131,6 +164,7 @@ async function saveRawOAS(oas) {
 }
 
 async function main() {
+  await maybeLoadDotEnv();
   assertEnv();
   
   console.log('Connecting to MCP server...');

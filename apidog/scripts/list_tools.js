@@ -66,10 +66,10 @@ async function main() {
   }
 
   const isWin = platform() === 'win32';
-  const command = isWin ? 'cmd' : 'npx';
+  const command = isWin ? 'cmd' : 'node';
   const args = isWin
-    ? ['/c', 'npx', '-y', 'apidog-mcp-server@latest', `--project-id=${projectId}`]
-    : ['-y', 'apidog-mcp-server@latest', `--project-id=${projectId}`];
+    ? ['/c', 'node', 'node_modules/apidog-mcp-server/lib/index.js', `--project-id=${projectId}`]
+    : ['node_modules/apidog-mcp-server/lib/index.js', `--project-id=${projectId}`];
 
   const transport = new StdioClientTransport({
     command,

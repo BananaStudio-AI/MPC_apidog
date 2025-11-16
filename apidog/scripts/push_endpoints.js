@@ -36,10 +36,10 @@ async function connectMCP() {
   }
 
   const isWindows = platform() === 'win32';
-  const command = isWindows ? 'cmd' : 'npx';
+  const command = isWindows ? 'cmd' : 'node';
   const args = isWindows
-    ? ['/c', 'npx', '-y', 'apidog-mcp-server@latest', `--project-id=${PROJECT_ID}`]
-    : ['-y', 'apidog-mcp-server@latest', `--project-id=${PROJECT_ID}`];
+    ? ['/c', 'node', 'node_modules/apidog-mcp-server/lib/index.js', `--project-id=${PROJECT_ID}`]
+    : ['node_modules/apidog-mcp-server/lib/index.js', `--project-id=${PROJECT_ID}`];
 
   const transport = new StdioClientTransport({
     command,
