@@ -26,6 +26,11 @@ export interface PricingEstimateResponse {
   currency: string;
 }
 
+export interface PricingEstimateRequest {
+  estimate_type: string;
+  endpoints: Record<string, { unit_quantity: number }>;
+}
+
 export interface ModelSearchResponse {
   models: Array<{
     endpoint_id: string;
@@ -54,7 +59,7 @@ export class ApiClient {
   private headers: Record<string, string>;
 
   constructor(config: ApiClientConfig = {}) {
-    this.baseUrl = config.baseUrl || 'https://api.fal.ai';
+    this.baseUrl = config.baseUrl || 'https://api.fal.ai/v1/models/pricing';
     this.apiKey = config.apiKey;
     this.headers = {
       'Content-Type': 'application/json',
@@ -114,7 +119,7 @@ export class ApiClient {
    * POST Estimate Model Pricing
    * Returns aggregated pricing estimate for requested endpoints
    */
-  async estimateModelsPricing(body: any): Promise<PricingEstimateResponse> {
+  async estimateModelsPricing(body: PricingEstimateRequest): Promise<PricingEstimateResponse> {
     return this.request<PricingEstimateResponse>('POST', '/v1/models/pricing/estimate', { body });
   }
 }

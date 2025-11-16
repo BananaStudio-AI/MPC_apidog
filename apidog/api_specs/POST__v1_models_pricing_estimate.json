@@ -1,0 +1,28 @@
+{
+  "id": "POST_/v1/models/pricing/estimate",
+  "method": "POST",
+  "path": "/v1/models/pricing/estimate",
+  "summary": "Estimate Model Pricing",
+  "tags": ["pricing"],
+  "authHeader": "Authorization",
+  "authExample": "Key {{FAL_API_KEY}}",
+  "request": {
+    "contentType": "application/json",
+    "example": {
+      "estimate_type": "unit_price",
+      "endpoints": {
+        "fal-ai/flux/dev": { "unit_quantity": 50 },
+        "fal-ai/flux-pro": { "unit_quantity": 25 }
+      }
+    }
+  },
+  "response": {
+    "200": {
+      "example": {
+        "estimate_type": "unit_price",
+        "total_cost": 2.5,
+        "currency": "USD"
+      }
+    }
+  }
+}

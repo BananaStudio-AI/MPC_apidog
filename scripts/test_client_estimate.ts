@@ -29,7 +29,7 @@ async function main() {
   loadDotEnv();
   const client = new ApiClient({ apiKey: process.env.FAL_API_KEY });
 
-  const payload = {
+  const payload: import('../apis/client/index.js').PricingEstimateRequest = {
     estimate_type: 'unit_price',
     endpoints: {
       'fal-ai/flux/dev': { unit_quantity: 1 },
