@@ -159,29 +159,24 @@ function loadBundle(): ApidogBundle {
 async function pushToApidog(bundle: ApidogBundle) {
   console.log('🚀 Pushing to Apidog...\n');
   
-  const endpoint = `${APIDOG_API_BASE}/projects/${APIDOG_PROJECT_ID}/import-openapi`;
+  const endpoint = `${APIDOG_API_BASE}/projects/${APIDOG_PROJECT_ID}/import-openapi?locale=en-US`;
   
+  // CORRECT format: input must be a stringified JSON, not an object
   const payload = {
-    input: {
-      data: bundle.oas,
-      // Include folder mapping and examples in options
-      folderStructure: bundle.folderMap,
-      requestExamples: bundle.requestExamples,
-      responseExamples: bundle.responseExamples,
-      uiMetadata: bundle.uiMetadata
-    },
+    input: JSON.stringify(bundle.oas),
     options: {
-      overwriteExistingEndpoints: true,
-      createFolders: true,
-      importExamples: true,
-      generateMockServers: true,
-      enableAutoDocumentation: true
+      targetEndpointFolderId: 0,
+      targetSchemaFolderId: 0,
+      endpointOverwriteBehavior: 'OVERWRITE_EXISTING',
+      schemaOverwriteBehavior: 'OVERWRITE_EXISTING',
+      updateFolderOfChangedEndpoint: true,
+      prependBasePath: false
     }
   };
   
   console.log(`📡 Endpoint: ${endpoint}`);
   console.log(`📦 Payload size: ${(JSON.stringify(payload).length / 1024).toFixed(2)} KB`);
-  console.log(`🔐 Authentication: ${APIDOG_ACCESS_TOKEN.slice(0, 10)}...`);
+  console.log(`🔐 Authentication: ${APIDOG_ACCESS_TOKEN?.slice(0, 10)}...`);
   console.log();
   
   try {

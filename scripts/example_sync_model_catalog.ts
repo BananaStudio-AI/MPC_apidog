@@ -2,28 +2,30 @@
 /** Example: Sync models from Comet and FAL and normalize into a unified model catalog. */
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
-import { ApiClient as ApiHubClient, ModelSearchResponse, ModelsPricingResponse, PricingEstimateRequest } from '../apis/api-hub-client/index.js';
+import { CometApiService, FalApiService, OpenAPI } from '../apis/api-hub-client/index.js';
 
 const OUTPUT = path.join(process.cwd(), 'openapi', 'model_catalog.json');
 
 async function fetchComet() {
-  const client = new ApiHubClient({ baseUrl: 'https://api.cometapi.com/v1', apiKey: process.env.COMET_API_KEY });
+  OpenAPI.BASE = 'https://api.cometapi.com/v1';
+  OpenAPI.TOKEN = process.env.COMET_API_KEY;
   try {
-    const res = await client.getModelsSearch();
-    return (res as any).models || (res as any).data || [];
+    const res = await CometApiService.listCometModels();
+    return res.data || [];
   } catch (e) {
-    console.error('Failed to fetch Comet models:', e?.message || e);
+    console.error('Failed to fetch Comet models:', (e as Error)?.message || e);
     return [];
   }
 }
 
 async function fetchFal() {
-  const client = new ApiHubClient({ baseUrl: 'https://api.fal.ai/v1', apiKey: process.env.FAL_API_KEY });
+  OpenAPI.BASE = 'https://api.fal.ai/v1';
+  OpenAPI.TOKEN = process.env.FAL_API_KEY;
   try {
-    const res = await client.getModelsSearch();
-    return (res as any).models || [];
+    const res = await FalApiService.listFalModels();
+    return res.models || [];
   } catch (e) {
-    console.error('Failed to fetch FAL models:', e?.message || e);
+    console.error('Failed to fetch FAL models:', (e as Error)?.message || e);
     return [];
   }
 }

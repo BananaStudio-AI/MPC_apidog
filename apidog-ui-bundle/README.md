@@ -6,44 +6,61 @@ Complete bundle for importing **BananaStudio API Hub** into Apidog with full UI 
 
 | File | Purpose | Size |
 |------|---------|------|
-| `oas.json` | Complete OpenAPI 3.1.0 spec with inline schemas (no external $refs) | ~14 KB |
-| `folder_map.json` | Folder structure mapping for Apidog UI organization | ~3 KB |
-| `request_examples.json` | Request examples for all endpoints (6 operations) | ~4 KB |
-| `response_examples.json` | Response examples with success/error cases | ~8 KB |
-| `ui_metadata.json` | UI hints, automation settings, documentation | ~8 KB |
+| `oas.json` | **Complete OpenAPI 3.1.0 spec with Apidog extensions** | ~33 KB |
+| `folder_map.json` | Folder structure mapping reference | ~4 KB |
+| `request_examples.json` | Request examples (legacy support) | ~6 KB |
+| `response_examples.json` | Response examples (legacy support) | ~9 KB |
+| `ui_metadata.json` | UI hints and automation settings | ~9 KB |
 
-**Total Bundle Size:** ~37 KB
+**Total Bundle Size:** ~61 KB
+
+**Note:** The main OAS file (`oas.json`) now includes all necessary Apidog extensions (`x-apidog-*`) for proper folder organization, tag mapping, and UI configuration. The supplementary files are maintained for reference but the OAS is self-contained.
 
 ## 🎯 What This Bundle Does
 
-1. **Complete API Spec**: All 6 endpoints with inline schemas (no external references)
-2. **Folder Organization**: 4 top-level folders (COMET_API, FAL_API, BananaStudio_Internal, Utilities)
-3. **Request Examples**: Valid request bodies and query parameters for all operations
-4. **Response Examples**: Success (200) and error responses (400/401/404) for all endpoints
-5. **UI Automation**: Metadata for automatic Apidog UI generation (forms, tables, dashboards)
+1. **Complete API Spec**: All 5 endpoints with proper Apidog extensions and folder organization
+2. **Folder Organization**: Automatically creates hierarchical folders using `x-apidog-folder` tags:
+   - **Comet API** → Comet Models (1 endpoint)
+   - **FAL Platform** → Models, Pricing, Analytics (4 endpoints organized in subfolders)
+   - **BananaStudio Internal** → (Reserved for future expansion)
+3. **Rich Examples**: Multiple request/response examples with proper descriptions
+4. **Enhanced Schemas**: 12 detailed schemas with proper descriptions and validation
+5. **Security Schemes**: Proper Bearer + API Key authentication with instructions
+6. **Server Configuration**: Multi-server support with clear descriptions
 
 ## 📊 API Coverage
 
-### Endpoints (6 total)
-- `GET /models` - Fetch all models (COMET: 568 LLMs, FAL: 866 creative)
-- `GET /models/pricing` - Get pricing for 1,434 models
-- `POST /models/pricing/estimate` - Estimate cost with parameters
-- `GET /models/usage` - Historical usage records (FAL only)
-- `GET /models/analytics` - Aggregated analytics dashboard
+### Endpoints (5 total)
+- `GET /models` - List models from Comet (568 LLMs) or FAL (866 creative models)
+- `GET /models/pricing` - Get FAL model pricing information
+- `POST /models/pricing/estimate` - Estimate costs for FAL model usage
+- `GET /models/usage` - Historical usage statistics (FAL only)
+- `GET /models/analytics` - Performance analytics and metrics (FAL only)
 
-### Schemas (11 inline)
-- `CometModel`, `CometModelsResponse`
-- `FalModel`, `FalModelsResponse`
-- `FalPricingResponse`
-- `FalEstimatedCostRequest`, `FalEstimatedCostResponse`
-- `FalUsageRecord`, `FalUsageResponse`
-- `FalAnalyticsRecord`, `FalAnalyticsResponse`
-- `UnifiedModelRecord`
-- `ErrorResponse`
+### Schemas (12 total)
+- `CometModel`, `CometModelsResponse` - Comet API models
+- `FalModel`, `FalModelsResponse` - FAL Platform models
+- `FalPricingResponse` - Pricing data structures
+- `FalEstimateRequest`, `FalEstimateResponse` - Cost estimation
+- `FalUsageRecord`, `FalUsageResponse` - Usage tracking
+- `FalAnalyticsRecord`, `FalAnalyticsResponse` - Analytics data
+- `ErrorResponse` - Unified error format
 
 ### Security
-- **COMET_API**: Bearer token authentication
-- **FAL_API**: Key authentication
+- **Comet API**: Bearer token authentication (`Authorization: Bearer sk-xxx`)
+- **FAL API**: API Key authentication (`Authorization: Key fal-xxx`)
+
+## 🏗️ Apidog Structure Best Practices
+
+This OAS follows Apidog's recommended structure:
+
+1. **Tags with Folder Mapping**: Each tag uses `x-apidog-folder` to specify UI placement
+2. **Proper Ordering**: Uses `x-apidog-orders` for consistent field ordering
+3. **Rich Examples**: Multiple named examples per endpoint with clear summaries
+4. **Code Samples**: Ready-to-use cURL examples with `x-code-samples`
+5. **Schema Validation**: Detailed property descriptions, enums, and constraints
+6. **Server Overrides**: Endpoint-level server specification for multi-API support
+7. **Security Mapping**: Proper security scheme references per endpoint
 
 ## 🚀 Usage
 
@@ -75,26 +92,29 @@ tsx scripts/push_to_apidog.ts
 ## 📁 Folder Structure in Apidog
 
 ```
-📦 BananaStudio API Hub (1128155)
-├── 🤖 COMET_API
-│   └── Models
-│       └── GET /models (Comet LLMs)
-├── 🎨 FAL_API
-│   ├── Models
-│   │   └── GET /models (FAL Creative)
-│   ├── Pricing
-│   │   ├── GET /models/pricing
-│   │   └── POST /models/pricing/estimate
-│   └── Analytics
-│       ├── GET /models/usage
-│       └── GET /models/analytics
-├── 🍌 BananaStudio_Internal
-│   └── Registry
-│       └── (Future: Internal registry endpoints)
-└── 🔧 Utilities
-    └── Health
-        └── (Future: Health check endpoints)
+📦 BananaStudio API Hub (Project 1128155)
+├── 🧠 Comet API
+│   └── Comet Models
+│       └── GET /models (List LLM models - 568 total)
+│
+├── 🎨 FAL Platform
+│   ├── FAL Models
+│   │   └── GET /models (List creative models - 866 total)
+│   ├── FAL Pricing
+│   │   ├── GET /models/pricing (Get pricing info)
+│   │   └── POST /models/pricing/estimate (Estimate costs)
+│   └── FAL Analytics
+│       ├── GET /models/usage (Usage statistics)
+│       └── GET /models/analytics (Performance metrics)
+│
+└── 🍌 BananaStudio Internal
+    └── (Reserved for internal services)
 ```
+
+**Folder Organization Method:**
+- Uses `x-apidog-folder` extension in tag definitions
+- Automatically creates hierarchical folder structure
+- Tags map to specific folders via naming convention
 
 ## 🔍 Bundle Validation
 

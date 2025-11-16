@@ -1,102 +1,1231 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Default module",
-    "description": "",
-    "version": "1.0.0",
-    "x-download-time": "2025-11-15T20:50:08.896Z"
+    "title": "BananaStudio API Hub",
+    "description": "Unified API Hub integrating Comet API (568 LLMs) and FAL Platform (866 creative models) with 1,434 total models for AI-powered creative workflows",
+    "version": "2.0.0",
+    "contact": {
+      "name": "BananaStudio API Team",
+      "url": "https://bananastudio.ai",
+      "email": "support@bananastudio.ai"
+    },
+    "x-logo": {
+      "url": "https://assets.apidog.com/app/project-icon/custom/20250904/a26c0ab6-5c12-4516-b21d-805e7588bbbe.png"
+    }
   },
   "servers": [
     {
       "url": "https://api.cometapi.com/v1",
-      "description": "Comet API"
+      "description": "Comet API - LLM Gateway (568 models)",
+      "x-apidog-server-id": "comet-production"
     },
     {
       "url": "https://api.fal.ai/v1",
-      "description": "FAL Platform API"
+      "description": "FAL Platform - Creative AI (866 models)",
+      "x-apidog-server-id": "fal-production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "COMET_API",
+      "description": "Comet API - 568 LLM models including GPT-4, Claude, Gemini, DeepSeek, Llama",
+      "x-apidog-folder": "Comet API"
+    },
+    {
+      "name": "FAL_API",
+      "description": "FAL Platform - 866 creative AI models for image, video, audio generation",
+      "x-apidog-folder": "FAL Platform"
+    },
+    {
+      "name": "BananaStudio_Internal",
+      "description": "Internal services and model registry",
+      "x-apidog-folder": "BananaStudio Internal"
+    },
+    {
+      "name": "Utilities",
+      "description": "Utility endpoints and helpers",
+      "x-apidog-folder": "Utilities"
     }
   ],
   "paths": {
-    "/models/pricing": {
+    "/comet/models": {
       "get": {
-        "summary": "GET Models Pricing",
-        "tags": [
-          "FAL_API"
-        ],
+        "summary": "List Comet LLM Models",
+        "description": "Retrieve list of 568 available LLM models from Comet API gateway including GPT-4, Claude, Gemini, DeepSeek, Llama, and other language models",
+        "operationId": "listCometModels",
+        "tags": ["COMET_API"],
         "servers": [
           {
-            "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+            "url": "https://api.cometapi.com/v1",
+            "description": "Comet API"
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved Comet LLM model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CometModelsResponse"
+                },
+                "examples": {
+                  "cometModels": {
+                    "summary": "Comet API - LLM Models",
+                    "value": {
+                      "object": "list",
+                      "data": [
+                        {
+                          "id": "gpt-4o",
+                          "object": "model",
+                          "created": 1626777600,
+                          "owned_by": "openai",
+                          "supported_endpoint_types": ["chat", "completion"]
+                        },
+                        {
+                          "id": "claude-3-5-sonnet-20241022",
+                          "object": "model",
+                          "created": 1729641600,
+                          "owned_by": "anthropic",
+                          "supported_endpoint_types": ["chat"]
+                        },
+                        {
+                          "id": "gemini-2.0-flash-exp",
+                          "object": "model",
+                          "created": 1730000000,
+                          "owned_by": "google",
+                          "supported_endpoint_types": ["chat", "completion"]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "x-apidog-orders": ["200", "400", "401", "404"]
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "CometBearer": []
+          }
+        ],
+        "x-apidog-orders": ["summary", "description", "parameters", "requestBody", "responses"],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.cometapi.com/v1/comet/models' \\\n--header 'Authorization: Bearer YOUR_COMET_KEY'"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "JavaScript (fetch)",
+            "source": "fetch('https://api.cometapi.com/v1/comet/models', {\n  headers: {\n    'Authorization': 'Bearer YOUR_COMET_KEY'\n  }\n}).then(res => res.json()).then(console.log);"
           }
         ]
       }
     },
-    "/models": {
+    "/fal/models": {
       "get": {
-        "summary": "GET Model search",
-        "tags": [
-          "FAL_API",
-          "COMET_API"
-        ],
+        "summary": "List FAL Creative Models",
+        "description": "Retrieve list of 866 available creative AI models from FAL Platform for image generation (FLUX, Stable Diffusion), video generation, audio synthesis, and more",
+        "operationId": "listFalModels",
+        "tags": ["FAL_API"],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+            "description": "FAL Platform"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for next page",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Mg=="
+            },
+            "x-apidog-ignore": false
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of models per page (default: 100, max: 500)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100,
+              "example": 50
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter by model category",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "text-to-image",
+                "image-to-image",
+                "text-to-video",
+                "image-to-video",
+                "video-to-video",
+                "text-to-audio",
+                "text-to-speech",
+                "image-to-3d",
+                "llm",
+                "vision"
+              ],
+              "example": "text-to-image"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved FAL creative model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalModelsResponse"
+                },
+                "examples": {
+                  "falModels": {
+                    "summary": "FAL Platform - Creative Models",
+                    "value": {
+                      "models": [
+                        {
+                          "endpoint_id": "fal-ai/flux-pro/v1.1-ultra",
+                          "metadata": {
+                            "display_name": "FLUX1.1 [pro] ultra",
+                            "category": "text-to-image",
+                            "description": "Ultra high quality text-to-image generation",
+                            "status": "active",
+                            "tags": ["flux", "image-generation", "high-quality"]
+                          }
+                        },
+                        {
+                          "endpoint_id": "fal-ai/stable-diffusion-v3-medium",
+                          "metadata": {
+                            "display_name": "Stable Diffusion 3 Medium",
+                            "category": "text-to-image",
+                            "description": "Balanced quality and speed image generation",
+                            "status": "active",
+                            "tags": ["stable-diffusion", "image-generation"]
+                          }
+                        },
+                        {
+                          "endpoint_id": "fal-ai/minimax/video-01",
+                          "metadata": {
+                            "display_name": "MiniMax Video-01",
+                            "category": "text-to-video",
+                            "description": "High-quality video generation from text prompts",
+                            "status": "active",
+                            "tags": ["video-generation", "minimax"]
+                          }
+                        }
+                      ],
+                      "has_more": true,
+                      "next_cursor": "Mg==",
+                      "total_count": 866
+                    }
+                  }
+                }
+              }
+            },
+            "x-apidog-orders": ["200", "400", "401", "404"]
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "FalApiKey": []
+          }
+        ],
+        "x-apidog-orders": ["summary", "description", "parameters", "requestBody", "responses"],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.fal.ai/v1/fal/models?limit=50&category=text-to-image' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "JavaScript (fetch)",
+            "source": "fetch('https://api.fal.ai/v1/fal/models?limit=50', {\n  headers: {\n    'Authorization': 'Key YOUR_FAL_KEY'\n  }\n}).then(res => res.json()).then(console.log);"
           }
         ]
       }
     },
-    "/models/pricing/estimate": {
+    "/fal/models/pricing": {
+      "get": {
+        "summary": "Get FAL Model Pricing",
+        "description": "Retrieve pricing information for all FAL Platform models including unit prices and billing units",
+        "operationId": "getFalModelPricing",
+        "tags": ["FAL_API"],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for retrieving next page of pricing data",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of pricing records to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved pricing information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalPricingResponse"
+                },
+                "examples": {
+                  "pricingExample": {
+                    "summary": "Sample pricing data",
+                    "value": {
+                      "prices": [
+                        {
+                          "endpoint_id": "fal-ai/flux/dev",
+                          "unit_price": 0.025,
+                          "unit": "image",
+                          "currency": "USD"
+                        },
+                        {
+                          "endpoint_id": "fal-ai/flux-pro",
+                          "unit_price": 0.05,
+                          "unit": "image",
+                          "currency": "USD"
+                        }
+                      ],
+                      "has_more": false,
+                      "next_cursor": null
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalApiKey": []
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
+          }
+        ]
+      }
+    },
+    "/fal/models/pricing/estimate": {
       "post": {
-        "summary": "POST Estimated Cost (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "summary": "Estimate FAL Model Cost",
+        "description": "Calculate estimated cost for FAL Platform model usage based on expected quantity. Useful for budgeting and cost optimization.",
+        "operationId": "estimateFalModelCost",
+        "tags": ["FAL_API"],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+            "description": "FAL Platform"
+          }
+        ],
+        "requestBody": {
+          "description": "Cost estimation request with model endpoints and quantities",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FalEstimateRequest"
+              },
+              "examples": {
+                "singleModel": {
+                  "summary": "Single model estimation",
+                  "value": {
+                    "estimate_type": "unit_price",
+                    "endpoints": {
+                      "fal-ai/flux/dev": {
+                        "unit_quantity": 100
+                      }
+                    }
+                  }
+                },
+                "multipleModels": {
+                  "summary": "Multiple models estimation",
+                  "value": {
+                    "estimate_type": "unit_price",
+                    "endpoints": {
+                      "fal-ai/flux/dev": {
+                        "unit_quantity": 50
+                      },
+                      "fal-ai/flux-pro": {
+                        "unit_quantity": 25
+                      },
+                      "fal-ai/stable-diffusion-v3": {
+                        "unit_quantity": 100
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully calculated cost estimate",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalEstimateResponse"
+                },
+                "examples": {
+                  "estimateResult": {
+                    "summary": "Cost estimate result",
+                    "value": {
+                      "estimate_type": "unit_price",
+                      "total_cost": 3.75,
+                      "currency": "USD",
+                      "breakdown": {
+                        "fal-ai/flux/dev": 2.5,
+                        "fal-ai/flux-pro": 1.25
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalApiKey": []
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing/estimate' \\\n--header 'Authorization: Key YOUR_FAL_KEY' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"estimate_type\": \"unit_price\",\n  \"endpoints\": {\n    \"fal-ai/flux/dev\": {\n      \"unit_quantity\": 100\n    }\n  }\n}'"
           }
         ]
       }
     },
-    "/models/usage": {
+    "/fal/models/usage": {
       "get": {
-        "summary": "GET Usage (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "summary": "Get FAL Usage Statistics",
+        "description": "Retrieve historical usage statistics for FAL Platform models including request counts and costs",
+        "operationId": "getFalModelUsage",
+        "tags": ["FAL_API"],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+            "description": "FAL Platform"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for usage period (ISO 8601 format: YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-11-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for usage period (ISO 8601 format: YYYY-MM-DD)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-11-16"
+            }
+          },
+          {
+            "name": "endpoint_id",
+            "in": "query",
+            "description": "Filter by specific model endpoint",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "fal-ai/flux/dev"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of usage records",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved usage statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalUsageResponse"
+                },
+                "examples": {
+                  "usageExample": {
+                    "summary": "Usage statistics",
+                    "value": {
+                      "usage": [
+                        {
+                          "endpoint_id": "fal-ai/flux/dev",
+                          "date": "2025-11-15",
+                          "requests": 150,
+                          "total_cost": 3.75,
+                          "currency": "USD"
+                        },
+                        {
+                          "endpoint_id": "fal-ai/flux-pro",
+                          "date": "2025-11-15",
+                          "requests": 75,
+                          "total_cost": 3.75,
+                          "currency": "USD"
+                        }
+                      ],
+                      "total_requests": 225,
+                      "total_cost": 7.5
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalApiKey": []
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.fal.ai/v1/fal/models/usage?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
         ]
       }
     },
-    "/models/analytics": {
+    "/fal/models/analytics": {
       "get": {
-        "summary": "GET Analytics (FAL)",
-        "tags": [
-          "FAL_API"
-        ],
+        "summary": "Get FAL Analytics Dashboard",
+        "description": "Retrieve aggregated analytics including performance metrics, success rates, and trends for FAL Platform models",
+        "operationId": "getFalModelAnalytics",
+        "tags": ["FAL_API"],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
-            "description": "FAL Platform API"
+            "description": "FAL Platform"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Analytics period start date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-11-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Analytics period end date",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2025-11-16"
+            }
+          },
+          {
+            "name": "metrics",
+            "in": "query",
+            "description": "Comma-separated list of metrics to include",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "success_rate,avg_duration_ms,total_requests"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved analytics data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalAnalyticsResponse"
+                },
+                "examples": {
+                  "analyticsExample": {
+                    "summary": "Analytics dashboard",
+                    "value": {
+                      "analytics": [
+                        {
+                          "endpoint_id": "fal-ai/flux/dev",
+                          "total_requests": 1000,
+                          "success_rate": 0.98,
+                          "avg_duration_ms": 2500,
+                          "p50_duration_ms": 2200,
+                          "p95_duration_ms": 3800,
+                          "p99_duration_ms": 5000
+                        }
+                      ],
+                      "period": {
+                        "start": "2025-11-01",
+                        "end": "2025-11-16"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalApiKey": []
+          }
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.fal.ai/v1/fal/models/analytics?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
         ]
       }
     }
   },
-  "webhooks": {},
   "components": {
     "schemas": {
-      "$ref": "/components/schemas/index.json"
+      "CometModel": {
+        "type": "object",
+        "required": ["id", "object", "owned_by"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique model identifier",
+            "example": "gpt-4o"
+          },
+          "object": {
+            "type": "string",
+            "description": "Object type",
+            "example": "model",
+            "enum": ["model"]
+          },
+          "created": {
+            "type": "integer",
+            "description": "Unix timestamp of model creation",
+            "example": 1626777600
+          },
+          "owned_by": {
+            "type": "string",
+            "description": "Organization that owns the model",
+            "example": "openai"
+          },
+          "supported_endpoint_types": {
+            "type": "array",
+            "description": "Types of endpoints this model supports",
+            "items": {
+              "type": "string",
+              "enum": ["chat", "completion", "embedding", "moderation"]
+            }
+          }
+        },
+        "x-apidog-orders": ["id", "object", "created", "owned_by", "supported_endpoint_types"]
+      },
+      "CometModelsResponse": {
+        "type": "object",
+        "required": ["object", "data"],
+        "properties": {
+          "object": {
+            "type": "string",
+            "example": "list",
+            "enum": ["list"]
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CometModel"
+            }
+          }
+        },
+        "description": "Response format for Comet API model listing"
+      },
+      "FalModel": {
+        "type": "object",
+        "required": ["endpoint_id"],
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "description": "Unique endpoint identifier",
+            "example": "fal-ai/flux-pro/v1.1-ultra"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "display_name": {
+                "type": "string",
+                "description": "Human-readable model name",
+                "example": "FLUX1.1 [pro] ultra"
+              },
+              "category": {
+                "type": "string",
+                "description": "Model category/type",
+                "enum": [
+                  "image-to-image",
+                  "image-to-video",
+                  "text-to-image",
+                  "text-to-video",
+                  "video-to-video",
+                  "text-to-audio",
+                  "vision",
+                  "llm",
+                  "image-to-3d",
+                  "text-to-speech"
+                ],
+                "example": "text-to-image"
+              },
+              "description": {
+                "type": "string",
+                "description": "Model description"
+              },
+              "status": {
+                "type": "string",
+                "description": "Model availability status",
+                "enum": ["active", "deprecated", "beta", "experimental"],
+                "example": "active"
+              },
+              "tags": {
+                "type": "array",
+                "description": "Associated tags",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "FAL Platform creative model definition"
+      },
+      "FalModelsResponse": {
+        "type": "object",
+        "required": ["models"],
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalModel"
+            }
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "Whether more models are available"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cursor for next page"
+          },
+          "total_count": {
+            "type": "integer",
+            "description": "Total number of models available",
+            "example": 866
+          }
+        },
+        "description": "Response format for FAL Platform model listing"
+      },
+      "FalPricingResponse": {
+        "type": "object",
+        "required": ["prices"],
+        "properties": {
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["endpoint_id", "unit_price", "unit", "currency"],
+              "properties": {
+                "endpoint_id": {
+                  "type": "string",
+                  "example": "fal-ai/flux/dev"
+                },
+                "unit_price": {
+                  "type": "number",
+                  "format": "decimal",
+                  "description": "Price per unit",
+                  "example": 0.025
+                },
+                "unit": {
+                  "type": "string",
+                  "description": "Billing unit",
+                  "example": "image"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code",
+                  "example": "USD"
+                }
+              }
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "description": "FAL Platform pricing information"
+      },
+      "FalEstimateRequest": {
+        "type": "object",
+        "required": ["estimate_type", "endpoints"],
+        "properties": {
+          "estimate_type": {
+            "type": "string",
+            "description": "Type of cost estimation",
+            "enum": ["unit_price"],
+            "example": "unit_price"
+          },
+          "endpoints": {
+            "type": "object",
+            "description": "Map of endpoint IDs to quantities",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["unit_quantity"],
+              "properties": {
+                "unit_quantity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "Number of units to estimate",
+                  "example": 100
+                }
+              }
+            }
+          }
+        },
+        "description": "FAL Platform cost estimation request"
+      },
+      "FalEstimateResponse": {
+        "type": "object",
+        "required": ["estimate_type", "total_cost", "currency"],
+        "properties": {
+          "estimate_type": {
+            "type": "string",
+            "example": "unit_price"
+          },
+          "total_cost": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total estimated cost",
+            "example": 2.5
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          },
+          "breakdown": {
+            "type": "object",
+            "description": "Cost breakdown by endpoint",
+            "additionalProperties": {
+              "type": "number"
+            }
+          }
+        },
+        "description": "FAL Platform cost estimation response"
+      },
+      "FalUsageRecord": {
+        "type": "object",
+        "required": ["endpoint_id", "date", "requests"],
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "example": "fal-ai/flux/dev"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2025-11-15"
+          },
+          "requests": {
+            "type": "integer",
+            "description": "Number of requests",
+            "example": 150
+          },
+          "total_cost": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total cost for the period",
+            "example": 3.75
+          },
+          "currency": {
+            "type": "string",
+            "example": "USD"
+          }
+        },
+        "description": "FAL Platform usage record for a specific date"
+      },
+      "FalUsageResponse": {
+        "type": "object",
+        "required": ["usage"],
+        "properties": {
+          "usage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalUsageRecord"
+            }
+          },
+          "total_requests": {
+            "type": "integer",
+            "description": "Total requests across all records"
+          },
+          "total_cost": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Total cost across all records"
+          }
+        },
+        "description": "FAL Platform usage statistics response"
+      },
+      "FalAnalyticsRecord": {
+        "type": "object",
+        "required": ["endpoint_id"],
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "example": "fal-ai/flux/dev"
+          },
+          "total_requests": {
+            "type": "integer",
+            "description": "Total number of requests",
+            "example": 1000
+          },
+          "success_rate": {
+            "type": "number",
+            "format": "decimal",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Success rate (0-1)",
+            "example": 0.98
+          },
+          "avg_duration_ms": {
+            "type": "number",
+            "format": "decimal",
+            "description": "Average request duration in milliseconds",
+            "example": 2500
+          },
+          "p50_duration_ms": {
+            "type": "number",
+            "description": "50th percentile duration"
+          },
+          "p95_duration_ms": {
+            "type": "number",
+            "description": "95th percentile duration"
+          },
+          "p99_duration_ms": {
+            "type": "number",
+            "description": "99th percentile duration"
+          }
+        },
+        "description": "FAL Platform analytics record for a model"
+      },
+      "FalAnalyticsResponse": {
+        "type": "object",
+        "required": ["analytics"],
+        "properties": {
+          "analytics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalAnalyticsRecord"
+            }
+          },
+          "period": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "string",
+                "format": "date"
+              },
+              "end": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "description": "FAL Platform analytics dashboard response"
+      },
+      "UnifiedModelRecord": {
+        "type": "object",
+        "required": ["provider", "model_id"],
+        "properties": {
+          "provider": {
+            "type": "string",
+            "description": "Model provider",
+            "enum": ["comet", "fal"],
+            "example": "fal"
+          },
+          "model_id": {
+            "type": "string",
+            "description": "Unique model identifier",
+            "example": "fal-ai/flux-pro"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable name",
+            "example": "FLUX Pro"
+          },
+          "category": {
+            "type": "string",
+            "description": "Model category",
+            "example": "text-to-image"
+          },
+          "description": {
+            "type": "string",
+            "description": "Model description"
+          },
+          "pricing": {
+            "type": "object",
+            "properties": {
+              "unit_price": {
+                "type": "number"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "currency": {
+                "type": "string"
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional provider-specific metadata"
+          }
+        },
+        "description": "Unified model record for cross-provider aggregation"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["message", "type"],
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Human-readable error message"
+              },
+              "type": {
+                "type": "string",
+                "description": "Error type identifier"
+              },
+              "code": {
+                "type": "string",
+                "description": "HTTP status code"
+              },
+              "param": {
+                "type": "string",
+                "description": "Invalid parameter name (if applicable)"
+              }
+            }
+          }
+        },
+        "description": "Standard error response format"
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request - Invalid or missing parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidParam": {
+                "summary": "Invalid parameter",
+                "value": {
+                  "error": {
+                    "message": "Invalid parameter value",
+                    "type": "invalid_request_error",
+                    "code": "400",
+                    "param": "limit"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - Invalid or missing authentication",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "invalidAuth": {
+                "summary": "Invalid credentials",
+                "value": {
+                  "error": {
+                    "message": "Invalid authentication credentials",
+                    "type": "authentication_error",
+                    "code": "401"
+                  }
+                }
+              },
+              "missingAuth": {
+                "summary": "Missing credentials",
+                "value": {
+                  "error": {
+                    "message": "Missing authentication credentials",
+                    "type": "authentication_error",
+                    "code": "401"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found - Resource does not exist",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "examples": {
+              "notFound": {
+                "summary": "Resource not found",
+                "value": {
+                  "error": {
+                    "message": "The requested resource was not found",
+                    "type": "not_found_error",
+                    "code": "404"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "securitySchemes": {
-      "$ref": "/components/securitySchemes/index.json"
+      "CometBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "API Key",
+        "description": "Comet API authentication using Bearer token. Obtain your API key from the Comet dashboard at https://cometapi.com",
+        "x-apidog-show-in-global-parameter": true
+      },
+      "FalApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "FAL Platform authentication using 'Key YOUR_API_KEY' format. Get your API key from FAL Platform dashboard at https://fal.ai/dashboard",
+        "x-apidog-show-in-global-parameter": true
+      }
     }
   },
-  "security": []
+  "x-apidog-folder": "BananaStudio API Hub",
+  "x-apidog-orders": ["info", "servers", "tags", "paths", "components"],
+  "x-apidog-settings": {
+    "enableJsonc": false,
+    "enableBigint": false,
+    "responseValidate": false
+  }
 }

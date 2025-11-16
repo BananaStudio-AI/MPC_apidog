@@ -1,0 +1,716 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BananaStudio API Hub",
+    "description": "Unified API Hub integrating COMET_API (568 LLMs) and FAL_API (866 creative models) with 1,434 total models for AI-powered creative workflows",
+    "version": "1.0.0",
+    "contact": {
+      "name": "BananaStudio API Support",
+      "url": "https://bananastudio.ai"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.cometapi.com/v1",
+      "description": "Comet API - LLM Gateway"
+    },
+    {
+      "url": "https://api.fal.ai/v1",
+      "description": "FAL Platform API - Creative AI Models"
+    }
+  ],
+  "tags": [
+    {
+      "name": "COMET_API",
+      "description": "Comet API endpoints - 568 LLM models including GPT-4, Claude, Gemini, DeepSeek"
+    },
+    {
+      "name": "FAL_API",
+      "description": "FAL Platform endpoints - 866 creative AI models for image/video/audio generation"
+    },
+    {
+      "name": "BananaStudio_Internal",
+      "description": "Internal BananaStudio services and utilities"
+    },
+    {
+      "name": "Utilities",
+      "description": "Helper endpoints and health checks"
+    }
+  ],
+  "paths": {
+    "/models": {
+      "get": {
+        "summary": "List Models",
+        "description": "Get list of available models. Use server override to switch between COMET (LLMs) and FAL (creative models)",
+        "operationId": "getModels",
+        "tags": ["COMET_API", "FAL_API"],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for next page (FAL only)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of models per page (FAL only)",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success - returns different schema based on provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CometModelsResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/FalModelsResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "comet": {
+                    "summary": "Comet API Response",
+                    "value": {
+                      "object": "list",
+                      "data": [
+                        {
+                          "id": "gpt-4o",
+                          "object": "model",
+                          "created": 1626777600,
+                          "owned_by": "openai",
+                          "supported_endpoint_types": []
+                        }
+                      ]
+                    }
+                  },
+                  "fal": {
+                    "summary": "FAL API Response",
+                    "value": {
+                      "models": [
+                        {
+                          "endpoint_id": "fal-ai/flux-pro/v1.1-ultra",
+                          "metadata": {
+                            "display_name": "FLUX1.1 [pro] ultra",
+                            "category": "text-to-image",
+                            "status": "active"
+                          }
+                        }
+                      ],
+                      "has_more": true,
+                      "next_cursor": "Mg"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "CometAuth": []
+          },
+          {
+            "FalAuth": []
+          }
+        ]
+      }
+    },
+    "/models/pricing": {
+      "get": {
+        "summary": "Get Model Pricing (FAL)",
+        "description": "Retrieve pricing information for FAL models",
+        "operationId": "getModelsPricing",
+        "tags": ["FAL_API"],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalPricingResponse"
+                },
+                "example": {
+                  "prices": [
+                    {
+                      "endpoint_id": "fal-ai/flux/dev",
+                      "unit_price": 0.025,
+                      "unit": "image",
+                      "currency": "USD"
+                    }
+                  ],
+                  "next_cursor": null,
+                  "has_more": false
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalAuth": []
+          }
+        ]
+      }
+    },
+    "/models/pricing/estimate": {
+      "post": {
+        "summary": "Estimate Model Pricing (FAL)",
+        "description": "Calculate estimated cost for FAL model usage",
+        "operationId": "estimateModelsPricing",
+        "tags": ["FAL_API"],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FalEstimatedCostRequest"
+              },
+              "example": {
+                "estimate_type": "unit_price",
+                "endpoints": {
+                  "fal-ai/flux/dev": {
+                    "unit_quantity": 50
+                  },
+                  "fal-ai/flux-pro": {
+                    "unit_quantity": 25
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalEstimatedCostResponse"
+                },
+                "example": {
+                  "estimate_type": "unit_price",
+                  "total_cost": 2.5,
+                  "currency": "USD"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalAuth": []
+          }
+        ]
+      }
+    },
+    "/models/usage": {
+      "get": {
+        "summary": "Get Usage Statistics (FAL)",
+        "description": "Retrieve usage statistics for FAL models",
+        "operationId": "getModelsUsage",
+        "tags": ["FAL_API"],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalUsageResponse"
+                },
+                "example": {
+                  "usage": [
+                    {
+                      "endpoint_id": "fal-ai/flux/dev",
+                      "requests": 150,
+                      "total_cost": 3.75,
+                      "date": "2025-11-15"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalAuth": []
+          }
+        ]
+      }
+    },
+    "/models/analytics": {
+      "get": {
+        "summary": "Get Analytics (FAL)",
+        "description": "Retrieve analytics data for FAL model usage",
+        "operationId": "getModelsAnalytics",
+        "tags": ["FAL_API"],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalAnalyticsResponse"
+                },
+                "example": {
+                  "analytics": [
+                    {
+                      "endpoint_id": "fal-ai/flux/dev",
+                      "avg_duration_ms": 2500,
+                      "success_rate": 0.98,
+                      "total_requests": 1000
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        },
+        "security": [
+          {
+            "FalAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CometModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "gpt-4o"
+          },
+          "object": {
+            "type": "string",
+            "example": "model"
+          },
+          "created": {
+            "type": "integer",
+            "example": 1626777600
+          },
+          "owned_by": {
+            "type": "string",
+            "example": "openai"
+          },
+          "supported_endpoint_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CometModelsResponse": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string",
+            "example": "list"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CometModel"
+            }
+          }
+        }
+      },
+      "FalModel": {
+        "type": "object",
+        "properties": {
+          "endpoint_id": {
+            "type": "string",
+            "example": "fal-ai/flux-pro/v1.1-ultra"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "display_name": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "image-to-image",
+                  "image-to-video",
+                  "text-to-image",
+                  "text-to-video",
+                  "video-to-video",
+                  "text-to-audio",
+                  "vision",
+                  "llm"
+                ]
+              },
+              "description": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": ["active", "deprecated", "beta"]
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FalModelsResponse": {
+        "type": "object",
+        "properties": {
+          "models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalModel"
+            }
+          },
+          "has_more": {
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FalPricingResponse": {
+        "type": "object",
+        "properties": {
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "endpoint_id": {
+                  "type": "string"
+                },
+                "unit_price": {
+                  "type": "number"
+                },
+                "unit": {
+                  "type": "string"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "next_cursor": {
+            "type": "string",
+            "nullable": true
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FalEstimatedCostRequest": {
+        "type": "object",
+        "required": ["estimate_type", "endpoints"],
+        "properties": {
+          "estimate_type": {
+            "type": "string",
+            "enum": ["unit_price"],
+            "example": "unit_price"
+          },
+          "endpoints": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "unit_quantity": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "FalEstimatedCostResponse": {
+        "type": "object",
+        "properties": {
+          "estimate_type": {
+            "type": "string"
+          },
+          "total_cost": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "FalUsageRecord": {
+        "type": "object",
+        "properties": {
+          "endpoint_id": {
+            "type": "string"
+          },
+          "requests": {
+            "type": "integer"
+          },
+          "total_cost": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "FalUsageResponse": {
+        "type": "object",
+        "properties": {
+          "usage": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalUsageRecord"
+            }
+          }
+        }
+      },
+      "FalAnalyticsRecord": {
+        "type": "object",
+        "properties": {
+          "endpoint_id": {
+            "type": "string"
+          },
+          "avg_duration_ms": {
+            "type": "number"
+          },
+          "success_rate": {
+            "type": "number"
+          },
+          "total_requests": {
+            "type": "integer"
+          }
+        }
+      },
+      "FalAnalyticsResponse": {
+        "type": "object",
+        "properties": {
+          "analytics": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FalAnalyticsRecord"
+            }
+          }
+        }
+      },
+      "UnifiedModelRecord": {
+        "type": "object",
+        "required": ["source", "id"],
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": ["comet", "fal"]
+          },
+          "id": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string",
+            "nullable": true
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "raw": {
+            "type": "object",
+            "description": "Original model data from provider"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request - Invalid parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "message": "Invalid parameter value",
+                "type": "invalid_request_error",
+                "code": "400"
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - Invalid or missing API key",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "message": "Invalid authentication credentials",
+                "type": "authentication_error",
+                "code": "401"
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found - Resource does not exist",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "message": "The requested resource was not found",
+                "type": "not_found_error",
+                "code": "404"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "CometAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer token for Comet API. Format: `Bearer sk-YOUR_COMET_KEY`"
+      },
+      "FalAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "API key for FAL Platform. Format: `Key YOUR_FAL_KEY`"
+      }
+    }
+  },
+  "security": []
+}
