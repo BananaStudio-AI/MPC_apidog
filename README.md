@@ -25,6 +25,7 @@ npm run health:api-hub
 ## 📚 Documentation
 
 - **[API Hub v2.0 Guide](docs/API_HUB_V2_RESTRUCTURE.md)** - Complete restructure and usage guide
+- **[Cloud Agent Delegation](docs/CLOUD_AGENT_DELEGATION.md)** - Multi-agent orchestration guide ⭐ NEW
 - **[API Hub README](docs/API_HUB_README.md)** - Usage examples for BananaStudio agents
 - **[MCP Configuration](docs/MCP_CONFIGURATION.md)** - VS Code/Cursor MCP setup
 - **[Production Checklist](docs/PRODUCTION_CHECKLIST.md)** - Deployment validation
@@ -37,6 +38,7 @@ npm run health:api-hub
 - **Model Registry**: Unified 1,434-model catalog with semantic search capabilities
 - **MCP Integration**: Apidog MCP server for automated API management
 - **Health Monitoring**: Built-in connectivity and data integrity validation
+- **Cloud Agent Delegation**: Multi-agent AI orchestration with OpenAI Agents SDK
 
 ## 🏗️ Project Structure
 
@@ -59,6 +61,10 @@ npm run health:api-hub
 npm run generate:api-hub-client  # Regenerate TypeScript client
 npm run sync:model-registry      # Fetch and sync model catalog
 npm run health:api-hub           # Validate API connectivity
+
+# Cloud Agent Delegation (NEW)
+npm run agent:delegate           # Run multi-agent orchestration demo
+npm run agent:demo               # Same as agent:delegate
 
 # Apidog Integration
 npm run push:apidog              # Push OAS to Apidog project
@@ -85,6 +91,7 @@ COMET_API_KEY=your_comet_key
 FAL_API_KEY=your_fal_key
 APIDOG_ACCESS_TOKEN=your_apidog_token
 APIDOG_PROJECT_ID=1128155
+OPENAI_API_KEY=your_openai_key    # For cloud agent delegation
 ```
 
 ## 🎯 Use Cases
@@ -94,6 +101,7 @@ APIDOG_PROJECT_ID=1128155
 - **Workflow Automation**: MCP-driven API management
 - **Creative Pipelines**: FAL platform integration for generative AI
 - **LLM Gateway**: Comet API for language model access
+- **Multi-Agent Orchestration**: Cloud agent delegation for complex workflows
 
 ---
 
