@@ -1,31 +1,65 @@
-# API Documentation
+# API Hub Documentation
 
-Documentation for BananaStudio API Hub workflows and integrations.
+Comprehensive documentation for BananaStudio API Hub - unified integration of Comet API (568 LLMs) and FAL Platform (866 creative models).
 
-## Contents
+## 📚 Core Documentation
 
-- [MCP Configuration](./MCP_CONFIGURATION.md) - VS Code/Cursor MCP setup
-- [Task Completion Summary](./TASK_COMPLETION_SUMMARY.md) - Recent development work
-- [Apidog Workflows](./APIDOG_WORKFLOWS.md) - Pull/push workflows explained
+### Getting Started
+- **[API Hub v2.0 Guide](./API_HUB_V2_RESTRUCTURE.md)** - Complete restructure guide with architecture, migration, and deployment
+- **[API Hub README](./API_HUB_README.md)** - Usage examples and integration patterns for BananaStudio agents
+- **[Production Checklist](./PRODUCTION_CHECKLIST.md)** - Pre-deployment validation steps
 
-## API References
+### Configuration & Setup
+- **[MCP Configuration](./MCP_CONFIGURATION.md)** - VS Code/Cursor MCP server setup
+- **[Apidog Workflows](./APIDOG_WORKFLOWS.md)** - OAS pull/push automation
+- **[Architecture](./ARCHITECTURE.md)** - System design and integration patterns
 
-### Comet Models API
-- **Base URL**: TBD
-- **Purpose**: Model registry, pricing, analytics
-- **Integration**: Via Apidog MCP
+## 🔌 API References
 
-### FAL Platform API  
-- **Base URL**: `https://api.fal.ai`
-- **Purpose**: Creative generation (text-to-image, video, etc.)
-- **Integration**: Via Apidog MCP
+### Comet API (LLM Gateway)
+- **Base URL**: `https://api.cometapi.com/v1`
+- **Models**: 568 language models (GPT-4, Claude, Gemini, DeepSeek, Llama)
+- **Authentication**: Bearer token
+- **Endpoints**: `/comet/models`
 
-### BananaStudio Internal API
-- **Base URL**: TBD
-- **Purpose**: Internal services
-- **Integration**: Via Apidog MCP
+### FAL Platform (Creative AI)
+- **Base URL**: `https://api.fal.ai/v1`
+- **Models**: 866 creative models (FLUX, Stable Diffusion, video, audio)
+- **Authentication**: Key header
+- **Endpoints**: `/fal/models`, `/fal/models/pricing`, `/fal/models/pricing/estimate`, `/fal/models/usage`, `/fal/models/analytics`
 
-## Workflow Guides
+## 🛠️ Developer Resources
 
-See `openapi/README.md` for OpenAPI spec management.
-See `apis/README.md` for generated client usage.
+- **OpenAPI Spec**: [`../openapi/api-hub.oas.json`](../openapi/api-hub.oas.json) - Canonical v2.0.0 specification
+- **TypeScript Client**: [`../apis/api-hub-client/`](../apis/api-hub-client/) - Auto-generated from OAS
+- **Model Registry**: [`../apis/model_registry/`](../apis/model_registry/) - Unified 1,434-model catalog service
+- **Scripts**: [`../scripts/`](../scripts/) - Automation tools for sync, validation, and client generation
+
+## 📊 Quick Reference
+
+```bash
+# Generate client from OAS
+npm run generate:api-hub-client
+
+# Sync model registry from APIs
+npm run sync:model-registry
+
+# Validate API connectivity
+npm run health:api-hub
+
+# Push OAS to Apidog
+npm run push:apidog
+```
+
+## 🎯 Use Cases
+
+- **AI Agent Orchestration**: Model selection and routing
+- **Cost Management**: Pricing estimation and usage tracking
+- **Creative Workflows**: Generative AI pipeline integration
+- **Model Discovery**: Semantic search across 1,434 models
+- **API Governance**: MCP-driven specification management
+
+---
+
+**Version:** 2.0.0  
+**Last Updated:** November 16, 2025

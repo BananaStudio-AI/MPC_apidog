@@ -53,7 +53,9 @@
         "summary": "List Comet LLM Models",
         "description": "Retrieve list of 568 available LLM models from Comet API gateway including GPT-4, Claude, Gemini, DeepSeek, Llama, and other language models",
         "operationId": "listCometModels",
-        "tags": ["COMET_API"],
+        "tags": [
+          "COMET_API"
+        ],
         "servers": [
           {
             "url": "https://api.cometapi.com/v1",
@@ -80,21 +82,29 @@
                           "object": "model",
                           "created": 1626777600,
                           "owned_by": "openai",
-                          "supported_endpoint_types": ["chat", "completion"]
+                          "supported_endpoint_types": [
+                            "chat",
+                            "completion"
+                          ]
                         },
                         {
                           "id": "claude-3-5-sonnet-20241022",
                           "object": "model",
                           "created": 1729641600,
                           "owned_by": "anthropic",
-                          "supported_endpoint_types": ["chat"]
+                          "supported_endpoint_types": [
+                            "chat"
+                          ]
                         },
                         {
                           "id": "gemini-2.0-flash-exp",
                           "object": "model",
                           "created": 1730000000,
                           "owned_by": "google",
-                          "supported_endpoint_types": ["chat", "completion"]
+                          "supported_endpoint_types": [
+                            "chat",
+                            "completion"
+                          ]
                         }
                       ]
                     }
@@ -102,7 +112,12 @@
                 }
               }
             },
-            "x-apidog-orders": ["200", "400", "401", "404"]
+            "x-apidog-orders": [
+              "200",
+              "400",
+              "401",
+              "404"
+            ]
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -119,7 +134,13 @@
             "CometBearer": []
           }
         ],
-        "x-apidog-orders": ["summary", "description", "parameters", "requestBody", "responses"],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
+        ],
         "x-code-samples": [
           {
             "lang": "Shell",
@@ -139,7 +160,9 @@
         "summary": "List FAL Creative Models",
         "description": "Retrieve list of 866 available creative AI models from FAL Platform for image generation (FLUX, Stable Diffusion), video generation, audio synthesis, and more",
         "operationId": "listFalModels",
-        "tags": ["FAL_API"],
+        "tags": [
+          "FAL_API"
+        ],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
@@ -214,7 +237,11 @@
                             "category": "text-to-image",
                             "description": "Ultra high quality text-to-image generation",
                             "status": "active",
-                            "tags": ["flux", "image-generation", "high-quality"]
+                            "tags": [
+                              "flux",
+                              "image-generation",
+                              "high-quality"
+                            ]
                           }
                         },
                         {
@@ -224,7 +251,10 @@
                             "category": "text-to-image",
                             "description": "Balanced quality and speed image generation",
                             "status": "active",
-                            "tags": ["stable-diffusion", "image-generation"]
+                            "tags": [
+                              "stable-diffusion",
+                              "image-generation"
+                            ]
                           }
                         },
                         {
@@ -234,7 +264,10 @@
                             "category": "text-to-video",
                             "description": "High-quality video generation from text prompts",
                             "status": "active",
-                            "tags": ["video-generation", "minimax"]
+                            "tags": [
+                              "video-generation",
+                              "minimax"
+                            ]
                           }
                         }
                       ],
@@ -246,7 +279,12 @@
                 }
               }
             },
-            "x-apidog-orders": ["200", "400", "401", "404"]
+            "x-apidog-orders": [
+              "200",
+              "400",
+              "401",
+              "404"
+            ]
           },
           "400": {
             "$ref": "#/components/responses/BadRequest"
@@ -263,7 +301,13 @@
             "FalApiKey": []
           }
         ],
-        "x-apidog-orders": ["summary", "description", "parameters", "requestBody", "responses"],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
+        ],
         "x-code-samples": [
           {
             "lang": "Shell",
@@ -283,7 +327,9 @@
         "summary": "Get FAL Model Pricing",
         "description": "Retrieve pricing information for all FAL Platform models including unit prices and billing units",
         "operationId": "getFalModelPricing",
-        "tags": ["FAL_API"],
+        "tags": [
+          "FAL_API"
+        ],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
@@ -366,6 +412,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -374,7 +427,9 @@
         "summary": "Estimate FAL Model Cost",
         "description": "Calculate estimated cost for FAL Platform model usage based on expected quantity. Useful for budgeting and cost optimization.",
         "operationId": "estimateFalModelCost",
-        "tags": ["FAL_API"],
+        "tags": [
+          "FAL_API"
+        ],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
@@ -465,6 +520,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing/estimate' \\\n--header 'Authorization: Key YOUR_FAL_KEY' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"estimate_type\": \"unit_price\",\n  \"endpoints\": {\n    \"fal-ai/flux/dev\": {\n      \"unit_quantity\": 100\n    }\n  }\n}'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -473,7 +535,9 @@
         "summary": "Get FAL Usage Statistics",
         "description": "Retrieve historical usage statistics for FAL Platform models including request counts and costs",
         "operationId": "getFalModelUsage",
-        "tags": ["FAL_API"],
+        "tags": [
+          "FAL_API"
+        ],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
@@ -580,6 +644,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/usage?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     },
@@ -588,7 +659,9 @@
         "summary": "Get FAL Analytics Dashboard",
         "description": "Retrieve aggregated analytics including performance metrics, success rates, and trends for FAL Platform models",
         "operationId": "getFalModelAnalytics",
-        "tags": ["FAL_API"],
+        "tags": [
+          "FAL_API"
+        ],
         "servers": [
           {
             "url": "https://api.fal.ai/v1",
@@ -680,6 +753,13 @@
             "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/analytics?start_date=2025-11-01&end_date=2025-11-16' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
         ]
       }
     }
@@ -688,7 +768,11 @@
     "schemas": {
       "CometModel": {
         "type": "object",
-        "required": ["id", "object", "owned_by"],
+        "required": [
+          "id",
+          "object",
+          "owned_by"
+        ],
         "properties": {
           "id": {
             "type": "string",
@@ -699,7 +783,9 @@
             "type": "string",
             "description": "Object type",
             "example": "model",
-            "enum": ["model"]
+            "enum": [
+              "model"
+            ]
           },
           "created": {
             "type": "integer",
@@ -716,20 +802,36 @@
             "description": "Types of endpoints this model supports",
             "items": {
               "type": "string",
-              "enum": ["chat", "completion", "embedding", "moderation"]
+              "enum": [
+                "chat",
+                "completion",
+                "embedding",
+                "moderation"
+              ]
             }
           }
         },
-        "x-apidog-orders": ["id", "object", "created", "owned_by", "supported_endpoint_types"]
+        "x-apidog-orders": [
+          "id",
+          "object",
+          "created",
+          "owned_by",
+          "supported_endpoint_types"
+        ]
       },
       "CometModelsResponse": {
         "type": "object",
-        "required": ["object", "data"],
+        "required": [
+          "object",
+          "data"
+        ],
         "properties": {
           "object": {
             "type": "string",
             "example": "list",
-            "enum": ["list"]
+            "enum": [
+              "list"
+            ]
           },
           "data": {
             "type": "array",
@@ -738,11 +840,17 @@
             }
           }
         },
-        "description": "Response format for Comet API model listing"
+        "description": "Response format for Comet API model listing",
+        "x-apidog-orders": [
+          "object",
+          "data"
+        ]
       },
       "FalModel": {
         "type": "object",
-        "required": ["endpoint_id"],
+        "required": [
+          "endpoint_id"
+        ],
         "properties": {
           "endpoint_id": {
             "type": "string",
@@ -781,7 +889,12 @@
               "status": {
                 "type": "string",
                 "description": "Model availability status",
-                "enum": ["active", "deprecated", "beta", "experimental"],
+                "enum": [
+                  "active",
+                  "deprecated",
+                  "beta",
+                  "experimental"
+                ],
                 "example": "active"
               },
               "tags": {
@@ -794,11 +907,17 @@
             }
           }
         },
-        "description": "FAL Platform creative model definition"
+        "description": "FAL Platform creative model definition",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "metadata"
+        ]
       },
       "FalModelsResponse": {
         "type": "object",
-        "required": ["models"],
+        "required": [
+          "models"
+        ],
         "properties": {
           "models": {
             "type": "array",
@@ -821,17 +940,30 @@
             "example": 866
           }
         },
-        "description": "Response format for FAL Platform model listing"
+        "description": "Response format for FAL Platform model listing",
+        "x-apidog-orders": [
+          "models",
+          "has_more",
+          "next_cursor",
+          "total_count"
+        ]
       },
       "FalPricingResponse": {
         "type": "object",
-        "required": ["prices"],
+        "required": [
+          "prices"
+        ],
         "properties": {
           "prices": {
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["endpoint_id", "unit_price", "unit", "currency"],
+              "required": [
+                "endpoint_id",
+                "unit_price",
+                "unit",
+                "currency"
+              ],
               "properties": {
                 "endpoint_id": {
                   "type": "string",
@@ -864,16 +996,26 @@
             "nullable": true
           }
         },
-        "description": "FAL Platform pricing information"
+        "description": "FAL Platform pricing information",
+        "x-apidog-orders": [
+          "prices",
+          "has_more",
+          "next_cursor"
+        ]
       },
       "FalEstimateRequest": {
         "type": "object",
-        "required": ["estimate_type", "endpoints"],
+        "required": [
+          "estimate_type",
+          "endpoints"
+        ],
         "properties": {
           "estimate_type": {
             "type": "string",
             "description": "Type of cost estimation",
-            "enum": ["unit_price"],
+            "enum": [
+              "unit_price"
+            ],
             "example": "unit_price"
           },
           "endpoints": {
@@ -881,7 +1023,9 @@
             "description": "Map of endpoint IDs to quantities",
             "additionalProperties": {
               "type": "object",
-              "required": ["unit_quantity"],
+              "required": [
+                "unit_quantity"
+              ],
               "properties": {
                 "unit_quantity": {
                   "type": "integer",
@@ -893,11 +1037,19 @@
             }
           }
         },
-        "description": "FAL Platform cost estimation request"
+        "description": "FAL Platform cost estimation request",
+        "x-apidog-orders": [
+          "estimate_type",
+          "endpoints"
+        ]
       },
       "FalEstimateResponse": {
         "type": "object",
-        "required": ["estimate_type", "total_cost", "currency"],
+        "required": [
+          "estimate_type",
+          "total_cost",
+          "currency"
+        ],
         "properties": {
           "estimate_type": {
             "type": "string",
@@ -921,11 +1073,21 @@
             }
           }
         },
-        "description": "FAL Platform cost estimation response"
+        "description": "FAL Platform cost estimation response",
+        "x-apidog-orders": [
+          "estimate_type",
+          "total_cost",
+          "currency",
+          "breakdown"
+        ]
       },
       "FalUsageRecord": {
         "type": "object",
-        "required": ["endpoint_id", "date", "requests"],
+        "required": [
+          "endpoint_id",
+          "date",
+          "requests"
+        ],
         "properties": {
           "endpoint_id": {
             "type": "string",
@@ -952,11 +1114,20 @@
             "example": "USD"
           }
         },
-        "description": "FAL Platform usage record for a specific date"
+        "description": "FAL Platform usage record for a specific date",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "date",
+          "requests",
+          "total_cost",
+          "currency"
+        ]
       },
       "FalUsageResponse": {
         "type": "object",
-        "required": ["usage"],
+        "required": [
+          "usage"
+        ],
         "properties": {
           "usage": {
             "type": "array",
@@ -974,11 +1145,18 @@
             "description": "Total cost across all records"
           }
         },
-        "description": "FAL Platform usage statistics response"
+        "description": "FAL Platform usage statistics response",
+        "x-apidog-orders": [
+          "usage",
+          "total_requests",
+          "total_cost"
+        ]
       },
       "FalAnalyticsRecord": {
         "type": "object",
-        "required": ["endpoint_id"],
+        "required": [
+          "endpoint_id"
+        ],
         "properties": {
           "endpoint_id": {
             "type": "string",
@@ -1016,11 +1194,22 @@
             "description": "99th percentile duration"
           }
         },
-        "description": "FAL Platform analytics record for a model"
+        "description": "FAL Platform analytics record for a model",
+        "x-apidog-orders": [
+          "endpoint_id",
+          "total_requests",
+          "success_rate",
+          "avg_duration_ms",
+          "p50_duration_ms",
+          "p95_duration_ms",
+          "p99_duration_ms"
+        ]
       },
       "FalAnalyticsResponse": {
         "type": "object",
-        "required": ["analytics"],
+        "required": [
+          "analytics"
+        ],
         "properties": {
           "analytics": {
             "type": "array",
@@ -1042,16 +1231,26 @@
             }
           }
         },
-        "description": "FAL Platform analytics dashboard response"
+        "description": "FAL Platform analytics dashboard response",
+        "x-apidog-orders": [
+          "analytics",
+          "period"
+        ]
       },
       "UnifiedModelRecord": {
         "type": "object",
-        "required": ["provider", "model_id"],
+        "required": [
+          "provider",
+          "model_id"
+        ],
         "properties": {
           "provider": {
             "type": "string",
             "description": "Model provider",
-            "enum": ["comet", "fal"],
+            "enum": [
+              "comet",
+              "fal"
+            ],
             "example": "fal"
           },
           "model_id": {
@@ -1093,15 +1292,29 @@
             "description": "Additional provider-specific metadata"
           }
         },
-        "description": "Unified model record for cross-provider aggregation"
+        "description": "Unified model record for cross-provider aggregation",
+        "x-apidog-orders": [
+          "provider",
+          "model_id",
+          "display_name",
+          "category",
+          "description",
+          "pricing",
+          "metadata"
+        ]
       },
       "ErrorResponse": {
         "type": "object",
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
           "error": {
             "type": "object",
-            "required": ["message", "type"],
+            "required": [
+              "message",
+              "type"
+            ],
             "properties": {
               "message": {
                 "type": "string",
@@ -1122,7 +1335,10 @@
             }
           }
         },
-        "description": "Standard error response format"
+        "description": "Standard error response format",
+        "x-apidog-orders": [
+          "error"
+        ]
       }
     },
     "responses": {
@@ -1222,7 +1438,13 @@
     }
   },
   "x-apidog-folder": "BananaStudio API Hub",
-  "x-apidog-orders": ["info", "servers", "tags", "paths", "components"],
+  "x-apidog-orders": [
+    "info",
+    "servers",
+    "tags",
+    "paths",
+    "components"
+  ],
   "x-apidog-settings": {
     "enableJsonc": false,
     "enableBigint": false,

@@ -1,36 +1,69 @@
-# Generated API Clients
+# API Clients & Services
 
-This directory will contain auto-generated API client code from OpenAPI specifications.
+Auto-generated TypeScript client and unified model registry for BananaStudio API Hub.
 
-## Planned Generators
+## 📦 Contents
 
-- **TypeScript/JavaScript**: axios-based client
-- **Python**: httpx-based client  
-- **Go**: net/http client
+### `api-hub-client/`
+TypeScript client auto-generated from `openapi/api-hub.oas.json` using `openapi-typescript-codegen`.
 
-## Generation (Future)
+**Services:**
+- `CometApiService` - Comet API operations (list LLM models)
+- `FalApiService` - FAL Platform operations (models, pricing, usage, analytics)
 
-```bash
-# Generate TypeScript client from OAS
-npm run generate:client:ts
+**Models:**
+- Provider-specific types: `CometModel`, `FalModel`, `FalPricingResponse`, etc.
+- Unified types: `UnifiedModelRecord`, `ErrorResponse`
 
-# Generate Python client
-npm run generate:client:py
-```
+### `model_registry/`
+Unified model catalog service aggregating Comet (568) + FAL (866) models.
 
-## Usage Example
+**Features:**
+- Fetch functions: `fetchCometModels()`, `fetchFalModels()`, `fetchAllModels()`
+- Registry service: Load, filter, search across 1,434 models
+- JSON caching: `data/model_registry.json`
+
+## 🚀 Usage
+
+### TypeScript Client
 
 ```typescript
-import { ApidogClient } from './apis/typescript';
+import { CometApiService, FalApiService, OpenAPI } from './api-hub-client';
 
-const client = new ApidogClient({
-  baseURL: 'https://api.fal.ai',
-  apiKey: process.env.FAL_API_KEY
-});
+// Comet API
+OpenAPI.BASE = 'https://api.cometapi.com/v1';
+OpenAPI.TOKEN = process.env.COMET_API_KEY;
+const cometModels = await CometApiService.listCometModels();
 
-const pricing = await client.getModelsPricing();
+// FAL Platform
+OpenAPI.BASE = 'https://api.fal.ai/v1';
+OpenAPI.TOKEN = process.env.FAL_API_KEY;
+const falModels = await FalApiService.listFalModels();
+const pricing = await FalApiService.getFalModelPricing();
 ```
 
-## Version Control
+### Model Registry
 
-Generated clients are tracked to ensure reproducible builds and API versioning.
+```typescript
+import { ModelRegistry } from './model_registry/service';
+
+const registry = new ModelRegistry();
+await registry.load();
+
+const cometModels = registry.findModelsBySource('comet');
+const fluxModels = registry.searchModelsByIdOrName('flux');
+```
+
+## 🔧 Generation
+
+```bash
+# Regenerate TypeScript client
+npm run generate:api-hub-client
+
+# Sync model registry
+npm run sync:model-registry
+```
+
+## 📚 Documentation
+
+See [`api-hub-client/README.md`](./api-hub-client/README.md) for detailed client usage.

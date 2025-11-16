@@ -1,104 +1,132 @@
-# Apidog UI Bundle
+# Apidog UI Bundle v2.0
 
-Complete bundle for importing **BananaStudio API Hub** into Apidog with full UI automation, folder structure, and examples.
+Complete production-ready bundle for **BananaStudio API Hub** with strict Comet/FAL provider separation and full Apidog best practices compliance.
 
 ## 📦 Bundle Contents
 
-| File | Purpose | Size |
-|------|---------|------|
-| `oas.json` | **Complete OpenAPI 3.1.0 spec with Apidog extensions** | ~33 KB |
-| `folder_map.json` | Folder structure mapping reference | ~4 KB |
-| `request_examples.json` | Request examples (legacy support) | ~6 KB |
-| `response_examples.json` | Response examples (legacy support) | ~9 KB |
-| `ui_metadata.json` | UI hints and automation settings | ~9 KB |
+| File | Purpose | Status |
+|------|---------|--------|
+| `oas.json` | **OpenAPI 3.1.0 spec with complete Apidog extensions** | ✅ v2.0.0 |
+| `oas_v1_backup.json` | Backup of v1.0 (pre-restructure) | 📦 Archive |
+| `folder_map.json` | Folder structure reference | 📋 Reference |
+| `request_examples.json` | Request examples | 📋 Reference |
+| `response_examples.json` | Response examples | 📋 Reference |
+| `ui_metadata.json` | UI automation metadata | 📋 Reference |
 
-**Total Bundle Size:** ~61 KB
+**Primary File:** `oas.json` - Self-contained with all Apidog extensions
 
-**Note:** The main OAS file (`oas.json`) now includes all necessary Apidog extensions (`x-apidog-*`) for proper folder organization, tag mapping, and UI configuration. The supplementary files are maintained for reference but the OAS is self-contained.
+## 🎯 Version 2.0 Features
 
-## 🎯 What This Bundle Does
+### ✅ Strict Provider Separation
+- **Path Namespacing**: `/comet/*` for Comet, `/fal/*` for FAL
+- **Exclusive Tags**: `COMET_API` and `FAL_API` (no mixing)
+- **Provider-Specific Security**: `CometBearer` for Comet, `FalApiKey` for FAL
+- **Separate Schemas**: 2 Comet + 9 FAL + 2 shared = 13 total
 
-1. **Complete API Spec**: All 5 endpoints with proper Apidog extensions and folder organization
-2. **Folder Organization**: Automatically creates hierarchical folders using `x-apidog-folder` tags:
-   - **Comet API** → Comet Models (1 endpoint)
-   - **FAL Platform** → Models, Pricing, Analytics (4 endpoints organized in subfolders)
-   - **BananaStudio Internal** → (Reserved for future expansion)
-3. **Rich Examples**: Multiple request/response examples with proper descriptions
-4. **Enhanced Schemas**: 12 detailed schemas with proper descriptions and validation
-5. **Security Schemes**: Proper Bearer + API Key authentication with instructions
-6. **Server Configuration**: Multi-server support with clear descriptions
+### ✅ Apidog Best Practices Compliance
+- `x-apidog-orders` on all operations and schemas
+- `x-code-samples` with cURL examples on all endpoints
+- `x-apidog-folder` for automatic folder organization
+- `x-apidog-server-id` on all servers
+- `x-apidog-show-in-global-parameter` on security schemes
+- Rich examples with multiple scenarios per endpoint
 
-## 📊 API Coverage
+### ✅ Complete API Coverage
+1. **Comet API** (1 endpoint): LLM model listing
+2. **FAL Platform** (5 endpoints): Models, pricing, usage, analytics, cost estimation
+3. **Total**: 6 endpoints, 13 schemas, 2 security schemes
 
-### Endpoints (5 total)
-- `GET /models` - List models from Comet (568 LLMs) or FAL (866 creative models)
-- `GET /models/pricing` - Get FAL model pricing information
-- `POST /models/pricing/estimate` - Estimate costs for FAL model usage
-- `GET /models/usage` - Historical usage statistics (FAL only)
-- `GET /models/analytics` - Performance analytics and metrics (FAL only)
+## 📊 API Structure
 
-### Schemas (12 total)
-- `CometModel`, `CometModelsResponse` - Comet API models
-- `FalModel`, `FalModelsResponse` - FAL Platform models
-- `FalPricingResponse` - Pricing data structures
-- `FalEstimateRequest`, `FalEstimateResponse` - Cost estimation
-- `FalUsageRecord`, `FalUsageResponse` - Usage tracking
-- `FalAnalyticsRecord`, `FalAnalyticsResponse` - Analytics data
-- `ErrorResponse` - Unified error format
+### Endpoints (6 total)
+- `GET /comet/models` - List 568 LLM models (GPT-4, Claude, Gemini, etc.)
+- `GET /fal/models` - List 866 creative AI models (FLUX, Stable Diffusion, video, audio)
+- `GET /fal/models/pricing` - Get pricing information for FAL models
+- `POST /fal/models/pricing/estimate` - Estimate costs for planned usage
+- `GET /fal/models/usage` - Historical usage statistics
+- `GET /fal/models/analytics` - Performance metrics and trends
+
+### Schemas (13 total)
+
+**Comet-Specific (2):**
+- `CometModel`, `CometModelsResponse`
+
+**FAL-Specific (9):**
+- `FalModel`, `FalModelsResponse`
+- `FalPricingResponse`
+- `FalEstimateRequest`, `FalEstimateResponse`
+- `FalUsageRecord`, `FalUsageResponse`
+- `FalAnalyticsRecord`, `FalAnalyticsResponse`
+
+**Shared (2):**
+- `UnifiedModelRecord` - Cross-provider aggregation
+- `ErrorResponse` - Standard error format
 
 ### Security
-- **Comet API**: Bearer token authentication (`Authorization: Bearer sk-xxx`)
-- **FAL API**: API Key authentication (`Authorization: Key fal-xxx`)
-
-## 🏗️ Apidog Structure Best Practices
-
-This OAS follows Apidog's recommended structure:
-
-1. **Tags with Folder Mapping**: Each tag uses `x-apidog-folder` to specify UI placement
-2. **Proper Ordering**: Uses `x-apidog-orders` for consistent field ordering
-3. **Rich Examples**: Multiple named examples per endpoint with clear summaries
-4. **Code Samples**: Ready-to-use cURL examples with `x-code-samples`
-5. **Schema Validation**: Detailed property descriptions, enums, and constraints
-6. **Server Overrides**: Endpoint-level server specification for multi-API support
-7. **Security Mapping**: Proper security scheme references per endpoint
+- **Comet API**: `CometBearer` - Bearer token (`Authorization: Bearer YOUR_COMET_KEY`)
+- **FAL Platform**: `FalApiKey` - Key header (`Authorization: Key YOUR_FAL_KEY`)
 
 ## 🚀 Usage
 
-### 1. Environment Setup
-```bash
-# Required: Apidog access token
-export APIDOG_ACCESS_TOKEN="your_apidog_token_here"
-
-# Optional: Override project ID (default: 1128155)
-export APIDOG_PROJECT_ID="1128155"
-```
-
-### 2. Push to Apidog
+### Push to Apidog
 ```bash
 # Using npm script (recommended)
 npm run push:apidog
 
-# Or directly with tsx
-tsx scripts/push_to_apidog.ts
+# Project 1128155 will be updated with v2.0 spec
 ```
 
-### 3. Verification
-1. Visit Apidog UI: `https://apidog.com/project/1128155`
-2. Check folder structure (4 folders: COMET_API, FAL_API, BananaStudio_Internal, Utilities)
-3. Verify endpoints (6 operations with examples)
-4. Test request/response examples
-5. Review UI metadata (forms, dashboards, automation)
+### Verify Import
+1. Visit: `https://apidog.com/project/1128155`
+2. Check folders: **Comet API** and **FAL Platform** (no mixing!)
+3. Verify 6 endpoints with proper provider separation
+4. Test with provided code samples
 
-## 📁 Folder Structure in Apidog
+## 📁 Apidog UI Structure
 
 ```
 📦 BananaStudio API Hub (Project 1128155)
 ├── 🧠 Comet API
-│   └── Comet Models
-│       └── GET /models (List LLM models - 568 total)
+│   └── GET /comet/models [COMET_API] 🔐 CometBearer
+│       (568 LLM models: GPT-4, Claude, Gemini, DeepSeek, Llama)
 │
 ├── 🎨 FAL Platform
-│   ├── FAL Models
+│   ├── GET /fal/models [FAL_API] 🔐 FalApiKey
+│   │   (866 creative models: FLUX, Stable Diffusion, video, audio)
+│   ├── GET /fal/models/pricing [FAL_API] 🔐 FalApiKey
+│   ├── POST /fal/models/pricing/estimate [FAL_API] 🔐 FalApiKey
+│   ├── GET /fal/models/usage [FAL_API] 🔐 FalApiKey
+│   └── GET /fal/models/analytics [FAL_API] 🔐 FalApiKey
+│
+├── 🏢 BananaStudio Internal (reserved)
+└── 🔧 Utilities (reserved)
+```
+
+## ✅ Best Practices Checklist
+
+- [x] Path namespacing (`/comet/*`, `/fal/*`)
+- [x] Exclusive tags per provider
+- [x] Provider-specific security schemes
+- [x] `x-apidog-orders` on all operations
+- [x] `x-apidog-orders` on all schemas
+- [x] `x-code-samples` on all endpoints
+- [x] `x-apidog-folder` for organization
+- [x] `x-apidog-server-id` on servers
+- [x] Multiple examples per endpoint
+- [x] Detailed schema descriptions
+
+## 📚 Documentation
+
+See main project documentation:
+- [API Hub v2.0 Guide](../docs/API_HUB_V2_RESTRUCTURE.md)
+- [Production Checklist](../docs/PRODUCTION_CHECKLIST.md)
+- [Architecture](../docs/ARCHITECTURE.md)
+
+---
+
+**Version:** 2.0.0  
+**Status:** ✅ Production-Ready  
+**Compliance:** Full Apidog best practices
 │   │   └── GET /models (List creative models - 866 total)
 │   ├── FAL Pricing
 │   │   ├── GET /models/pricing (Get pricing info)

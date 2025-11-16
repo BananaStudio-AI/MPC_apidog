@@ -1,31 +1,46 @@
 # OpenAPI Specifications
 
-This directory contains OpenAPI (OAS) files generated from the Apidog project.
+Canonical OpenAPI 3.1.0 specifications for BananaStudio API Hub.
 
 ## Files
 
-- `oas_raw.json` - Latest OpenAPI spec fetched from Apidog (pulled via MCP)
-- `oas_merged.json` - Merged OpenAPI spec combining remote + local endpoint changes
+- **`api-hub.oas.json`** - Canonical v2.0.0 specification (production-ready)
+- **`model_catalog.json`** - Unified model catalog (1,434 models from Comet + FAL)
+- `oas_raw.json` - Latest OAS fetched from Apidog (via MCP)
+- `oas_merged.json` - Merged OAS for Apidog import
+
+## Key Features
+
+- **Strict Provider Separation**: `/comet/*` and `/fal/*` path namespaces
+- **Apidog Extensions**: Full `x-apidog-*` support for UI rendering
+- **Complete Schemas**: 13 schemas covering models, pricing, usage, analytics
+- **6 Endpoints**: 1 Comet + 5 FAL fully documented with examples
 
 ## Usage
 
-### Pull Latest OAS
+### Pull Latest from Apidog
 ```bash
 npm run apidog:pull
 ```
-Fetches the latest OpenAPI spec from Apidog and saves to `oas_raw.json`.
 
-### Generate Merged OAS
+### Push to Apidog
 ```bash
-npm run apidog:push:oas -- --force
+npm run push:apidog
 ```
-Merges local endpoint changes into the remote OAS and saves to `oas_merged.json`.
+Uploads `api-hub.oas.json` to Apidog project 1128155.
 
-## Import to Apidog
+### Generate TypeScript Client
+```bash
+npm run generate:api-hub-client
+```
+Generates client from `api-hub.oas.json` into `../apis/api-hub-client/`.
 
-1. **Via Web UI**: Project Settings → Import → OpenAPI → Upload `oas_merged.json`
-2. **Via REST API**: `npm run apidog:push:api` (requires write-enabled token)
+### Sync Model Catalog
+```bash
+npm run sync:model-catalog
+```
+Fetches models from Comet and FAL APIs, saves to `model_catalog.json`.
 
-## Version Control
+## Documentation
 
-These files are tracked in git to maintain a history of API changes.
+See [`../docs/API_HUB_V2_RESTRUCTURE.md`](../docs/API_HUB_V2_RESTRUCTURE.md) for complete architecture and migration guide.
