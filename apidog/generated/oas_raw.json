@@ -1,216 +1,36 @@
 {
-  "ingestedAt": "2025-11-15T20:30:00Z",
-  "source": "manual-user-provided",
-  "openapi": "3.0.1",
+  "fetchedAt": "2025-11-16T05:51:07.952Z",
+  "projectId": "1128155",
+  "openapi": "3.1.0",
   "info": {
-    "title": "BananaStudio API Hub",
+    "title": "Default module",
     "description": "",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "x-download-time": "2025-11-15T20:50:08.896Z"
   },
-  "tags": [],
   "paths": {
     "/": {
+      "$ref": "/paths/_.json",
       "get": {
-        "summary": "GET Models Pricing",
-        "deprecated": false,
-        "description": "",
-        "tags": [],
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "",
-            "required": false,
-            "example": "Key {{FAL_API_KEY}}",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "next_cursor": {
-                      "type": "string",
-                      "description": "Cursor for the next page of results, null if no more pages",
-                      "nullable": true
-                    },
-                    "has_more": {
-                      "type": "boolean",
-                      "description": "Boolean indicating if more results are available (convenience field derived from next_cursor)"
-                    },
-                    "prices": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "endpoint_id": {
-                            "type": "string",
-                            "description": "Endpoint identifier (e.g., 'fal-ai/wan/v2.2-a14b/text-to-video', 'fal-ai/minimax/video-01/image-to-video')"
-                          },
-                          "unit_price": {
-                            "type": "number",
-                            "minimum": 0,
-                            "description": "Base price per billing unit (often per generated output; may be per GPU-second for some models) in the specified currency"
-                          },
-                          "unit": {
-                            "type": "string",
-                            "description": "Unit of measurement for billing: 'image', 'video', or provider-specific GPU/compute unit when applicable. Most models use output-based pricing."
-                          },
-                          "currency": {
-                            "type": "string",
-                            "minLength": 3,
-                            "maxLength": 3,
-                            "description": "Three-letter currency code (ISO 4217, e.g., 'USD', 'EUR')"
-                          }
-                        },
-                        "required": [
-                          "endpoint_id",
-                          "unit_price",
-                          "unit",
-                          "currency"
-                        ]
-                      },
-                      "description": "Pricing information for requested endpoints"
-                    }
-                  },
-                  "required": [
-                    "next_cursor",
-                    "has_more",
-                    "prices"
-                  ]
-                }
-              }
-            },
-            "headers": {}
-          }
-        },
-        "security": []
+        "summary": "GET Models Pricing"
       }
     },
     "/models": {
+      "$ref": "/paths/_models.json",
       "get": {
-        "summary": "GET Model search",
-        "deprecated": false,
-        "description": "GET Model search",
-        "tags": [],
-        "parameters": [
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "",
-            "required": false,
-            "example": [
-              "Key {{FAL_API_KEY}}"
-            ],
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {}
-                },
-                "example": {
-                  "models": [
-                    {
-                      "endpoint_id": "fal-ai/flux/dev",
-                      "metadata": {
-                        "display_name": "FLUX.1 [dev]",
-                        "category": "text-to-image",
-                        "description": "Fast text-to-image generation",
-                        "status": "active",
-                        "tags": [
-                          "fast",
-                          "pro"
-                        ],
-                        "updated_at": "2025-01-15T12:00:00Z",
-                        "is_favorited": false,
-                        "thumbnail_url": "https://fal.media/files/example.jpg",
-                        "model_url": "https://fal.run/fal-ai/flux/dev",
-                        "date": "2024-08-01T00:00:00Z",
-                        "highlighted": true,
-                        "pinned": false
-                      }
-                    }
-                  ],
-                  "next_cursor": null,
-                  "has_more": false
-                }
-              }
-            },
-            "headers": {}
-          }
-        },
-        "security": []
+        "summary": "GET Model search"
       }
     }
   },
+  "webhooks": {},
   "components": {
     "schemas": {
-      "CometModelsResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": { "type": "string" },
-                "object": { "type": "string" },
-                "created": { "type": "integer" },
-                "owned_by": { "type": "string" },
-                "permission": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": { "type": "string" },
-                      "object": { "type": "string" },
-                      "created": { "type": "integer" },
-                      "allow_create_engine": { "type": "boolean" },
-                      "allow_sampling": { "type": "boolean" },
-                      "allow_logprobs": { "type": "boolean" },
-                      "allow_search_indices": { "type": "boolean" },
-                      "allow_view": { "type": "boolean" },
-                      "allow_fine_tuning": { "type": "boolean" },
-                      "organization": { "type": "string" },
-                      "group": { "type": "string", "nullable": true },
-                      "is_blocking": { "type": "boolean" }
-                    }
-                  }
-                },
-                "root": { "type": "string" },
-                "parent": { "type": "string", "nullable": true },
-                "supported_endpoint_types": { "type": "array", "items": { "type": "string" } },
-                "context_window": { "type": "number" },
-                "input_price": { "type": "number" },
-                "output_price": { "type": "number" },
-                "description": { "type": "string" }
-              }
-            }
-          },
-          "success": { "type": "boolean" }
-        }
-      }
+      "$ref": "/components/schemas/index.json"
     },
-    "securitySchemes": {}
-  },
-  "servers": [
-    {
-      "url": "https://api.fal.ai/v1/models/pricing",
-      "description": "Development"
+    "securitySchemes": {
+      "$ref": "/components/securitySchemes/index.json"
     }
-  ]
+  },
+  "servers": [],
+  "security": []
 }

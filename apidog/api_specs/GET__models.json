@@ -1,0 +1,12 @@
+{
+  "id": "GET__models",
+  "method": "GET",
+  "path": "/models",
+  "summary": "GET Model search",
+  "description": "",
+  "deprecated": false,
+  "tags": [],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}

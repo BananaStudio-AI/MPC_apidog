@@ -180,6 +180,25 @@ npm run apidog:push -- --force
 - Set tool overrides if required:
   - `APIDOG_UPDATE_TOOL` for the endpoint update tool name.
 
+## Working with OpenAPI Specs (OAS)
+The current Apidog MCP server exposes **read-only OAS tools**, not direct endpoint update tools. Available tools:
+- `read_project_oas_*` - Read the full OpenAPI spec
+- `read_project_oas_ref_resources_*` - Read $ref files
+- `refresh_project_oas_*` - Re-download latest OAS
+
+### Push Local Changes via OAS
+```bash
+# Dry-run: compare local specs with remote OAS
+npm run apidog:push:oas
+
+# Generate merged OAS file for manual import
+npm run apidog:push:oas -- --force
+```
+
+The `--force` flag creates `apidog/generated/oas_merged.json` which you can:
+1. Import via Apidog web UI (Project Settings → Import OpenAPI)
+2. Push via Apidog REST API with a write token
+
 ## Force Overwrite & Tool Discovery Troubleshooting
 If you see `Could not find list endpoints tool` or similar:
 

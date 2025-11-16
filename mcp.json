@@ -5,10 +5,11 @@
       "args": [
         "-y",
         "apidog-mcp-server@latest",
-        "--project-id=${APIDOG_PROJECT_ID}"
+        "--project-id=1128155"
       ],
       "env": {
-        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}"
+        "APIDOG_ACCESS_TOKEN": "${APIDOG_ACCESS_TOKEN}",
+        "CURSOR_API_KEY": "${CURSOR_API_KEY}"
       }
     }
   }

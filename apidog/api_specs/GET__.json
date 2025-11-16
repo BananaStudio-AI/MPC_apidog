@@ -1,0 +1,12 @@
+{
+  "id": "GET__",
+  "method": "GET",
+  "path": "/",
+  "summary": "GET Models Pricing",
+  "description": "",
+  "deprecated": false,
+  "tags": [],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}
