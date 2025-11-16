@@ -22,219 +22,131 @@
     {
       "url": "https://api.fal.ai/v1",
       "description": "FAL Platform - Creative AI (866 models)",
-      {
-        "openapi": "3.0.3",
-        "info": {
-          "title": "BananaStudio API Hub",
-          "description": "Unified API Hub integrating Comet API (LLM models) and FAL Platform (creative models). Rolled back to OpenAPI 3.0.3 for Apidog UI compatibility.",
-          "version": "2.1.0",
-          "contact": { "name": "BananaStudio API Team", "url": "https://bananastudio.ai", "email": "support@bananastudio.ai" }
-        },
+      "x-apidog-server-id": "fal-production"
+    }
+  ],
+  "tags": [
+    {
+      "name": "COMET_API",
+      "description": "Comet API - 568 LLM models including GPT-4, Claude, Gemini, DeepSeek, Llama",
+      "x-apidog-folder": "Comet API"
+    },
+    {
+      "name": "FAL_API",
+      "description": "FAL Platform - 866 creative AI models for image, video, audio generation",
+      "x-apidog-folder": "FAL Platform"
+    },
+    {
+      "name": "BananaStudio_Internal",
+      "description": "Internal services and model registry",
+      "x-apidog-folder": "BananaStudio Internal"
+    },
+    {
+      "name": "Utilities",
+      "description": "Utility endpoints and helpers",
+      "x-apidog-folder": "Utilities"
+    }
+  ],
+  "paths": {
+    "/comet/models": {
+      "get": {
+        "summary": "List Comet LLM Models",
+        "description": "Retrieve list of 568 available LLM models from Comet API gateway including GPT-4, Claude, Gemini, DeepSeek, Llama, and other language models",
+        "operationId": "listCometModels",
+        "tags": [
+          "COMET_API"
+        ],
         "servers": [
-          { "url": "https://api.cometapi.com/v1" },
           {
-            "openapi": "3.0.3",
-            "info": {
-              "title": "BananaStudio API Hub",
-              "description": "Unified API Hub integrating Comet API (LLM models) and FAL Platform (creative models). Rolled back to OpenAPI 3.0.3 for Apidog UI compatibility.",
-              "version": "2.1.0",
-              "contact": { "name": "BananaStudio API Team", "url": "https://bananastudio.ai", "email": "support@bananastudio.ai" }
-            },
-            "servers": [
-              { "url": "https://api.cometapi.com/v1" },
-              { "url": "https://api.fal.ai/v1" }
-            ],
-            "tags": [
-              { "name": "COMET_API", "description": "Comet API - LLM model listing" },
-              { "name": "FAL_API", "description": "FAL Platform - creative model & pricing endpoints" },
-              { "name": "BananaStudio_Internal", "description": "Internal services (reserved)" },
-              { "name": "Utilities", "description": "Utility endpoints (reserved)" }
-            ],
-            "paths": {
-              "/comet/models": {
-                "get": {
-                  "summary": "List Comet LLM Models",
-                  "description": "Retrieve list of available LLM models from Comet API gateway (e.g. GPT-4, Claude, Gemini, DeepSeek, Llama).",
-                  "operationId": "listCometModels",
-                  "tags": ["COMET_API"],
-                  "servers": [{ "url": "https://api.cometapi.com/v1" }],
-                  "parameters": [],
-                  "responses": {
-                    "200": {
-                      "description": "Successfully retrieved Comet LLM model list",
-                      "content": {
-                        "application/json": {
-                          "schema": { "$ref": "#/components/schemas/CometModelsResponse" },
-                          "examples": {
-                            "sample": {
-                              "summary": "Example Comet model list",
-                              "value": {
-                                "object": "list",
-                                "data": [
-                                  { "id": "gpt-4o", "object": "model", "created": 1626777600, "owned_by": "openai", "supported_endpoint_types": ["chat","completion"] },
-                                  { "id": "claude-3-5-sonnet", "object": "model", "created": 1729641600, "owned_by": "anthropic", "supported_endpoint_types": ["chat"] }
-                                ]
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "CometAuth": [] }],
-                  "x-code-samples": [
-                    { "lang": "Shell", "label": "cURL", "source": "curl --location 'https://api.cometapi.com/v1/comet/models' \\n+--header 'Authorization: Bearer YOUR_COMET_KEY'" }
-                  ]
-                }
-              },
-              "/fal/models": {
-                "get": {
-                  "summary": "List Available FAL Models",
-                  "description": "Returns the complete list of available FAL Platform models (approx 866 models) from the gateway.",
-                  "operationId": "listFalModels",
-                  "tags": ["FAL_API"],
-                  "servers": [{ "url": "https://api.fal.ai/v1" }],
-                  "parameters": [
-                    { "name": "cursor", "in": "query", "required": false, "schema": { "type": "string", "nullable": true } },
-                    { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "minimum": 1, "maximum": 500, "default": 100 } },
-                    { "name": "category", "in": "query", "required": false, "schema": { "type": "string", "enum": ["text-to-image","image-to-image","text-to-video","image-to-video","video-to-video","text-to-audio","text-to-speech","image-to-3d","llm","vision"] } }
-                  ],
-                  "responses": {
-                    "200": {
-                      "description": "Successfully retrieved FAL creative model list",
-                      "content": {
-                        "application/json": {
-                          "schema": { "$ref": "#/components/schemas/FalModelsResponse" },
-                          "examples": {
-                            "sample": {
-                              "summary": "Example FAL models page",
-                              "value": {
-                                "models": [
-                                  { "endpoint_id": "fal-ai/flux-pro/v1.1-ultra", "metadata": { "display_name": "FLUX1.1 [pro] ultra", "category": "text-to-image", "description": "Ultra high quality text-to-image generation", "status": "active", "tags": ["flux","image-generation"] } },
-                                  { "endpoint_id": "fal-ai/stable-diffusion-v3-medium", "metadata": { "display_name": "Stable Diffusion 3 Medium", "category": "text-to-image", "description": "Balanced quality and speed image generation", "status": "active", "tags": ["stable-diffusion"] } }
-                                ],
-                                "has_more": true,
-                                "next_cursor": "Mg==",
-                                "total_count": 866
-                              }
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "404": { "description": "Not Found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "FalAuth": [] }],
-                  "x-code-samples": [
-                    { "lang": "Shell", "label": "cURL", "source": "curl --location 'https://api.fal.ai/v1/fal/models?limit=50' \\n+--header 'Authorization: Key YOUR_FAL_KEY'" }
-                  ]
-                }
-              },
-              "/fal/models/pricing": {
-                "get": {
-                  "summary": "Get FAL Model Pricing",
-                  "description": "Retrieve pricing information for FAL Platform models including unit prices and billing units",
-                  "operationId": "getFalModelPricing",
-                  "tags": ["FAL_API"],
-                  "servers": [{ "url": "https://api.fal.ai/v1" }],
-                  "parameters": [
-                    { "name": "cursor", "in": "query", "required": false, "schema": { "type": "string", "nullable": true } },
-                    { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 100, "minimum": 1, "maximum": 500 } }
-                  ],
-                  "responses": {
-                    "200": { "description": "Pricing list", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalPricingResponse" } } } },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "403": { "description": "Forbidden", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "FalAuth": [] }]
-                }
-              },
-              "/fal/models/pricing/estimate": {
-                "post": {
-                  "summary": "Estimate FAL Model Cost",
-                  "description": "Calculate estimated cost for FAL Platform model usage based on expected quantities.",
-                  "operationId": "estimateFalModelCost",
-                  "tags": ["FAL_API"],
-                  "servers": [{ "url": "https://api.fal.ai/v1" }],
-                  "requestBody": {
-                    "required": true,
-                    "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalEstimateRequest" }, "examples": { "single": { "summary": "Single endpoint estimate", "value": { "estimate_type": "unit_price", "endpoints": { "fal-ai/flux/dev": { "unit_quantity": 100 } } } } } } }
-                  },
-                  "responses": {
-                    "200": { "description": "Cost estimate", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalEstimateResponse" } } } },
-                    "400": { "description": "Bad Request", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "FalAuth": [] }]
-                }
-              },
-              "/fal/models/usage": {
-                "get": {
-                  "summary": "Get FAL Usage Statistics",
-                  "description": "Retrieve historical usage statistics for FAL Platform models including request counts and costs",
-                  "operationId": "getFalModelUsage",
-                  "tags": ["FAL_API"],
-                  "servers": [{ "url": "https://api.fal.ai/v1" }],
-                  "parameters": [
-                    { "name": "start_date", "in": "query", "schema": { "type": "string" }, "required": false },
-                    { "name": "end_date", "in": "query", "schema": { "type": "string" }, "required": false },
-                    { "name": "endpoint_id", "in": "query", "schema": { "type": "string" }, "required": false },
-                    { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 100, "minimum": 1, "maximum": 1000 }, "required": false }
-                  ],
-                  "responses": {
-                    "200": { "description": "Usage stats", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalUsageResponse" } } } },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "FalAuth": [] }]
-                }
-              },
-              "/fal/models/analytics": {
-                "get": {
-                  "summary": "Get FAL Analytics Dashboard",
-                  "description": "Retrieve aggregated analytics including performance metrics, success rates, and trends for FAL Platform models",
-                  "operationId": "getFalModelAnalytics",
-                  "tags": ["FAL_API"],
-                  "servers": [{ "url": "https://api.fal.ai/v1" }],
-                  "parameters": [
-                    { "name": "start_date", "in": "query", "schema": { "type": "string" }, "required": false },
-                    { "name": "end_date", "in": "query", "schema": { "type": "string" }, "required": false },
-                    { "name": "metrics", "in": "query", "schema": { "type": "string" }, "required": false }
-                  ],
-                  "responses": {
-                    "200": { "description": "Analytics data", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FalAnalyticsResponse" } } } },
-                    "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
-                  },
-                  "security": [{ "FalAuth": [] }]
-                }
-              }
-            },
-            "components": {
-              "schemas": {
-                "CometModel": { "type": "object", "required": ["id","object","owned_by"], "properties": { "id": { "type": "string" }, "object": { "type": "string", "enum": ["model"] }, "created": { "type": "integer", "nullable": true }, "owned_by": { "type": "string" }, "supported_endpoint_types": { "type": "array", "items": { "type": "string", "enum": ["chat","completion","embedding","moderation"] } } } },
-                "CometModelsResponse": { "type": "object", "required": ["object","data"], "properties": { "object": { "type": "string", "enum": ["list"] }, "data": { "type": "array", "items": { "$ref": "#/components/schemas/CometModel" } } } },
-                "FalModel": { "type": "object", "required": ["endpoint_id"], "properties": { "endpoint_id": { "type": "string" }, "metadata": { "type": "object", "properties": { "display_name": { "type": "string" }, "category": { "type": "string" }, "description": { "type": "string", "nullable": true }, "status": { "type": "string" }, "tags": { "type": "array", "items": { "type": "string" }, "nullable": true } }, "nullable": true } } },
-                "FalModelsResponse": { "type": "object", "required": ["models"], "properties": { "models": { "type": "array", "items": { "$ref": "#/components/schemas/FalModel" } }, "has_more": { "type": "boolean", "nullable": true }, "next_cursor": { "type": "string", "nullable": true }, "total_count": { "type": "integer", "nullable": true } } },
-                "FalPricingResponse": { "type": "object", "required": ["prices"], "properties": { "prices": { "type": "array", "items": { "type": "object", "required": ["endpoint_id","unit_price","unit","currency"], "properties": { "endpoint_id": { "type": "string" }, "unit_price": { "type": "number" }, "unit": { "type": "string" }, "currency": { "type": "string" } } } }, "has_more": { "type": "boolean", "nullable": true }, "next_cursor": { "type": "string", "nullable": true } } },
-                "FalEstimateRequest": { "type": "object", "required": ["estimate_type","endpoints"], "properties": { "estimate_type": { "type": "string", "enum": ["unit_price"] }, "endpoints": { "type": "object", "additionalProperties": { "type": "object", "properties": { "unit_quantity": { "type": "integer" } }, "required": ["unit_quantity"] } } } },
-                "FalEstimateResponse": { "type": "object", "required": ["estimate_type","total_cost","currency"], "properties": { "estimate_type": { "type": "string" }, "total_cost": { "type": "number" }, "currency": { "type": "string" }, "breakdown": { "type": "object", "additionalProperties": { "type": "number" }, "nullable": true } } },
-                "FalUsageRecord": { "type": "object", "required": ["endpoint_id","date","requests"], "properties": { "endpoint_id": { "type": "string" }, "date": { "type": "string" }, "requests": { "type": "integer" }, "total_cost": { "type": "number", "nullable": true }, "currency": { "type": "string", "nullable": true } } },
-                "FalUsageResponse": { "type": "object", "required": ["usage"], "properties": { "usage": { "type": "array", "items": { "$ref": "#/components/schemas/FalUsageRecord" } }, "total_requests": { "type": "integer", "nullable": true }, "total_cost": { "type": "number", "nullable": true } } },
-                "FalAnalyticsRecord": { "type": "object", "required": ["endpoint_id"], "properties": { "endpoint_id": { "type": "string" }, "total_requests": { "type": "integer", "nullable": true }, "success_rate": { "type": "number", "nullable": true }, "avg_duration_ms": { "type": "number", "nullable": true }, "p50_duration_ms": { "type": "number", "nullable": true }, "p95_duration_ms": { "type": "number", "nullable": true }, "p99_duration_ms": { "type": "number", "nullable": true } } },
-                "FalAnalyticsResponse": { "type": "object", "required": ["analytics"], "properties": { "analytics": { "type": "array", "items": { "$ref": "#/components/schemas/FalAnalyticsRecord" } }, "period": { "type": "object", "properties": { "start": { "type": "string", "nullable": true }, "end": { "type": "string", "nullable": true } }, "nullable": true } } },
-                "UnifiedModelRecord": { "type": "object", "required": ["provider","model_id"], "properties": { "provider": { "type": "string", "enum": ["comet","fal"] }, "model_id": { "type": "string" }, "display_name": { "type": "string", "nullable": true }, "category": { "type": "string", "nullable": true }, "description": { "type": "string", "nullable": true }, "pricing": { "type": "object", "properties": { "unit_price": { "type": "number", "nullable": true }, "unit": { "type": "string", "nullable": true }, "currency": { "type": "string", "nullable": true } }, "nullable": true }, "metadata": { "type": "object", "additionalProperties": true, "nullable": true } } },
-                "ErrorResponse": { "type": "object", "required": ["error"], "properties": { "error": { "type": "object", "required": ["message","type"], "properties": { "message": { "type": "string" }, "type": { "type": "string" }, "code": { "type": "string", "nullable": true }, "param": { "type": "string", "nullable": true } } } } }
-              },
-              "securitySchemes": {
-                "CometAuth": { "type": "apiKey", "in": "header", "name": "Authorization", "description": "Comet API authentication: Authorization: Bearer {{COMET_API_KEY}}" },
-                "FalAuth": { "type": "apiKey", "in": "header", "name": "Authorization", "description": "FAL API authentication: Authorization: Key {{FAL_API_KEY}}" }
-              }
-            }
+            "url": "https://api.cometapi.com/v1",
+            "description": "Comet API"
           }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved Comet LLM model list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CometModelsResponse"
+                },
+                "examples": {
+                  "cometModels": {
+                    "summary": "Comet API - LLM Models",
+                    "value": {
+                      "object": "list",
+                      "data": [
+                        {
+                          "id": "gpt-4o",
+                          "object": "model",
+                          "created": 1626777600,
+                          "owned_by": "openai",
+                          "supported_endpoint_types": [
+                            "chat",
+                            "completion"
+                          ]
+                        },
+                        {
+                          "id": "claude-3-5-sonnet-20241022",
+                          "object": "model",
+                          "created": 1729641600,
+                          "owned_by": "anthropic",
+                          "supported_endpoint_types": [
+                            "chat"
+                          ]
+                        },
+                        {
+                          "id": "gemini-2.0-flash-exp",
+                          "object": "model",
+                          "created": 1730000000,
+                          "owned_by": "google",
+                          "supported_endpoint_types": [
+                            "chat",
+                            "completion"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "x-apidog-orders": [
+              "200",
+              "400",
+              "401",
+              "404"
+            ]
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "CometAuth": []
+          }
+        ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
+          "responses"
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --location 'https://api.cometapi.com/v1/comet/models' \\\n--header 'Authorization: Bearer YOUR_COMET_KEY'"
+          },
           {
             "lang": "JavaScript",
             "label": "JavaScript (fetch)",
@@ -409,34 +321,70 @@
           }
         ]
       }
-    {
-      "openapi": "3.0.3",
-      "info": {
-        "title": "BananaStudio API Hub",
-        "description": "Unified API Hub integrating Comet API (LLM models) and FAL Platform (creative models) for AI-powered workflows. Rolled back to OpenAPI 3.0.3 for Apidog UI compatibility.",
-        "version": "2.1.0",
-        "contact": {
-          "name": "BananaStudio API Team",
-          "url": "https://bananastudio.ai",
-          "email": "support@bananastudio.ai"
-        }
-      },
-      "tags": [
-        { "name": "COMET_API", "description": "Comet API - LLM model listing" },
-        { "name": "FAL_API", "description": "FAL Platform - creative model & pricing endpoints" },
-        { "name": "BananaStudio_Internal", "description": "Internal services (reserved)" },
-        { "name": "Utilities", "description": "Utility endpoints (reserved)" }
-      ],
-      "paths": {
+    },
+    "/fal/models/pricing": {
+      "get": {
+        "summary": "Get FAL Model Pricing",
+        "description": "Retrieve pricing information for all FAL Platform models including unit prices and billing units",
+        "operationId": "getFalModelPricing",
+        "tags": [
+          "FAL_API"
+        ],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Pagination cursor for retrieving next page of pricing data",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of pricing records to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 500
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved pricing information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FalPricingResponse"
+                },
+                "examples": {
+                  "pricingExample": {
+                    "summary": "Sample pricing data",
                     "value": {
                       "prices": [
                         {
-            "description": "Retrieve list of available LLM models from Comet API gateway (e.g. GPT-4, Claude, Gemini, DeepSeek, Llama).",
+                          "endpoint_id": "fal-ai/flux/dev",
                           "unit_price": 0.025,
                           "unit": "image",
                           "currency": "USD"
                         },
-            "servers": [ { "url": "https://api.cometapi.com/v1" } ],
+                        {
+                          "endpoint_id": "fal-ai/flux-pro",
+                          "unit_price": 0.05,
+                          "unit": "image",
+                          "currency": "USD"
+                        }
                       ],
                       "has_more": false,
                       "next_cursor": null
@@ -465,7 +413,11 @@
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing' \\\n--header 'Authorization: Key YOUR_FAL_KEY'"
           }
         ],
-            "security": [ { "CometAuth": [] } ],
+        "x-apidog-orders": [
+          "summary",
+          "description",
+          "parameters",
+          "requestBody",
           "responses"
         ]
       }
@@ -475,15 +427,20 @@
         "summary": "Estimate FAL Model Cost",
         "description": "Calculate estimated cost for FAL Platform model usage based on expected quantity. Useful for budgeting and cost optimization.",
         "operationId": "estimateFalModelCost",
-        "/fal/models": {
+        "tags": [
           "FAL_API"
-            "summary": "List Available FAL Models",
-            "description": "Returns the complete list of available FAL Platform models (approx 866 models) from the gateway.",
-            "operationId": "listFalModels",
+        ],
+        "servers": [
+          {
             "url": "https://api.fal.ai/v1",
             "description": "FAL Platform"
           }
-            "servers": [ { "url": "https://api.fal.ai/v1" } ],
+        ],
+        "requestBody": {
+          "description": "Cost estimation request with model endpoints and quantities",
+          "required": true,
+          "content": {
+            "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/FalEstimateRequest"
               },
@@ -491,8 +448,8 @@
                 "singleModel": {
                   "summary": "Single model estimation",
                   "value": {
-                  "type": "string",
-                  "nullable": true
+                    "estimate_type": "unit_price",
+                    "endpoints": {
                       "fal-ai/flux/dev": {
                         "unit_quantity": 100
                       }
@@ -556,7 +513,11 @@
           {
             "FalAuth": []
           }
-            "security": [ { "FalAuth": [] } ],
+        ],
+        "x-code-samples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
             "source": "curl --location 'https://api.fal.ai/v1/fal/models/pricing/estimate' \\\n--header 'Authorization: Key YOUR_FAL_KEY' \\\n--header 'Content-Type: application/json' \\\n--data '{\n  \"estimate_type\": \"unit_price\",\n  \"endpoints\": {\n    \"fal-ai/flux/dev\": {\n      \"unit_quantity\": 100\n    }\n  }\n}'"
           }
         ],
@@ -572,7 +533,7 @@
     "/fal/models/usage": {
       "get": {
         "summary": "Get FAL Usage Statistics",
-            "servers": [{ "url": "https://api.fal.ai/v1" }],
+        "description": "Retrieve historical usage statistics for FAL Platform models including request counts and costs",
         "operationId": "getFalModelUsage",
         "tags": [
           "FAL_API"
@@ -585,7 +546,7 @@
         ],
         "parameters": [
           {
-            "security": [{ "FalAuth": [] }]
+            "name": "start_date",
             "in": "query",
             "description": "Start date for usage period (ISO 8601 format: YYYY-MM-DD)",
             "required": false,
@@ -594,12 +555,12 @@
               "format": "date",
               "example": "2025-11-01"
             }
-            "servers": [{ "url": "https://api.fal.ai/v1" }],
+          },
           {
             "name": "end_date",
             "in": "query",
             "description": "End date for usage period (ISO 8601 format: YYYY-MM-DD)",
-                  "schema": { "$ref": "#/components/schemas/FalEstimateRequest" },
+            "required": false,
             "schema": {
               "type": "string",
               "format": "date",
@@ -617,7 +578,7 @@
             }
           },
           {
-            "security": [{ "FalAuth": [] }]
+            "name": "limit",
             "in": "query",
             "description": "Maximum number of usage records",
             "required": false,
@@ -626,7 +587,7 @@
               "default": 100,
               "minimum": 1,
               "maximum": 1000
-            "servers": [{ "url": "https://api.fal.ai/v1" }],
+            }
           }
         ],
         "responses": {
@@ -637,7 +598,7 @@
                 "schema": {
                   "$ref": "#/components/schemas/FalUsageResponse"
                 },
-            "security": [{ "FalAuth": [] }]
+                "examples": {
                   "usageExample": {
                     "summary": "Usage statistics",
                     "value": {
@@ -646,7 +607,7 @@
                           "endpoint_id": "fal-ai/flux/dev",
                           "date": "2025-11-15",
                           "requests": 150,
-            "servers": [{ "url": "https://api.fal.ai/v1" }],
+                          "total_cost": 3.75,
                           "currency": "USD"
                         },
                         {
@@ -656,12 +617,12 @@
                           "total_cost": 3.75,
                           "currency": "USD"
                         }
-            "security": [{ "FalAuth": [] }]
+                      ],
                       "total_requests": 225,
                       "total_cost": 7.5
                     }
-      "components": {
-        "schemas": {
+                  }
+                }
               }
             }
           },
@@ -798,10 +759,22 @@
           "description",
           "parameters",
           "requestBody",
-        "securitySchemes": {
-          "CometAuth": { "type": "apiKey", "in": "header", "name": "Authorization", "description": "Comet API authentication: Authorization: Bearer {{COMET_API_KEY}}" },
-          "FalAuth": { "type": "apiKey", "in": "header", "name": "Authorization", "description": "FAL API authentication: Authorization: Key {{FAL_API_KEY}}" }
-        }
+          "responses"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CometModel": {
+        "type": "object",
+        "required": [
+          "id",
+          "object",
+          "owned_by"
+        ],
+        "properties": {
+          "id": {
             "type": "string",
             "description": "Unique model identifier",
             "example": "gpt-4o"

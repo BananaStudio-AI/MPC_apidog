@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import './lib/load_env.js';
 /*
   List available MCP tools exposed by the Apidog MCP server.
   Helpful for selecting the correct listing/updating tools.

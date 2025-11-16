@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import './lib/load_env.js';
 /**
  * Health check for Apidog API authentication.
  * Calls Apidog REST API directly to verify token and project access.
@@ -16,7 +17,8 @@ async function main() {
 
   if (!TOKEN) {
     console.error('❌ APIDOG_ACCESS_TOKEN not set');
-    console.log('   Set it in .env from: Account Settings → API Access Token');
+    console.log('   Set it in .env from: Team Settings → Authorization → API Access Tokens');
+    console.log('   (Use team/workspace tokens, NOT account-level tokens)');
     process.exit(1);
   }
 
@@ -68,16 +70,18 @@ async function main() {
         console.log('   - Generate new token: Account Settings → API Access Token');
       } else if (projectResponse.status === 403) {
         console.log('\n💡 403 Forbidden:');
-        console.log('   Authentication succeeded, but token account lacks project access.');
-        console.log('   This is a project permission issue in Apidog, not a code bug.');
+        console.log('   You are using an account-level token which lacks project permissions.');
+        console.log('   This is expected behavior - account tokens do not have project access.');
         console.log('');
-        console.log('   Fix by doing ONE of:');
-        console.log('   1. Add your account to project', PROJECT_ID);
-        console.log('      → Apidog dashboard → Project Settings → Members');
-        console.log('      → Invite the account that owns this token');
-        console.log('   2. Verify project ID is correct');
-        console.log('      → Check APIDOG_PROJECT_ID in .env');
-        console.log('      → Confirm project exists and you have access');
+        console.log('   Fix: Use a team/workspace-level token instead:');
+        console.log('   1. Go to Apidog → Team Settings → Authorization → API Access Tokens');
+        console.log('   2. Generate a new team/workspace token');
+        console.log('   3. Update APIDOG_ACCESS_TOKEN in .env');
+        console.log('   4. Re-run this auth check');
+        console.log('');
+        console.log('   Alternative (if team tokens unavailable):');
+        console.log('   - Add your account to project', PROJECT_ID);
+        console.log('   - Apidog dashboard → Project Settings → Members');
       } else if (projectResponse.status === 404) {
         console.log('\n💡 404 Not Found:');
         console.log('   - Project', PROJECT_ID, 'does not exist');

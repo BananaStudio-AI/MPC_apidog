@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "BananaStudio API Hub": {
-      "command": "cmd",
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
         "-y",
         "apidog-mcp-server@latest",
         "--project-id=1128155"

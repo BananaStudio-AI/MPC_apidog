@@ -122,8 +122,9 @@ Run `npm run apidog:list-tools` to see exact tool names for your project.
 
 ### Permission Errors
 If you see "No project guest privilege":
-- Your token needs **project access** to ID 1128155
-- Generate a new token with proper permissions in Apidog dashboard
+- You're using an **account-level token** which lacks project access
+- Generate a **team/workspace token** instead: Team Settings → Authorization → API Access Tokens
+- Update `.env` with the new team token and reload
 
 ## Platform-Specific Notes
 

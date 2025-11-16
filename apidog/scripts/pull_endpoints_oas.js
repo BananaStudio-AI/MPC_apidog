@@ -1,3 +1,4 @@
+import './lib/load_env.js';
 #!/usr/bin/env node
 /*
   Pull endpoint specs from Apidog via OAS-based MCP tools.

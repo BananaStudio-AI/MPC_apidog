@@ -1,9 +1,10 @@
 #!/usr/bin/env node
+import './lib/env-loader.js';
 /**
- * List Apidog projects accessible with the current token.
- * Helps verify project ID and permissions.
+ * List all Apidog projects accessible with your token.
+ * Useful for finding project IDs.
  */
-import process from 'node:process';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 
 async function main() {
   const TOKEN = process.env.APIDOG_ACCESS_TOKEN;

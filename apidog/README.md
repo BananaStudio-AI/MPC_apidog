@@ -20,14 +20,16 @@ APIDOG_PROJECT_ID=1128155
 ```
 
 ### Getting Your Apidog Token
-**Important**: Apidog uses **Bearer token** authentication.
+**Important**: Apidog uses **Bearer token** authentication with **team/workspace-level tokens**.
 
-1. Log into Apidog → **Account Settings** → **API Access Token**
-2. Generate or copy your **account-level API access token**
+1. Log into Apidog → **Team Settings** → **Authorization** → **API Access Tokens** (NOT Account Settings)
+2. Generate or copy your **team/workspace-level API access token**
 3. The token should be a **single string without colons** (not `key:secret` format)
-4. Ensure the token has **project access** to project ID 1128155
+4. Team-level tokens automatically have project access; account tokens cause **403 errors**
 
 > Never commit real tokens. `.env` is already in `.gitignore`.
+
+**Why team tokens?** Account-level tokens (from Account Settings) lack project permissions and return "No project guest privilege" errors. Always use team/workspace tokens from Team Settings.
 
 ### Verify Your Token
 Before running pull/push scripts, verify your token works:
@@ -40,7 +42,7 @@ This directly tests your token against Apidog's REST API and reports:
 - ✅ Token valid and has project access
 - ❌ Token issues (format, permissions, project access)
 
-If you see **403 "No project guest privilege"**, your token lacks access to the project. Generate a new token with proper permissions.
+If you see **403 "No project guest privilege"**, you're using an account-level token. Fix: Generate a **team/workspace token** from **Team Settings → Authorization → API Access Tokens** instead.
 
 ## MCP Server Config
 An MCP config is provided at `./mcp/apidog.json` for the server named "BananaStudio API Hub".
@@ -267,8 +269,8 @@ Use an editor with TypeScript support to get intellisense in `.js` scripts via J
   1. Run `npm run apidog:auth-check` to diagnose the issue
   2. Common causes:
      - Token format incorrect (should not contain `:` colon)
-     - Token lacks project access ("No project guest privilege")
+     - Using account-level token ("No project guest privilege")
      - Wrong project ID in `APIDOG_PROJECT_ID`
-  3. Fix: Generate a new token from **Account Settings → API Access Token** with project 1128155 access
+  3. Fix: Generate a **team/workspace token** from **Team Settings → Authorization → API Access Tokens** (NOT Account Settings)
   4. Update `.env` and re-run auth check
 - The raw tool response is saved to `apidog/generated/oas_raw.json` for debugging.

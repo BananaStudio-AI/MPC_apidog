@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+#!/usr/bin/env node
+import { APIDOG_ACCESS_TOKEN, APIDOG_PROJECT_ID } from './lib/env-loader.js';
 /*
   Push merged OAS directly to Apidog via REST API.
   Requires APIDOG_ACCESS_TOKEN with write permissions.
@@ -12,8 +14,8 @@ import path from 'node:path';
 
 const ROOT = path.resolve(process.cwd());
 const DEFAULT_OAS = path.join(ROOT, 'apidog', 'generated', 'oas_merged.json');
-const PROJECT_ID = process.env.APIDOG_PROJECT_ID || '1128155';
-const TOKEN = process.env.APIDOG_ACCESS_TOKEN;
+const PROJECT_ID = APIDOG_PROJECT_ID || '1128155';
+const TOKEN = APIDOG_ACCESS_TOKEN;
 
 // Apidog REST API endpoints
 const API_BASE = 'https://api.apidog.com/api/v1';

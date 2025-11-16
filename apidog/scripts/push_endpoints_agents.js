@@ -1,3 +1,4 @@
+import './lib/load_env.js';
 #!/usr/bin/env node
 /**
  * Push endpoints via OpenAI Agents + Hosted MCP connector for Apidog.

@@ -1,3 +1,4 @@
+import './lib/load_env.js';
 #!/usr/bin/env node
 /*
   Push local endpoint specs to Apidog via MCP.

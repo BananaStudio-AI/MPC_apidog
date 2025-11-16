@@ -1,3 +1,4 @@
+import './lib/load_env.js';
 #!/usr/bin/env node
 /*
   Pull all endpoints from Apidog via MCP and write JSON specs to /apidog/api_specs.
@@ -213,10 +214,9 @@ async function main() {
       try { body = JSON.parse(bodyText); } catch { body = { raw: bodyText }; }
       if (resp.status === 403) {
         console.error('🔒 Apidog returned 403 Forbidden before MCP start.');
-        console.error(`   Authentication succeeded, but the token account does not have access to project ${PROJECT_ID}.`);
-        console.error('   → Apidog dashboard → Project Settings → Members');
-        console.error("   → Ensure this token's account is added to the project");
-        console.error(`   → Confirm APIDOG_PROJECT_ID=${PROJECT_ID} is correct`);
+        console.error('   You are using an account-level token which lacks project permissions.');
+        console.error('   Fix: Generate a team/workspace token from Team Settings → Authorization → API Access Tokens');
+        console.error('   Update .env with the team token and try again.');
       } else if (resp.status === 401) {
         console.error('❌ 401 Unauthorized from Apidog. Token invalid or expired.');
       } else if (resp.status === 404) {
@@ -269,10 +269,9 @@ async function main() {
             // Check for 403 specifically
             if (data.AxiosError.includes('403')) {
               errorMsg += `\n\n🔒 Apidog returned 403 Forbidden.`;
-              errorMsg += `\n   Authentication succeeded, but the token account does not have access to project ${PROJECT_ID}.`;
-              errorMsg += `\n   → Check Apidog → Project Settings → Members`;
-              errorMsg += `\n   → Ensure this token's account is added to the project`;
-              errorMsg += `\n   → Confirm APIDOG_PROJECT_ID=${PROJECT_ID} is correct`;
+              errorMsg += `\n   You are using an account-level token which lacks project permissions.`;
+              errorMsg += `\n   Fix: Generate a team/workspace token from Team Settings → Authorization → API Access Tokens`;
+              errorMsg += `\n   Update APIDOG_ACCESS_TOKEN in .env and retry`;
             }
           }
           if (data.message) {
