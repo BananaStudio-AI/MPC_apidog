@@ -1,3 +1,37 @@
+# Using the API HUB from BananaStudio
+
+- **Unified Project:**
+  - Both `COMET_API` and `FAL_API` are managed in a single Apidog project and unified OpenAPI spec: `openapi/api-hub.oas.json`.
+
+- **Refreshing the OpenAPI Spec:**
+  - Use the provided scripts to pull the latest endpoints from Apidog MCP:
+    ```bash
+    npm run apidog:pull && npm run oas:sync && node scripts/normalize_api_hub_oas.mjs
+    ```
+  - This will update `openapi/api-hub.raw.oas.json` and the normalized `openapi/api-hub.oas.json`.
+
+- **Regenerating the TypeScript Client:**
+  - To generate/update the production-ready client from the unified OAS:
+    ```bash
+    npm run generate:api-hub-client
+    ```
+  - Output is written to `apis/api-hub-client/`.
+
+- **Syncing the Model Registry:**
+  - To fetch and merge all models from both providers into a unified registry:
+    ```bash
+    npm run sync:model-registry
+    ```
+  - This will create/update `data/model_registry.json`.
+
+- **About `data/model_registry.json`:**
+  - This file contains an array of all models from both Comet and FAL, each as a `UnifiedModelRecord`.
+  - Fields include: `source` ("comet" or "fal"), `id`, `provider`, `category`, and the full raw model object.
+  - **Downstream uses:**
+    - As a catalog for agent selection and orchestration.
+    - For vectorisation and search workflows.
+    - For pricing, analytics, and reporting logic.
+    - As a canonical source for model metadata in BananaStudio and other agents.
 # API Hub (BananaStudio)
 
 This is the unified API Hub combining Comet and FAL model endpoints.
