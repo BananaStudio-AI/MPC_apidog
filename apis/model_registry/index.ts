@@ -53,35 +53,62 @@ export async function fetchCometModels(): Promise<UnifiedModelRecord[]> {
 }
 
 export async function fetchFalModels(): Promise<UnifiedModelRecord[]> {
-  // FAL doesn't expose a public models list endpoint
-  // Using a curated list of known FAL models for the registry
-  const knownFalModels = [
-    'fal-ai/flux/dev',
-    'fal-ai/flux-pro',
-    'fal-ai/flux/schnell',
-    'fal-ai/stable-diffusion-v3-medium',
-    'fal-ai/aura-flow',
-    'fal-ai/omnigen-v1',
-    'fal-ai/recraft-v3',
-    'fal-ai/fast-turbo-diffusion',
-    'fal-ai/runway-gen3/turbo/image-to-video',
-    'fal-ai/luma-photon',
-    'fal-ai/luma-photon-flash',
-    'fal-ai/kling-video/v1/standard/image-to-video',
-    'fal-ai/minimax-video',
-  ];
+  const apiKey = process.env.FAL_API_KEY;
+  if (!apiKey) {
+    console.error('FAL_API_KEY not set');
+    return [];
+  }
 
-  return knownFalModels.map((endpoint_id) => {
-    const parts = endpoint_id.split('/');
-    const provider = parts[0] || 'fal-ai';
-    return {
-      source: 'fal' as const,
-      id: endpoint_id,
-      provider,
-      category: endpoint_id.includes('video') ? 'video' : 'image',
-      raw: { endpoint_id, source: 'manual_registry' }
-    };
-  });
+  const baseUrl = 'https://api.fal.ai/v1/models';
+  const allModels: UnifiedModelRecord[] = [];
+  let cursor: string | null = null;
+  let page = 0;
+  
+  try {
+    do {
+      page++;
+      const url: string = cursor ? `${baseUrl}?cursor=${cursor}` : baseUrl;
+      
+      const response: Response = await fetch(url, {
+        headers: {
+          'Authorization': `Key ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data: any = await response.json();
+      const models = Array.isArray(data.models) ? data.models : [];
+      
+      console.log(`  Page ${page}: fetched ${models.length} FAL models`);
+      
+      for (const m of models) {
+        allModels.push({
+          source: 'fal' as const,
+          id: m.endpoint_id,
+          provider: m.endpoint_id ? m.endpoint_id.split('/')[0] : 'fal-ai',
+          category: m.metadata?.category ?? null,
+          raw: m
+        });
+      }
+      
+      cursor = data.has_more ? data.next_cursor : null;
+      
+      // Add small delay between requests to be respectful
+      if (cursor) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    } while (cursor);
+    
+    console.log(`  Total FAL models fetched: ${allModels.length}`);
+    return allModels;
+  } catch (err: any) {
+    console.error(`Failed to fetch FAL models: ${err.message}`);
+    return [];
+  }
 }
 
 export async function fetchAllModels(): Promise<UnifiedModelRecord[]> {

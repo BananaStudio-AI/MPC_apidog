@@ -50,20 +50,19 @@ async function checkCometModels(): Promise<number> {
 }
 
 async function checkFalModels(): Promise<number> {
-  // FAL doesn't have a public models list endpoint
-  // Using hardcoded count from registry
+  // FAL models are fetched via paginated API endpoint
   try {
     const falModels = await fetchFalModels();
     const count = falModels.length;
     
     if (count === 0) {
-      log({ service: 'FAL_API models (curated)', status: 'warn', message: 'No models in curated list', count });
+      log({ service: 'FAL_API GET /models', status: 'warn', message: 'No models returned', count });
     } else {
-      log({ service: 'FAL_API models (curated)', status: 'ok', message: `${count} models in registry`, count });
+      log({ service: 'FAL_API GET /models', status: 'ok', message: `${count} models found`, count });
     }
     return count;
   } catch (err: any) {
-    log({ service: 'FAL_API models (curated)', status: 'fail', message: err.message || String(err) });
+    log({ service: 'FAL_API GET /models', status: 'fail', message: err.message || String(err) });
     return -1;
   }
 }

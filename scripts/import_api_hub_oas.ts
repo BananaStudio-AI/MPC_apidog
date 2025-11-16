@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const APIDOG_BASE_URL = process.env.APIDOG_API_BASE_URL || 'https://api.apidog.com';
-const APIDOG_IMPORT_PATH = '/api/v1/projects/{projectId}/import-data';
+const APIDOG_IMPORT_PATH = '/v1/projects/{projectId}/import-openapi';
 
 interface ImportPayload {
   input: {
@@ -63,14 +63,17 @@ async function main() {
   // Parse OAS to send as proper JSON object
   const oasObject = JSON.parse(oasContent);
   
-  // Try alternative payload structure based on Apidog API patterns
+  // Payload structure from Apidog API docs: https://openapi.apidog.io/api-7312738
   const payload = {
     input: {
-      type: 'openapi',
-      openapi: oasObject
+      data: oasObject  // Direct OpenAPI object
     },
     options: {
-      mode: 'merge'
+      targetEndpointFolderId: 0,
+      targetSchemaFolderId: 0,
+      endpointOverwriteBehavior: 'OVERWRITE_EXISTING',
+      schemaOverwriteBehavior: 'OVERWRITE_EXISTING',
+      updateFolderOfChangedEndpoint: false
     }
   };
   
@@ -80,7 +83,8 @@ async function main() {
       headers: {
         'Authorization': `Bearer ${TOKEN}`,
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'X-Apidog-Api-Version': '2024-03-28'
       },
       body: JSON.stringify(payload)
     });
@@ -102,9 +106,18 @@ async function main() {
       process.exit(0);
     } else {
       console.error(`❌ Import failed (HTTP ${response.status})`);
-      console.error(`   ${responseData.message || responseData.error || responseText}`);
+      console.error(`   ${JSON.stringify(responseData, null, 2)}`);
       
-      if (response.status === 404) {
+      if (response.status === 422) {
+        console.error('\n💡 Apidog REST API import may require different payload structure or permissions.');
+        console.error('   The Apidog MCP server is read-only and doesn\'t support imports.');
+        console.error('\n📋 Manual Import Steps:');
+        console.error('   1. Open Apidog web UI: https://app.apidog.com');
+        console.error(`   2. Navigate to Project ${PROJECT_ID} → Settings → Import`);
+        console.error('   3. Choose "OpenAPI" format');
+        console.error(`   4. Upload: ${path.relative(process.cwd(), oasPath)}`);
+        console.error('   5. Select "Merge" mode to update existing endpoints');
+      } else if (response.status === 404) {
         console.error('\n💡 Hint: The import endpoint URL may be incorrect.');
         console.error('   Check Apidog API docs or update APIDOG_IMPORT_PATH in this script.');
         console.error(`   Current: ${APIDOG_IMPORT_PATH}`);
