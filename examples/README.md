@@ -4,13 +4,25 @@ This directory contains example scripts demonstrating how to use the generated A
 
 ## Available Examples
 
+### `api-hub-comprehensive.ts` ⭐ **NEW**
+**Comprehensive example demonstrating the full BananaStudio API Hub workflow:**
+- Querying Comet API for LLM models (568 models)
+- Querying FAL API for creative models (866 models)
+- Using the unified model registry
+- Working with FAL pricing and cost estimation
+- Proper error handling and TypeScript best practices
+- Saving registry data to files
+
+```bash
+# Prerequisites: Set API keys in .env
+tsx examples/api-hub-comprehensive.ts
+```
+
 ### `use_api_client.js`
 Demonstrates using the generated TypeScript/JavaScript client to:
 - Fetch model pricing information
 - Search for available models
 - Handle API responses with strong typing
-
-## Running Examples
 
 ```bash
 # Set your API key
