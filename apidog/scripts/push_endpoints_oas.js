@@ -5,10 +5,16 @@
   Use --force to overwrite without confirmation.
   
   Requires: APIDOG_ACCESS_TOKEN, Project ID from APIDOG_PROJECT_ID or defaults to 1128155.
+  
+  Options:
+    --force               Overwrite remote without confirmation
+    --dry-run             Show changes without applying them
+    --allow-uncommitted   Proceed even if there are uncommitted changes
 */
 import { platform } from 'node:os';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { enforceCleanWorkingTree, hasAllowUncommittedFlag } from './lib/git-utils.js';
 
 const ROOT = path.resolve(process.cwd());
 const SPEC_DIR = path.join(ROOT, 'apidog', 'api_specs');
@@ -155,6 +161,12 @@ function stableStringify(obj) {
 async function main() {
   await maybeLoadDotEnv();
   assertEnv();
+  
+  // Check for uncommitted changes before proceeding
+  enforceCleanWorkingTree({
+    allowUncommitted: hasAllowUncommittedFlag(),
+    scriptName: 'push_endpoints_oas.js'
+  });
   
   console.log('Reading local OAS and endpoint specs...');
   const localOAS = await readLocalOAS();

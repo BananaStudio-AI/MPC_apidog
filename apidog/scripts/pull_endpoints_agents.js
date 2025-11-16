@@ -13,9 +13,13 @@
  * - List Apidog modules
  * - For each module, list endpoints and fetch details
  * - Save each endpoint JSON into apidog/api_specs/
+ * 
+ * Options:
+ *   --allow-uncommitted  Proceed even if there are uncommitted changes
  */
 import fs from 'node:fs';
 import path from 'node:path';
+import { enforceCleanWorkingTree, hasAllowUncommittedFlag } from './lib/git-utils.js';
 
 // Lazy import to avoid crashing when package isn't installed yet
 async function getAgents() {
@@ -46,6 +50,12 @@ async function main() {
     console.error('APIDOG_ACCESS_TOKEN not set. The MCP connector requires authorization.');
     process.exit(1);
   }
+
+  // Check for uncommitted changes before proceeding
+  enforceCleanWorkingTree({
+    allowUncommitted: hasAllowUncommittedFlag(),
+    scriptName: 'pull_endpoints_agents.js'
+  });
 
   const { Agent, run, hostedMcpTool } = await getAgents();
 

@@ -4,10 +4,14 @@
   Fetches the full OpenAPI spec and extracts individual endpoint definitions.
   
   Requires: APIDOG_ACCESS_TOKEN, Project ID from APIDOG_PROJECT_ID or defaults to 1128155.
+  
+  Options:
+    --allow-uncommitted  Proceed even if there are uncommitted changes
 */
 import { platform } from 'node:os';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { enforceCleanWorkingTree, hasAllowUncommittedFlag } from './lib/git-utils.js';
 
 const ROOT = path.resolve(process.cwd());
 const SPEC_DIR = path.join(ROOT, 'apidog', 'api_specs');
@@ -166,6 +170,12 @@ async function saveRawOAS(oas) {
 async function main() {
   await maybeLoadDotEnv();
   assertEnv();
+  
+  // Check for uncommitted changes before proceeding
+  enforceCleanWorkingTree({
+    allowUncommitted: hasAllowUncommittedFlag(),
+    scriptName: 'pull_endpoints_oas.js'
+  });
   
   console.log('Connecting to MCP server...');
   const client = await connectMCP();

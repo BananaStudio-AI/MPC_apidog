@@ -14,10 +14,14 @@
  *   - serverLabel: "BananaStudio API Hub"
  *   - connectorId: "connector_apidog"
  *   - allowed tools include: listModules, listEndpoints, getEndpoint, updateEndpoint, createEndpoint
+ * 
+ * Options:
+ *   --allow-uncommitted  Proceed even if there are uncommitted changes
  */
 import fs from 'node:fs/promises';
 import fssync from 'node:fs';
 import path from 'node:path';
+import { enforceCleanWorkingTree, hasAllowUncommittedFlag } from './lib/git-utils.js';
 
 async function getAgents() {
   try {
@@ -122,6 +126,13 @@ async function main() {
     console.error('OPENAI_API_KEY not set. Export your key first.');
     process.exit(1);
   }
+  
+  // Check for uncommitted changes before proceeding
+  enforceCleanWorkingTree({
+    allowUncommitted: hasAllowUncommittedFlag(),
+    scriptName: 'push_endpoints_agents.js'
+  });
+  
   const argv = process.argv.slice(2);
   const hasFlag = (f) => argv.includes(f);
   const getFlag = (name, def) => {
