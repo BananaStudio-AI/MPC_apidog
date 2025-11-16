@@ -48,7 +48,7 @@ export class ApiClient {
   private headers: Record<string, string>;
 
   constructor(config: ApiClientConfig = {}) {
-    this.baseUrl = config.baseUrl || 'https://api.fal.ai/v1/models/pricing';
+    this.baseUrl = config.baseUrl || 'https://api.fal.ai';
     this.apiKey = config.apiKey;
     this.headers = {
       'Content-Type': 'application/json',
