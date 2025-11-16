@@ -63,12 +63,14 @@ async function main() {
   // Parse OAS to send as proper JSON object
   const oasObject = JSON.parse(oasContent);
   
+  // Try alternative payload structure based on Apidog API patterns
   const payload = {
-    importType: 'openapi',
-    importFormat: 'openapi3',
-    dataSchema: oasObject,
-    syncSetting: {
-      syncMethod: 'increment' // or 'all' for full overwrite
+    input: {
+      type: 'openapi',
+      openapi: oasObject
+    },
+    options: {
+      mode: 'merge'
     }
   };
   

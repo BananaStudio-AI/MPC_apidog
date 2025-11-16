@@ -23,14 +23,19 @@ function log(result: HealthCheckResult) {
 
 async function checkCometModels(): Promise<number> {
   try {
-    const client = new ApiClient({
-      apiKey: process.env.COMET_API_KEY,
-      baseUrl: 'https://api.cometapi.com/v1'
+    const response = await fetch('https://api.cometapi.com/v1/models', {
+      headers: {
+        'Authorization': `Bearer ${process.env.COMET_API_KEY}`,
+        'Content-Type': 'application/json'
+      }
     });
-    const resp = await client.getModelsSearch();
-    const count = Array.isArray((resp as any).models) 
-      ? (resp as any).models.length 
-      : (Array.isArray((resp as any).data) ? (resp as any).data.length : 0);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    const count = Array.isArray(data.data) ? data.data.length : 0;
     
     if (count === 0) {
       log({ service: 'COMET_API GET /models', status: 'warn', message: 'Returned empty array', count });
@@ -45,39 +50,48 @@ async function checkCometModels(): Promise<number> {
 }
 
 async function checkFalModels(): Promise<number> {
+  // FAL doesn't have a public models list endpoint
+  // Using hardcoded count from registry
   try {
-    const client = new ApiClient({
-      apiKey: process.env.FAL_API_KEY,
-      baseUrl: 'https://api.fal.ai/v1'
-    });
-    const resp = await client.getModelsSearch();
-    const count = Array.isArray((resp as any).models) 
-      ? (resp as any).models.length 
-      : (Array.isArray((resp as any).data) ? (resp as any).data.length : 0);
+    const falModels = await fetchFalModels();
+    const count = falModels.length;
     
     if (count === 0) {
-      log({ service: 'FAL_API GET /models', status: 'warn', message: 'Returned empty array', count });
+      log({ service: 'FAL_API models (curated)', status: 'warn', message: 'No models in curated list', count });
     } else {
-      log({ service: 'FAL_API GET /models', status: 'ok', message: `${count} models found`, count });
+      log({ service: 'FAL_API models (curated)', status: 'ok', message: `${count} models in registry`, count });
     }
     return count;
   } catch (err: any) {
-    log({ service: 'FAL_API GET /models', status: 'fail', message: err.message || String(err) });
+    log({ service: 'FAL_API models (curated)', status: 'fail', message: err.message || String(err) });
     return -1;
   }
 }
 
 async function checkFalPricing(): Promise<boolean> {
   try {
-    const client = new ApiClient({
-      apiKey: process.env.FAL_API_KEY,
-      baseUrl: 'https://api.fal.ai/v1'
+    const response = await fetch('https://api.fal.ai/v1/models/pricing/estimate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Key ${process.env.FAL_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        estimate_type: 'unit_price',
+        endpoints: {
+          'fal-ai/flux/dev': { unit_quantity: 1 }
+        }
+      })
     });
-    await client.getModelsPricing();
-    log({ service: 'FAL_API GET /models/pricing', status: 'ok', message: 'HTTP 200' });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    log({ service: 'FAL_API POST /pricing/estimate', status: 'ok', message: 'HTTP 200' });
     return true;
   } catch (err: any) {
-    log({ service: 'FAL_API GET /models/pricing', status: 'fail', message: err.message || String(err) });
+    log({ service: 'FAL_API POST /pricing/estimate', status: 'fail', message: err.message || String(err) });
     return false;
   }
 }

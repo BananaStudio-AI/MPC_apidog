@@ -63,10 +63,11 @@ export class ApiClient {
     this.apiKey = config.apiKey;
     this.headers = {
       'Content-Type': 'application/json',
-      ...config.headers
+      ...config.headers  // Custom headers override defaults
     };
     
-    if (this.apiKey) {
+    // Only set Authorization if not already provided in config.headers
+    if (this.apiKey && !config.headers?.['Authorization']) {
       this.headers['Authorization'] = `Key ${this.apiKey}`;
     }
   }
