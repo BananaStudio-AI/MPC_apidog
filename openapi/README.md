@@ -1,6 +1,6 @@
 # OpenAPI Specifications
 
-Canonical OpenAPI 3.1.0 specifications for BananaStudio API Hub.
+Canonical OpenAPI 3.0.3 specifications for BananaStudio API Hub.
 
 ## Files
 
