@@ -37,3 +37,8 @@ coverage/
 tmp/
 temp/
 *.tmp
+
+# Keep OpenAPI specs and generated API clients
+# These are tracked in version control
+!openapi/
+!apis/
