@@ -1,0 +1,155 @@
+#!/usr/bin/env ts-node
+/**
+ * Production health-check for BananaStudio API HUB
+ * Validates connectivity and data integrity for COMET_API and FAL_API
+ */
+import ApiClient from '../apis/api-hub-client';
+import { fetchCometModels, fetchFalModels, fetchAllModels } from '../apis/model_registry';
+
+interface HealthCheckResult {
+  service: string;
+  status: 'ok' | 'warn' | 'fail';
+  message: string;
+  count?: number;
+}
+
+const results: HealthCheckResult[] = [];
+
+function log(result: HealthCheckResult) {
+  results.push(result);
+  const icon = result.status === 'ok' ? '✓' : result.status === 'warn' ? '⚠' : '✗';
+  console.log(`${icon} ${result.service}: ${result.message}`);
+}
+
+async function checkCometModels(): Promise<number> {
+  try {
+    const client = new ApiClient({
+      apiKey: process.env.COMET_API_KEY,
+      baseUrl: 'https://api.cometapi.com/v1'
+    });
+    const resp = await client.getModelsSearch();
+    const count = Array.isArray((resp as any).models) 
+      ? (resp as any).models.length 
+      : (Array.isArray((resp as any).data) ? (resp as any).data.length : 0);
+    
+    if (count === 0) {
+      log({ service: 'COMET_API GET /models', status: 'warn', message: 'Returned empty array', count });
+    } else {
+      log({ service: 'COMET_API GET /models', status: 'ok', message: `${count} models found`, count });
+    }
+    return count;
+  } catch (err: any) {
+    log({ service: 'COMET_API GET /models', status: 'fail', message: err.message || String(err) });
+    return -1;
+  }
+}
+
+async function checkFalModels(): Promise<number> {
+  try {
+    const client = new ApiClient({
+      apiKey: process.env.FAL_API_KEY,
+      baseUrl: 'https://api.fal.ai/v1'
+    });
+    const resp = await client.getModelsSearch();
+    const count = Array.isArray((resp as any).models) 
+      ? (resp as any).models.length 
+      : (Array.isArray((resp as any).data) ? (resp as any).data.length : 0);
+    
+    if (count === 0) {
+      log({ service: 'FAL_API GET /models', status: 'warn', message: 'Returned empty array', count });
+    } else {
+      log({ service: 'FAL_API GET /models', status: 'ok', message: `${count} models found`, count });
+    }
+    return count;
+  } catch (err: any) {
+    log({ service: 'FAL_API GET /models', status: 'fail', message: err.message || String(err) });
+    return -1;
+  }
+}
+
+async function checkFalPricing(): Promise<boolean> {
+  try {
+    const client = new ApiClient({
+      apiKey: process.env.FAL_API_KEY,
+      baseUrl: 'https://api.fal.ai/v1'
+    });
+    await client.getModelsPricing();
+    log({ service: 'FAL_API GET /models/pricing', status: 'ok', message: 'HTTP 200' });
+    return true;
+  } catch (err: any) {
+    log({ service: 'FAL_API GET /models/pricing', status: 'fail', message: err.message || String(err) });
+    return false;
+  }
+}
+
+async function checkUnifiedRegistry(): Promise<number> {
+  try {
+    const allModels = await fetchAllModels();
+    const cometCount = allModels.filter(m => m.source === 'comet').length;
+    const falCount = allModels.filter(m => m.source === 'fal').length;
+    const total = allModels.length;
+    
+    if (total === 0) {
+      log({ service: 'Unified Registry', status: 'warn', message: 'No models in registry', count: 0 });
+    } else {
+      log({ 
+        service: 'Unified Registry', 
+        status: 'ok', 
+        message: `${total} total (comet: ${cometCount}, fal: ${falCount})`,
+        count: total 
+      });
+    }
+    return total;
+  } catch (err: any) {
+    log({ service: 'Unified Registry', status: 'fail', message: err.message || String(err) });
+    return -1;
+  }
+}
+
+async function main() {
+  console.log('🏥 BananaStudio API HUB Health Check\n');
+  
+  // Validate environment
+  if (!process.env.COMET_API_KEY) {
+    console.error('✗ Missing COMET_API_KEY in environment');
+    process.exit(1);
+  }
+  if (!process.env.FAL_API_KEY) {
+    console.error('✗ Missing FAL_API_KEY in environment');
+    process.exit(1);
+  }
+  
+  // Run checks
+  const [cometCount, falCount, pricingOk, registryTotal] = await Promise.all([
+    checkCometModels(),
+    checkFalModels(),
+    checkFalPricing(),
+    checkUnifiedRegistry()
+  ]);
+  
+  console.log('\n📊 Summary:');
+  console.log(`   COMET models: ${cometCount >= 0 ? cometCount : 'ERROR'}`);
+  console.log(`   FAL models: ${falCount >= 0 ? falCount : 'ERROR'}`);
+  console.log(`   Registry total: ${registryTotal >= 0 ? registryTotal : 'ERROR'}`);
+  
+  const failures = results.filter(r => r.status === 'fail').length;
+  const warnings = results.filter(r => r.status === 'warn').length;
+  
+  console.log(`\n   Status: ${failures} failures, ${warnings} warnings`);
+  
+  if (failures > 0) {
+    console.error('\n❌ Health check FAILED');
+    process.exit(1);
+  } else if (warnings > 0) {
+    console.warn('\n⚠️  Health check passed with warnings');
+    process.exit(0);
+  } else {
+    console.log('\n✅ Health check PASSED');
+    process.exit(0);
+  }
+}
+
+main().catch((err) => {
+  console.error('\n💥 Fatal error during health check:', err.message || String(err));
+  process.exit(1);
+});
