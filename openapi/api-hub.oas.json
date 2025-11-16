@@ -1,0 +1,268 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "BananaStudio API Hub",
+    "description": "Unified API Hub integrating Comet Models and FAL Platform APIs for AI-driven creative workflows",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.cometapi.com/v1",
+      "description": "Comet API"
+    },
+    {
+      "url": "https://api.fal.ai/v1",
+      "description": "FAL Platform API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "COMET_API",
+      "description": "Comet Models API - Model registry, metadata, and pricing"
+    },
+    {
+      "name": "FAL_API",
+      "description": "FAL Platform API - Creative generation and model services"
+    }
+  ],
+  "paths": {
+    "/models/pricing": {
+      "get": {
+        "summary": "GET Models Pricing",
+        "description": "",
+        "tags": [
+          "FAL_API"
+        ],
+        "operationId": "fal_api_get_models_pricing",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "next_cursor": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "has_more": {
+                  "type": "boolean"
+                },
+                "prices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "endpoint_id": {
+                        "type": "string"
+                      },
+                      "unit_price": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                      }
+                    },
+                    "required": [
+                      "endpoint_id",
+                      "unit_price",
+                      "unit",
+                      "currency"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "next_cursor",
+                "has_more",
+                "prices"
+              ]
+            }
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/pricing/estimate": {
+      "post": {
+        "summary": "Estimate Model Pricing",
+        "description": "",
+        "tags": [
+          "FAL_API"
+        ],
+        "operationId": "fal_api_post_models_pricing_estimate",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "estimate_type": "unit_price",
+              "total_cost": 2.5,
+              "currency": "USD"
+            }
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/usage": {
+      "get": {
+        "summary": "GET Usage",
+        "description": "Get model usage statistics",
+        "tags": [
+          "FAL_API"
+        ],
+        "operationId": "fal_api_get__models_usage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/analytics": {
+      "get": {
+        "summary": "GET Analytics",
+        "description": "Get model analytics data",
+        "tags": [
+          "FAL_API"
+        ],
+        "operationId": "fal_api_get__models_analytics",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/search": {
+      "get": {
+        "summary": "Search models (FAL)",
+        "description": "Search and list models from FAL Platform",
+        "tags": [
+          "FAL_API"
+        ],
+        "operationId": "fal_api_get_models_search",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "models": [
+                {
+                  "endpoint_id": "fal-ai/flux/dev",
+                  "metadata": {
+                    "display_name": "FLUX.1 [dev]",
+                    "category": "text-to-image",
+                    "description": "Fast text-to-image generation",
+                    "status": "active",
+                    "tags": [
+                      "fast",
+                      "pro"
+                    ],
+                    "updated_at": "2025-01-15T12:00:00Z",
+                    "is_favorited": false,
+                    "thumbnail_url": "https://fal.media/files/example.jpg",
+                    "model_url": "https://fal.run/fal-ai/flux/dev",
+                    "date": "2024-08-01T00:00:00Z",
+                    "highlighted": true,
+                    "pinned": false
+                  }
+                }
+              ],
+              "next_cursor": null,
+              "has_more": false
+            }
+          }
+        },
+        "deprecated": false,
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models": {
+      "get": {
+        "summary": "GET Models",
+        "description": "List available models from Comet API",
+        "tags": [
+          "COMET_API"
+        ],
+        "operationId": "comet_api_get_models",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CometModelsResponse"
+                }
+              }
+            }
+          }
+        },
+        "servers": [
+          {
+            "url": "https://api.cometapi.com/v1",
+            "description": "Comet API"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "$ref": "/components/schemas/index.json"
+    },
+    "securitySchemes": {
+      "$ref": "/components/securitySchemes/index.json"
+    }
+  }
+}

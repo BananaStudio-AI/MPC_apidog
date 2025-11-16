@@ -1,0 +1,147 @@
+{
+  "fetchedAt": "2025-11-16T08:06:26.044Z",
+  "projectId": "1128155",
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0",
+    "x-download-time": "2025-11-15T20:50:08.896Z"
+  },
+  "paths": {
+    "/": {
+      "$ref": "/paths/_.json",
+      "get": {
+        "summary": "GET Models Pricing",
+        "description": "",
+        "deprecated": false,
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "next_cursor": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "has_more": {
+                  "type": "boolean"
+                },
+                "prices": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "endpoint_id": {
+                        "type": "string"
+                      },
+                      "unit_price": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 3
+                      }
+                    },
+                    "required": [
+                      "endpoint_id",
+                      "unit_price",
+                      "unit",
+                      "currency"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "next_cursor",
+                "has_more",
+                "prices"
+              ]
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/models": {
+      "$ref": "/paths/_models.json",
+      "get": {
+        "summary": "GET Model search",
+        "description": "",
+        "deprecated": false,
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "models": [
+                {
+                  "endpoint_id": "fal-ai/flux/dev",
+                  "metadata": {
+                    "display_name": "FLUX.1 [dev]",
+                    "category": "text-to-image",
+                    "description": "Fast text-to-image generation",
+                    "status": "active",
+                    "tags": [
+                      "fast",
+                      "pro"
+                    ],
+                    "updated_at": "2025-01-15T12:00:00Z",
+                    "is_favorited": false,
+                    "thumbnail_url": "https://fal.media/files/example.jpg",
+                    "model_url": "https://fal.run/fal-ai/flux/dev",
+                    "date": "2024-08-01T00:00:00Z",
+                    "highlighted": true,
+                    "pinned": false
+                  }
+                }
+              ],
+              "next_cursor": null,
+              "has_more": false
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/v1/models/pricing/estimate": {
+      "post": {
+        "summary": "Estimate Model Pricing",
+        "description": "",
+        "deprecated": false,
+        "tags": [
+          "pricing"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "example": {
+              "estimate_type": "unit_price",
+              "total_cost": 2.5,
+              "currency": "USD"
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "webhooks": {},
+  "components": {
+    "schemas": {
+      "$ref": "/components/schemas/index.json"
+    },
+    "securitySchemes": {
+      "$ref": "/components/securitySchemes/index.json"
+    }
+  },
+  "servers": [],
+  "security": []
+}
