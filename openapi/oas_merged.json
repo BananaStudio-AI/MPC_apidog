@@ -93,5 +93,54 @@
         }
       }
     }
+    ,
+    "/v1/models/pricing/estimate": {
+      "post": {
+        "summary": "Estimate Model Pricing",
+        "operationId": "estimateModelsPricing",
+        "tags": ["pricing"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "estimate_type": { "type": "string" },
+                  "endpoints": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "unit_quantity": { "type": "number" }
+                      },
+                      "required": ["unit_quantity"]
+                    }
+                  }
+                },
+                "required": ["estimate_type", "endpoints"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Estimate result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "estimate_type": { "type": "string" },
+                    "total_cost": { "type": "number" },
+                    "currency": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

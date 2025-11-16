@@ -98,6 +98,12 @@ export interface ModelsPricingResponse {
   }>;
 }
 
+export interface PricingEstimateResponse {
+  estimate_type: string;
+  total_cost: number;
+  currency: string;
+}
+
 export interface ModelSearchResponse {
   models: Array<{
     endpoint_id: string;
@@ -180,6 +186,14 @@ export class ApiClient {
    */
   async getModelsSearch(): Promise<ModelSearchResponse> {
     return this.request<ModelSearchResponse>('GET', '/models');
+  }
+
+  /**
+   * POST Estimate Model Pricing
+   * Returns aggregated pricing estimate for requested endpoints
+   */
+  async estimateModelsPricing(body: any): Promise<PricingEstimateResponse> {
+    return this.request<PricingEstimateResponse>('POST', '/v1/models/pricing/estimate', { body });
   }
 }
 

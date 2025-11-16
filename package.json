@@ -15,7 +15,10 @@
     "apidog:validate": "node apidog/scripts/validate_specs.js",
     "oas:sync": "node scripts/copy_oas_to_tracked.js",
     "generate:client": "node scripts/generate_client.js",
-    "sync:model-catalog": "tsx scripts/sync_model_catalog.ts"
+    "sync:model-catalog": "tsx scripts/sync_model_catalog.ts",
+    "fal:estimate": "tsx scripts/fal_pricing_estimate.ts"
+    ,
+    "test:client-estimate": "tsx scripts/test_client_estimate.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.22.0",
