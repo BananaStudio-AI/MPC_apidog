@@ -1,0 +1,12 @@
+{
+  "id": "GET__models_analytics_fal",
+  "method": "GET",
+  "path": "/models/analytics",
+  "summary": "GET Analytics (FAL)",
+  "description": "Retrieve analytics for FAL models.",
+  "deprecated": false,
+  "tags": ["FAL_API"],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}

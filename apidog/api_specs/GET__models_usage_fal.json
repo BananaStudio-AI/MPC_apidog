@@ -1,0 +1,12 @@
+{
+  "id": "GET__models_usage_fal",
+  "method": "GET",
+  "path": "/models/usage",
+  "summary": "GET Usage (FAL)",
+  "description": "Retrieve usage metrics for FAL.",
+  "deprecated": false,
+  "tags": ["FAL_API"],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}

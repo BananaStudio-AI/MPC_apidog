@@ -1,0 +1,20 @@
+{
+  "id": "POST__models_pricing_estimate_fal",
+  "method": "POST",
+  "path": "/models/pricing/estimate",
+  "summary": "POST Estimated Cost (FAL)",
+  "description": "Estimate cost for a FAL model invocation.",
+  "deprecated": false,
+  "tags": ["FAL_API"],
+  "parameters": [],
+  "requestBody": {
+    "required": true,
+    "content": {
+      "application/json": {
+        "schema": { "type": "object" }
+      }
+    }
+  },
+  "responses": {},
+  "security": []
+}

@@ -111,6 +111,40 @@ async function normalize() {
     }
   }
 
+  // Ensure required FAL endpoints exist even if absent in raw OAS
+  function ensureFal(pathKey, method, summary) {
+    const lower = method.toLowerCase();
+    if (!normalized.paths[pathKey]) normalized.paths[pathKey] = {};
+    if (!normalized.paths[pathKey][lower]) {
+      normalized.paths[pathKey][lower] = {
+        summary,
+        tags: ['FAL_API'],
+        servers: [FAL_SERVER]
+      };
+    } else {
+      // Make sure FAL tag and server are present if this is intended as FAL op
+      const op = normalized.paths[pathKey][lower];
+      const tags = Array.isArray(op.tags) ? op.tags : [];
+      if (!tags.includes('FAL_API')) op.tags = ['FAL_API', ...tags];
+      op.servers = [FAL_SERVER];
+    }
+  }
+
+  // Ensure COMET models GET carries COMET tag/server if it exists
+  if (normalized.paths['/models']?.get) {
+    const op = normalized.paths['/models'].get;
+    const tags = Array.isArray(op.tags) ? op.tags : [];
+    if (!tags.includes('COMET_API')) op.tags = ['COMET_API', ...tags];
+    op.servers = [COMET_SERVER];
+  }
+
+  // FAL required operations
+  ensureFal('/models', 'GET', 'GET Models (FAL)');
+  ensureFal('/models/pricing', 'GET', 'GET Models Pricing (FAL)');
+  ensureFal('/models/pricing/estimate', 'POST', 'POST Estimated Cost (FAL)');
+  ensureFal('/models/usage', 'GET', 'GET Usage (FAL)');
+  ensureFal('/models/analytics', 'GET', 'GET Analytics (FAL)');
+
   // Ensure components exist even if raw had $refs only
   normalized.components = normalized.components || {};
 

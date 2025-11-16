@@ -2,10 +2,10 @@
   "id": "GET__models",
   "method": "GET",
   "path": "/models",
-  "summary": "GET Model search",
+  "summary": "GET Models (Comet)",
   "description": "",
   "deprecated": false,
-  "tags": [],
+  "tags": ["COMET_API"],
   "parameters": [],
   "responses": {},
   "security": []

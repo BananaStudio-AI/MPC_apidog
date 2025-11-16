@@ -1,0 +1,12 @@
+{
+  "id": "GET__models_pricing_fal",
+  "method": "GET",
+  "path": "/models/pricing",
+  "summary": "GET Models Pricing (FAL)",
+  "description": "Retrieve pricing for FAL models.",
+  "deprecated": false,
+  "tags": ["FAL_API"],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}

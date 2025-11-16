@@ -1,0 +1,12 @@
+{
+  "id": "GET__models_fal",
+  "method": "GET",
+  "path": "/models",
+  "summary": "GET Models (FAL)",
+  "description": "List models from FAL platform.",
+  "deprecated": false,
+  "tags": ["FAL_API"],
+  "parameters": [],
+  "responses": {},
+  "security": []
+}

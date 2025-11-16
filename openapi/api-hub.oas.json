@@ -35,12 +35,55 @@
       "get": {
         "summary": "GET Model search",
         "tags": [
+          "FAL_API",
           "COMET_API"
         ],
         "servers": [
           {
-            "url": "https://api.cometapi.com/v1",
-            "description": "Comet API"
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/pricing/estimate": {
+      "post": {
+        "summary": "POST Estimated Cost (FAL)",
+        "tags": [
+          "FAL_API"
+        ],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/usage": {
+      "get": {
+        "summary": "GET Usage (FAL)",
+        "tags": [
+          "FAL_API"
+        ],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
+          }
+        ]
+      }
+    },
+    "/models/analytics": {
+      "get": {
+        "summary": "GET Analytics (FAL)",
+        "tags": [
+          "FAL_API"
+        ],
+        "servers": [
+          {
+            "url": "https://api.fal.ai/v1",
+            "description": "FAL Platform API"
           }
         ]
       }
