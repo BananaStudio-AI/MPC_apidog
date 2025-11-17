@@ -18,6 +18,9 @@ out/
 .env.test.local
 .env.production.local
 
+# Exception: Include ai-infra template .env files (safe dev defaults)
+!ai-infra/*/.env
+
 # OS files
 .DS_Store
 Thumbs.db
