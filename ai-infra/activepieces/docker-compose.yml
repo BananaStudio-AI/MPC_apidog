@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${AP_POSTGRES_USER:-activepieces}
+      POSTGRES_PASSWORD: ${AP_POSTGRES_PASSWORD:-activepieces_pg_local_dev}
+      POSTGRES_DB: ${AP_POSTGRES_DATABASE:-activepieces}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${AP_POSTGRES_USER:-activepieces}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - activepieces-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --requirepass ${AP_REDIS_PASSWORD:-activepieces_redis_local_dev}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "auth", "${AP_REDIS_PASSWORD:-activepieces_redis_local_dev}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - activepieces-network
+
+  # Activepieces Main Service
+  activepieces:
+    image: activepieces/activepieces:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      # Database Configuration
+      AP_POSTGRES_HOST: postgres
+      AP_POSTGRES_PORT: 5432
+      AP_POSTGRES_DATABASE: ${AP_POSTGRES_DATABASE:-activepieces}
+      AP_POSTGRES_USERNAME: ${AP_POSTGRES_USER:-activepieces}
+      AP_POSTGRES_PASSWORD: ${AP_POSTGRES_PASSWORD:-activepieces_pg_local_dev}
+      AP_POSTGRES_USE_SSL: 'false'
+      
+      # Redis Configuration
+      AP_REDIS_HOST: redis
+      AP_REDIS_PORT: 6379
+      AP_REDIS_PASSWORD: ${AP_REDIS_PASSWORD:-activepieces_redis_local_dev}
+      AP_REDIS_DB: 0
+      AP_REDIS_USE_SSL: 'false'
+      
+      # Application Security Keys
+      AP_ENCRYPTION_KEY: ${AP_ENCRYPTION_KEY:-activepieces-encryption-key-local-dev-32chars-min}
+      AP_JWT_SECRET: ${AP_JWT_SECRET:-activepieces-jwt-secret-local-dev-change-in-prod}
+      AP_API_KEY: ${AP_API_KEY:-activepieces-api-key-local-dev-change-in-production}
+      
+      # Application Configuration
+      AP_ENGINE_EXECUTABLE_PATH: dist/packages/engine/main.js
+      AP_FRONTEND_URL: http://localhost:8080
+      AP_WEBHOOK_TIMEOUT_SECONDS: 30
+      AP_TRIGGER_DEFAULT_POLL_INTERVAL: 5
+      
+      # Environment
+      AP_ENVIRONMENT: dev
+      AP_LOG_LEVEL: INFO
+      
+      # Execution Mode
+      AP_EXECUTION_MODE: UNSANDBOXED
+      AP_SANDBOX_RUN_TIME_SECONDS: 600
+      
+      # Queue Configuration
+      AP_QUEUE_MODE: MEMORY
+      
+      # MPC-API Integration (from ACTIVEPIECES_MCP_API_INTEGRATION.md)
+      MPC_API_BASE_URL: ${MPC_API_BASE_URL:-http://host.docker.internal:3000}
+      MPC_API_KEY: ${MPC_API_KEY:-mpc-api-secure-key-local-dev-change-me}
+      MPC_API_TIMEOUT: ${MPC_API_TIMEOUT:-120000}
+      
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - activepieces_data:/root/.activepieces
+    networks:
+      - activepieces-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  activepieces-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  activepieces_data:
