@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "test:integration": "node tests/integration/test_mpc_api_litellm.mjs",
     "legacy:apidog:list-projects": "node legacy/apidog/scripts/list_projects.js",
     "legacy:apidog:auth-check": "node legacy/apidog/scripts/auth_check.js",
     "legacy:apidog:list-tools": "node legacy/apidog/scripts/list_tools.js",

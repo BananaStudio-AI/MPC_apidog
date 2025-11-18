@@ -38,6 +38,14 @@ tmp/
 temp/
 *.tmp
 
+# Legacy Apidog generated files
+legacy/apidog/generated/
+
+# MPC-API
+mpc-api/node_modules/
+mpc-api/dist/
+mpc-api/.env
+
 # Keep OpenAPI specs and generated API clients
 # These are tracked in version control
 !openapi/
