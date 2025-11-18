@@ -24,7 +24,7 @@ Comprehensive documentation for BananaStudio API Hub - unified integration of Co
 
 ### FAL Platform (Creative AI)
 - **Base URL**: `https://api.fal.ai/v1`
-- **Models**: 866 creative models (FLUX, Stable Diffusion, video, audio)
+- **Models**: 866 creative models (FLUX, Stable Diffusion, video, audio) 
 - **Authentication**: Key header
 - **Endpoints**: `/fal/models`, `/fal/models/pricing`, `/fal/models/pricing/estimate`, `/fal/models/usage`, `/fal/models/analytics`
 
