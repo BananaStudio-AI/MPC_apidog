@@ -55,6 +55,10 @@ npm run health:api-hub
 ## 🔧 Available Commands
 
 ```bash
+# MPC-API Server
+npm start                          # Start Express server (production)
+npm run dev                        # Start with hot-reload (development)
+
 # API Management
 npm run generate:api-hub-client  # Regenerate TypeScript client
 npm run sync:model-registry      # Fetch and sync model catalog
@@ -67,6 +71,12 @@ npm run apidog:pull              # Pull latest OAS from Apidog
 ```
 
 ## 🌐 Endpoints
+
+### MPC-API Application
+- `POST /api/orchestrate` - Get multi-model orchestration plan based on job type
+  - Supported job types: `tariff_video_overlay`
+  - Returns array of orchestration steps with model assignments
+  - Returns 400 for unknown job types
 
 ### Comet API (LLMs)
 - `GET /comet/models` - List 568 language models
