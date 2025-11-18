@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "dist",
+    "lib": ["ESNext", "DOM"],
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "model_catalog/**/*.json"],
+  "exclude": ["node_modules", "dist"]
+}

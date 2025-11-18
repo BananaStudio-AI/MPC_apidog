@@ -1,0 +1,34 @@
+[
+  {
+    "alias": "gpt-4-turbo",
+    "provider_id": "openai/gpt-4-turbo",
+    "task_types": ["chat", "reasoning"],
+    "domains": ["general"],
+    "modality": "text",
+    "tier": "flagship"
+  },
+  {
+    "alias": "claude-3-opus",
+    "provider_id": "anthropic/claude-3-opus",
+    "task_types": ["chat", "analysis"],
+    "domains": ["general", "enterprise"],
+    "modality": "text",
+    "tier": "flagship"
+  },
+  {
+    "alias": "llama-3-70b",
+    "provider_id": "meta/llama-3-70b",
+    "task_types": ["chat"],
+    "domains": ["general"],
+    "modality": "text",
+    "tier": "strong"
+  },
+  {
+    "alias": "flux-1-dev",
+    "provider_id": "black-forest-labs/flux-1-dev",
+    "task_types": ["generation"],
+    "domains": ["creative"],
+    "modality": "image",
+    "tier": "draft"
+  }
+]
