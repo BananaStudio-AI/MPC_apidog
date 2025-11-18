@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  mpc-api:
+    build: ./mpc-api
+    container_name: mpc-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - LITELLM_BASE_URL=http://litellm:4000
+    depends_on:
+      - litellm
+    networks:
+      - ai-infra-net
+
+  litellm:
+    image: ghcr.io/berriai/litellm:latest
+    container_name: litellm
+    ports:
+      - "4000:4000"
+    environment:
+      - LITELLM_CONFIG=/config/config.yaml
+      - PORT=4000
+    volumes:
+      - ./ai-infra/litellm/config:/config
+    networks:
+      - ai-infra-net
+
+networks:
+  ai-infra-net:
+    driver: bridge

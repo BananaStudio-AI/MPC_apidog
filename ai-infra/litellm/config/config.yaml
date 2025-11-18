@@ -1,0 +1,44 @@
+# LiteLLM Gateway Configuration
+# This configures LiteLLM as a unified gateway for multiple providers
+
+model_list:
+  # OpenAI models
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gpt-4o-mini
+      api_key: ${OPENAI_API_KEY}
+  
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: ${OPENAI_API_KEY}
+  
+  - model_name: gpt-4-turbo
+    litellm_params:
+      model: openai/gpt-4-turbo-preview
+      api_key: ${OPENAI_API_KEY}
+  
+  # Anthropic models
+  - model_name: claude-3-5-sonnet
+    litellm_params:
+      model: anthropic/claude-3-5-sonnet-20241022
+      api_key: ${ANTHROPIC_API_KEY}
+  
+  - model_name: claude-3-opus
+    litellm_params:
+      model: anthropic/claude-3-opus-20240229
+      api_key: ${ANTHROPIC_API_KEY}
+  
+  # Add more providers as needed:
+  # - Cohere, Replicate, HuggingFace, etc.
+
+# General settings
+general_settings:
+  master_key: ${LITELLM_MASTER_KEY}  # Optional: for authentication
+  database_url: null  # Optional: for request logging
+  
+# Logging
+litellm_settings:
+  drop_params: true  # Drop unsupported params instead of erroring
+  set_verbose: false
+  json_logs: true
