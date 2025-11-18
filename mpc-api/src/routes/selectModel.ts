@@ -35,11 +35,15 @@ router.post('/api/select-model', (req: Request, res: Response) => {
     return res.status(404).json({ error: 'No models match the provided criteria' });
   }
 
-  const bestModel = eligible.sort(
+  const sorted = eligible.sort(
     (a, b) => tierPriority[b.quality_tier] - tierPriority[a.quality_tier]
-  )[0];
+  );
+  const bestModel = sorted[0];
 
-  return res.json({ model: bestModel });
+  return res.json({
+    selected_model: bestModel,
+    candidates: sorted
+  });
 });
 
 export default router;
