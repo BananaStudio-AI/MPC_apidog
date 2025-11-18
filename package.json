@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc",
+    "start": "tsx src/app.ts",
+    "start:prod": "node dist/app.js",
+    "dev": "tsx --watch src/app.ts",
     "apidog:list-projects": "node apidog/scripts/list_projects.js",
     "apidog:auth-check": "node apidog/scripts/auth_check.js",
     "apidog:list-tools": "node apidog/scripts/list_tools.js",
@@ -33,6 +37,7 @@
     "yaml": "^2.8.1"
   },
   "devDependencies": {
+    "@types/express": "^5.0.5",
     "@types/node": "^24.10.1",
     "apidog-mcp-server": "^0.0.16",
     "dotenv": "^17.2.3",
