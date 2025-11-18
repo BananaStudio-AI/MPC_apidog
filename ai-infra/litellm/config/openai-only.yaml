@@ -1,0 +1,44 @@
+# LiteLLM Configuration - OpenAI Provider Example
+# This example shows how to configure OpenAI models only
+
+model_list:
+  # GPT-4o models
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: ${OPENAI_API_KEY}
+      
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gpt-4o-mini
+      api_key: ${OPENAI_API_KEY}
+  
+  # GPT-4 Turbo
+  - model_name: gpt-4-turbo
+    litellm_params:
+      model: openai/gpt-4-turbo-preview
+      api_key: ${OPENAI_API_KEY}
+  
+  # GPT-4
+  - model_name: gpt-4
+    litellm_params:
+      model: openai/gpt-4
+      api_key: ${OPENAI_API_KEY}
+  
+  # GPT-3.5 Turbo
+  - model_name: gpt-3.5-turbo
+    litellm_params:
+      model: openai/gpt-3.5-turbo
+      api_key: ${OPENAI_API_KEY}
+
+# General settings
+general_settings:
+  master_key: ${LITELLM_MASTER_KEY}
+  
+# Logging configuration
+litellm_settings:
+  drop_params: true
+  set_verbose: false
+  json_logs: true
+  success_callback: []
+  failure_callback: []

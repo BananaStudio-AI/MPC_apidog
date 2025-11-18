@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # LiteLLM Gateway - Unified LLM Provider Gateway
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - DATABASE_URL=${LITELLM_DATABASE_URL:-}
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml:ro
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - ai-infra
+
+  # MPC-API Service - Main API Service
+  mpc-api:
+    build:
+      context: ./ai-infra/mpc-api
+      dockerfile: Dockerfile
+    container_name: mpc-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=3000
+      - LITELLM_BASE_URL=http://litellm:4000
+      - LITELLM_API_KEY=${LITELLM_MASTER_KEY}
+      - MPC_API_KEY=${MPC_API_KEY}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      - ./ai-infra/mpc-api:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      litellm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    networks:
+      - ai-infra
+
+  # Redis - Caching and Rate Limiting (Optional)
+  redis:
+    image: redis:7-alpine
+    container_name: mpc-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - ai-infra
+
+networks:
+  ai-infra:
+    name: ai-infra-network
+    driver: bridge
+
+volumes:
+  redis_data:
+    name: mpc-redis-data

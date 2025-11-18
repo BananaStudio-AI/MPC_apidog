@@ -1,0 +1,62 @@
+# LiteLLM Configuration - Multi-Provider Example
+# This example shows how to configure multiple providers with load balancing
+
+model_list:
+  # OpenAI GPT-4o (primary and fallback)
+  - model_name: gpt-4o
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: ${OPENAI_API_KEY}
+      rpm: 500  # Requests per minute limit
+  
+  # OpenAI GPT-4o-mini (primary and fallback)
+  - model_name: gpt-4o-mini
+    litellm_params:
+      model: openai/gpt-4o-mini
+      api_key: ${OPENAI_API_KEY}
+      rpm: 1000
+  
+  # Claude 3.5 Sonnet
+  - model_name: claude-3-5-sonnet
+    litellm_params:
+      model: anthropic/claude-3-5-sonnet-20241022
+      api_key: ${ANTHROPIC_API_KEY}
+      rpm: 400
+  
+  # Claude 3 Opus
+  - model_name: claude-3-opus
+    litellm_params:
+      model: anthropic/claude-3-opus-20240229
+      api_key: ${ANTHROPIC_API_KEY}
+      rpm: 200
+  
+  # Azure OpenAI (if configured)
+  - model_name: gpt-4-azure
+    litellm_params:
+      model: azure/gpt-4
+      api_base: ${AZURE_API_BASE}
+      api_key: ${AZURE_API_KEY}
+      api_version: "2024-02-15-preview"
+    model_info:
+      mode: chat
+
+# Router configuration for load balancing
+router_settings:
+  routing_strategy: least-busy  # Options: simple-shuffle, least-busy, usage-based-routing
+  redis_host: ${REDIS_HOST:-redis}
+  redis_port: ${REDIS_PORT:-6379}
+  enable_pre_call_checks: true
+
+# General settings
+general_settings:
+  master_key: ${LITELLM_MASTER_KEY}
+  database_url: null  # Set to enable request logging
+  
+# Rate limiting (requires Redis)
+litellm_settings:
+  drop_params: true
+  set_verbose: false
+  json_logs: true
+  max_parallel_requests: 100
+  success_callback: []
+  failure_callback: []

@@ -1,0 +1,69 @@
+# LiteLLM Configuration - Production with Fallbacks
+# This example shows production-ready configuration with fallback providers
+
+model_list:
+  # Primary: GPT-4o
+  - model_name: gpt-4o-primary
+    litellm_params:
+      model: openai/gpt-4o
+      api_key: ${OPENAI_API_KEY}
+      rpm: 500
+    model_info:
+      id: gpt-4o-primary
+  
+  # Fallback: GPT-4o via Azure
+  - model_name: gpt-4o-fallback
+    litellm_params:
+      model: azure/gpt-4o
+      api_base: ${AZURE_API_BASE}
+      api_key: ${AZURE_API_KEY}
+      api_version: "2024-02-15-preview"
+    model_info:
+      id: gpt-4o-fallback
+  
+  # Primary: Claude 3.5 Sonnet
+  - model_name: claude-sonnet-primary
+    litellm_params:
+      model: anthropic/claude-3-5-sonnet-20241022
+      api_key: ${ANTHROPIC_API_KEY}
+      rpm: 400
+    model_info:
+      id: claude-sonnet-primary
+  
+  # Fallback: GPT-4 Turbo
+  - model_name: claude-sonnet-fallback
+    litellm_params:
+      model: openai/gpt-4-turbo-preview
+      api_key: ${OPENAI_API_KEY}
+    model_info:
+      id: claude-sonnet-fallback
+
+# Router configuration with fallbacks
+router_settings:
+  routing_strategy: usage-based-routing
+  model_group_alias:
+    gpt-4o: ["gpt-4o-primary", "gpt-4o-fallback"]
+    claude-sonnet: ["claude-sonnet-primary", "claude-sonnet-fallback"]
+  redis_host: ${REDIS_HOST:-redis}
+  redis_port: ${REDIS_PORT:-6379}
+  enable_pre_call_checks: true
+  allowed_fails: 3
+  num_retries: 2
+  timeout: 60
+
+# General settings
+general_settings:
+  master_key: ${LITELLM_MASTER_KEY}
+  database_url: ${DATABASE_URL:-}
+  alerting: ["slack"]  # Configure alerting channels
+  alerting_threshold: 100  # Alert after 100 failures
+
+# Logging and monitoring
+litellm_settings:
+  drop_params: true
+  set_verbose: false
+  json_logs: true
+  max_parallel_requests: 100
+  request_timeout: 600
+  success_callback: ["prometheus"]
+  failure_callback: ["slack"]
