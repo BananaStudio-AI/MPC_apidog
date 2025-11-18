@@ -15,9 +15,9 @@ const matchesCriteria = (
   domain?: string,
   modality?: string
 ) => {
-  const taskMatches = !taskType || model.task_types.includes(taskType);
+  const taskMatches = !taskType || model.tasks.includes(taskType);
   const domainMatches = !domain || model.domains.includes(domain);
-  const modalityMatches = !modality || model.modality === modality;
+  const modalityMatches = !modality || model.modality.includes(modality);
   return taskMatches && domainMatches && modalityMatches;
 };
 
@@ -36,7 +36,7 @@ router.post('/api/select-model', (req: Request, res: Response) => {
   }
 
   const bestModel = eligible.sort(
-    (a, b) => tierPriority[b.tier] - tierPriority[a.tier]
+    (a, b) => tierPriority[b.quality_tier] - tierPriority[a.quality_tier]
   )[0];
 
   return res.json({ model: bestModel });
