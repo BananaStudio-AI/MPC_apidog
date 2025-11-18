@@ -1,11 +1,11 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { getModelByAlias } from '../catalog/catalog.js';
 
 const router = Router();
 
 const LITELLM_ENDPOINT = 'http://litellm:4000/chat/completions';
 
-router.post('/api/chat/completions', async (req, res) => {
+router.post('/api/chat/completions', async (req: Request, res: Response) => {
   const { model } = req.body;
 
   if (!model) {

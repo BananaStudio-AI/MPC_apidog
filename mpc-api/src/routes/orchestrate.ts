@@ -1,8 +1,8 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 
 const router = Router();
 
-router.post('/api/orchestrate', (req, res) => {
+router.post('/api/orchestrate', (req: Request, res: Response) => {
   const { job_type: jobType } = req.body as { job_type?: string };
 
   if (jobType === 'tariff_video_overlay') {

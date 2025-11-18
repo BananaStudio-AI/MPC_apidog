@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { loadModelCatalog, ModelEntry, ModelTier } from '../catalog/catalog.js';
 
 const router = Router();
@@ -21,7 +21,7 @@ const matchesCriteria = (
   return taskMatches && domainMatches && modalityMatches;
 };
 
-router.post('/api/select-model', (req, res) => {
+router.post('/api/select-model', (req: Request, res: Response) => {
   const { task_type: taskType, domain, modality } = req.body as {
     task_type?: string;
     domain?: string;
