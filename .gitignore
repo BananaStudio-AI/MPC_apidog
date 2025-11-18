@@ -42,3 +42,13 @@ temp/
 # These are tracked in version control
 !openapi/
 !apis/
+
+# But ignore compiled artifacts
+*.js
+*.d.ts
+*.d.ts.map
+*.js.map
+!scripts/*.js
+!scripts/*.mjs
+!apidog/**/*.js
+!examples/*.js
