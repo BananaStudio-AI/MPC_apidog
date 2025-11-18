@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  langflow:
+    image: langflowai/langflow:latest
+    container_name: langflow
+    ports:
+      - "7860:7860"
+    environment:
+      - LANGFLOW_DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@langflow-db:5432/langflow
+      - LANGFLOW_CONFIG_DIR=/app/config
+      - LANGFLOW_LOG_LEVEL=INFO
+      - LANGFLOW_CACHE_TYPE=memory
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    volumes:
+      - langflow-data:/app/langflow
+    depends_on:
+      - langflow-db
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7860/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  langflow-db:
+    image: postgres:15-alpine
+    container_name: langflow-db
+    environment:
+      - POSTGRES_DB=langflow
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - langflow-db-data:/var/lib/postgresql/data
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  langflow-data:
+  langflow-db-data:
+
+networks:
+  ai-infra-net:
+    name: ai-infra-net
+    external: true

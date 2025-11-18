@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  activepieces:
+    image: activepieces/activepieces:latest
+    container_name: activepieces
+    ports:
+      - "8080:80"
+    environment:
+      - AP_ENGINE_EXECUTABLE_PATH=dist/packages/engine/main.js
+      - AP_API_KEY=${ACTIVEPIECES_API_KEY:-change-me-to-random-string}
+      - AP_ENCRYPTION_KEY=${ACTIVEPIECES_ENCRYPTION_KEY:-change-me-to-random-string}
+      - AP_JWT_SECRET=${ACTIVEPIECES_JWT_SECRET:-change-me-to-random-string}
+      - AP_POSTGRES_DATABASE=activepieces
+      - AP_POSTGRES_HOST=activepieces-db
+      - AP_POSTGRES_PORT=5432
+      - AP_POSTGRES_USERNAME=postgres
+      - AP_POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - AP_REDIS_HOST=activepieces-redis
+      - AP_REDIS_PORT=6379
+      - AP_FRONTEND_URL=http://localhost:8080
+      - AP_TRIGGER_DEFAULT_POLL_INTERVAL=60
+      - AP_TELEMETRY_ENABLED=false
+    depends_on:
+      - activepieces-db
+      - activepieces-redis
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  activepieces-db:
+    image: postgres:15-alpine
+    container_name: activepieces-db
+    environment:
+      - POSTGRES_DB=activepieces
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+    volumes:
+      - activepieces-db-data:/var/lib/postgresql/data
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  activepieces-redis:
+    image: redis:7-alpine
+    container_name: activepieces-redis
+    volumes:
+      - activepieces-redis-data:/data
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  activepieces-db-data:
+  activepieces-redis-data:
+
+networks:
+  ai-infra-net:
+    name: ai-infra-net
+    external: true

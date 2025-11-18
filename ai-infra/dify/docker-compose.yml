@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  dify-api:
+    image: langgenius/dify-api:latest
+    container_name: dify-api
+    ports:
+      - "5001:5001"
+    environment:
+      - MODE=api
+      - LOG_LEVEL=INFO
+      - SECRET_KEY=${DIFY_SECRET_KEY:-dify-secret-key-change-me}
+      - POSTGRES_HOST=dify-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=dify
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - REDIS_HOST=dify-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-}@dify-redis:6379/1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    depends_on:
+      - dify-db
+      - dify-redis
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+
+  dify-worker:
+    image: langgenius/dify-api:latest
+    container_name: dify-worker
+    environment:
+      - MODE=worker
+      - LOG_LEVEL=INFO
+      - SECRET_KEY=${DIFY_SECRET_KEY:-dify-secret-key-change-me}
+      - POSTGRES_HOST=dify-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=dify
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - REDIS_HOST=dify-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - CELERY_BROKER_URL=redis://:${REDIS_PASSWORD:-}@dify-redis:6379/1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    depends_on:
+      - dify-db
+      - dify-redis
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+
+  dify-web:
+    image: langgenius/dify-web:latest
+    container_name: dify-web
+    ports:
+      - "80:3000"
+    environment:
+      - CONSOLE_API_URL=http://localhost:5001
+      - APP_API_URL=http://localhost:5001
+    depends_on:
+      - dify-api
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+
+  dify-db:
+    image: postgres:15-alpine
+    container_name: dify-db
+    environment:
+      - POSTGRES_DB=dify
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - dify-db-data:/var/lib/postgresql/data
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  dify-redis:
+    image: redis:7-alpine
+    container_name: dify-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - dify-redis-data:/data
+    networks:
+      - ai-infra-net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  dify-db-data:
+  dify-redis-data:
+
+networks:
+  ai-infra-net:
+    name: ai-infra-net
+    external: true

@@ -1,0 +1,27 @@
+{
+  "name": "mpc-api",
+  "version": "1.0.0",
+  "description": "MPC-API: Express.js service routing to LiteLLM Gateway",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint src --ext .ts",
+    "test": "echo \"Tests will be added\" && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.3.2",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "tsx": "^4.7.0"
+  }
+}
