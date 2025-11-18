@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Dify
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: dify
+      POSTGRES_PASSWORD: dify_password
+      POSTGRES_DB: dify
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - dify_db_data:/var/lib/postgresql/data
+    networks:
+      - ai-infra-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dify"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - dify_redis_data:/data
+    networks:
+      - ai-infra-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Dify API Backend
+  api:
+    image: langgenius/dify-api:latest
+    restart: always
+    environment:
+      # Core Settings
+      MODE: api
+      LOG_LEVEL: INFO
+      SECRET_KEY: ${DIFY_SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
+      
+      # Database
+      DB_USERNAME: dify
+      DB_PASSWORD: dify_password
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: dify
+      
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      
+      # Storage (local file system)
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: /app/storage
+      
+      # Model Providers (configure as needed)
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - dify_app_storage:/app/storage
+    networks:
+      - ai-infra-net
+
+  # Dify Worker for async tasks
+  worker:
+    image: langgenius/dify-api:latest
+    restart: always
+    environment:
+      MODE: worker
+      LOG_LEVEL: INFO
+      SECRET_KEY: ${DIFY_SECRET_KEY:-sk-9f73s3ljTXVcMT3Blb3ljTqtsKiGHXVcMT3BlbkFJLK7U}
+      DB_USERNAME: dify
+      DB_PASSWORD: dify_password
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: dify
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+      STORAGE_TYPE: local
+      STORAGE_LOCAL_PATH: /app/storage
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - dify_app_storage:/app/storage
+    networks:
+      - ai-infra-net
+
+  # Dify Web Frontend
+  web:
+    image: langgenius/dify-web:latest
+    restart: always
+    environment:
+      CONSOLE_API_URL: http://api:5001
+      APP_API_URL: http://api:5001
+    depends_on:
+      - api
+    networks:
+      - ai-infra-net
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+      - web
+    networks:
+      - ai-infra-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+volumes:
+  dify_db_data:
+  dify_redis_data:
+  dify_app_storage:
+
+networks:
+  ai-infra-net:
+    external: true
