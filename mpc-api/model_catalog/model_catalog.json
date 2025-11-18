@@ -1,0 +1,74 @@
+{
+  "version": "0.1.0",
+  "description": "Model Brain v0.1 - Foundational Model Catalog System",
+  "models": [
+    {
+      "canonical_id": "gpt-4-turbo",
+      "provider_id": "gpt-4-turbo-2024-04-09",
+      "provider": "openai",
+      "modality": ["text", "vision"],
+      "tasks": ["chat", "completion", "reasoning", "vision-analysis"],
+      "domains": ["general", "code", "creative-writing", "analysis"],
+      "quality_tier": "premium",
+      "speed_tier": "fast",
+      "supports": {
+        "images": true,
+        "video": false,
+        "audio": false,
+        "structured_output": true
+      },
+      "aliases": ["gpt4-turbo", "gpt-4-turbo-preview"]
+    },
+    {
+      "canonical_id": "claude-3-opus",
+      "provider_id": "claude-3-opus-20240229",
+      "provider": "anthropic",
+      "modality": ["text", "vision"],
+      "tasks": ["chat", "completion", "analysis", "creative-writing"],
+      "domains": ["general", "code", "research", "creative-writing"],
+      "quality_tier": "premium",
+      "speed_tier": "medium",
+      "supports": {
+        "images": true,
+        "video": false,
+        "audio": false,
+        "structured_output": true
+      },
+      "aliases": ["claude-opus", "claude-3-opus"]
+    },
+    {
+      "canonical_id": "llama-3-70b",
+      "provider_id": "meta-llama/Llama-3-70b-chat-hf",
+      "provider": "meta",
+      "modality": ["text"],
+      "tasks": ["chat", "completion", "instruction-following"],
+      "domains": ["general", "code", "conversation"],
+      "quality_tier": "high",
+      "speed_tier": "fast",
+      "supports": {
+        "images": false,
+        "video": false,
+        "audio": false,
+        "structured_output": false
+      },
+      "aliases": ["llama3-70b", "llama-3-70b-chat"]
+    },
+    {
+      "canonical_id": "flux-1-dev",
+      "provider_id": "fal-ai/flux/dev",
+      "provider": "fal",
+      "modality": ["image"],
+      "tasks": ["text-to-image", "image-generation"],
+      "domains": ["creative", "art", "design"],
+      "quality_tier": "high",
+      "speed_tier": "medium",
+      "supports": {
+        "images": true,
+        "video": false,
+        "audio": false,
+        "structured_output": false
+      },
+      "aliases": ["flux-dev", "flux-1-dev"]
+    }
+  ]
+}
