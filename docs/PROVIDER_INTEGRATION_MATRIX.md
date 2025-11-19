@@ -1,5 +1,9 @@
 # Provider & Platform Integration Matrix
 
+> This matrix focuses on concrete providers, platforms, and example configs.
+> For the canonical description of the overall provider and platform stack, see
+> [AI Providers and Platform Stack](AI_PROVIDERS_AND_PLATFORM_STACK.md).
+
 ## Overview
 
 MPC-API and LiteLLM act as a unified gateway for multiple model providers. All model traffic flows through MPC-API → LiteLLM before reaching any vendor endpoint. Comet **API** is treated as a model provider; Comet **Opik** is an optional evaluation/observability platform and is never used for inference.

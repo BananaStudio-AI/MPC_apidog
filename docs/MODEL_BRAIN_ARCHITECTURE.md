@@ -4,6 +4,8 @@
 
 MPC-API is a Node.js + TypeScript Express backend that exposes a unified “model brain” on port `3000`. It is the single gateway for model-related operations, sitting between tools (Dify, Langflow, Activepieces, internal scripts) and the LiteLLM provider interface.
 
+> See also: [AI Providers and Platform Stack](AI_PROVIDERS_AND_PLATFORM_STACK.md) for a complete list of providers and platforms in scope.
+
 Key HTTP endpoints:
 
 - `GET /health` — basic health and readiness check.

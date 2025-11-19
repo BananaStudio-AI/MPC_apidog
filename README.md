@@ -29,6 +29,7 @@ npm run health:api-hub
 - **[MCP Configuration](docs/MCP_CONFIGURATION.md)** - VS Code/Cursor MCP setup
 - **[Production Checklist](docs/PRODUCTION_CHECKLIST.md)** - Deployment validation
 - **[Architecture](docs/ARCHITECTURE.md)** - System design and patterns
+- **[AI Providers & Platform Stack](docs/AI_PROVIDERS_AND_PLATFORM_STACK.md)** - Canonical provider and platform stack
 
 ### MPC-API Backend and Model Brain v1.0
 
