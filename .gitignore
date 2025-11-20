@@ -28,6 +28,9 @@ out/
 # Local npm cache (do not commit)
 .npm-cache/
 
+# Local debug artifacts for mpc-api (do not commit)
+mpc-api/.local-home/
+mpc-api/.npmrc
 # OS files
 .DS_Store
 Thumbs.db
