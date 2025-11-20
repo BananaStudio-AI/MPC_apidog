@@ -25,6 +25,9 @@ out/
 .docker/.token_seed
 .docker/buildx-cache-*
 
+# Local npm cache (do not commit)
+.npm-cache/
+
 # OS files
 .DS_Store
 Thumbs.db
