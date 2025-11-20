@@ -52,3 +52,7 @@ temp/
 # These are tracked in version control
 !openapi/
 !apis/
+
+# Local debug artifacts for mpc-api (do not commit)
+mpc-api/.local-home/
+mpc-api/.npmrc
