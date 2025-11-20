@@ -1,0 +1,261 @@
+diff --git a/.docker/.token_seed b/.docker/.token_seed
+deleted file mode 100644
+index 7628217..0000000
+--- a/.docker/.token_seed
++++ /dev/null
+@@ -1,5 +0,0 @@
+-{
+-  "registry-1.docker.io": {
+-    "Seed": "HTEndOJZcTlkpYQ/0WaI1g=="
+-  }
+-}
+\ No newline at end of file
+diff --git a/.docker/.token_seed.lock b/.docker/.token_seed.lock
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/.docker/buildx/.buildNodeID b/.docker/buildx/.buildNodeID
+deleted file mode 100644
+index df9c50d..0000000
+--- a/.docker/buildx/.buildNodeID
++++ /dev/null
+@@ -1 +0,0 @@
+-d7b8d98b92898d7c
+\ No newline at end of file
+diff --git a/.docker/buildx/.lock b/.docker/buildx/.lock
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/.docker/buildx/activity/default b/.docker/buildx/activity/default
+deleted file mode 100644
+index 7577423..0000000
+--- a/.docker/buildx/activity/default
++++ /dev/null
+@@ -1 +0,0 @@
+-2025-11-18T21:06:24Z
+\ No newline at end of file
+diff --git a/.docker/buildx/current b/.docker/buildx/current
+deleted file mode 100644
+index f34f695..0000000
+--- a/.docker/buildx/current
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Key":"unix:///var/run/docker.sock","Name":"","Global":false}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/__group__/53t5sgipfxr38i8gyzbfiyvrm b/.docker/buildx/refs/__group__/53t5sgipfxr38i8gyzbfiyvrm
+deleted file mode 100644
+index 2e47403..0000000
+--- a/.docker/buildx/refs/__group__/53t5sgipfxr38i8gyzbfiyvrm
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Targets":["default"],"Refs":["fm6kv9giqzb4ayf4duead17m8"]}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/__group__/lfi55f1ypf1hcplvut6p3f6jf b/.docker/buildx/refs/__group__/lfi55f1ypf1hcplvut6p3f6jf
+deleted file mode 100644
+index eac7255..0000000
+--- a/.docker/buildx/refs/__group__/lfi55f1ypf1hcplvut6p3f6jf
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Targets":["default"],"Refs":["w89sdjvavwb8hov7zfkw8c1mm"]}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/__group__/qanbf5z7qdnf2k7ycayol8f8b b/.docker/buildx/refs/__group__/qanbf5z7qdnf2k7ycayol8f8b
+deleted file mode 100644
+index cb55f71..0000000
+--- a/.docker/buildx/refs/__group__/qanbf5z7qdnf2k7ycayol8f8b
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Targets":["default"],"Refs":["ixf09967b42qc24tmwzlhsxif"]}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/__group__/snfdldp79ot6ldtuui7yy0n2q b/.docker/buildx/refs/__group__/snfdldp79ot6ldtuui7yy0n2q
+deleted file mode 100644
+index 5ee9e42..0000000
+--- a/.docker/buildx/refs/__group__/snfdldp79ot6ldtuui7yy0n2q
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Targets":["default"],"Refs":["humycca2pt452a6z7uklo9tvw"]}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/default/default/fm6kv9giqzb4ayf4duead17m8 b/.docker/buildx/refs/default/default/fm6kv9giqzb4ayf4duead17m8
+deleted file mode 100644
+index 192f3b7..0000000
+--- a/.docker/buildx/refs/default/default/fm6kv9giqzb4ayf4duead17m8
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Target":"mpc-api","LocalPath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api","DockerfilePath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api/Dockerfile","GroupRef":"53t5sgipfxr38i8gyzbfiyvrm"}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/default/default/humycca2pt452a6z7uklo9tvw b/.docker/buildx/refs/default/default/humycca2pt452a6z7uklo9tvw
+deleted file mode 100644
+index bef5207..0000000
+--- a/.docker/buildx/refs/default/default/humycca2pt452a6z7uklo9tvw
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Target":"mpc-api","LocalPath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api","DockerfilePath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api/Dockerfile","GroupRef":"snfdldp79ot6ldtuui7yy0n2q"}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/default/default/ixf09967b42qc24tmwzlhsxif b/.docker/buildx/refs/default/default/ixf09967b42qc24tmwzlhsxif
+deleted file mode 100644
+index baed92b..0000000
+--- a/.docker/buildx/refs/default/default/ixf09967b42qc24tmwzlhsxif
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Target":"mpc-api","LocalPath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api","DockerfilePath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api/Dockerfile","GroupRef":"qanbf5z7qdnf2k7ycayol8f8b"}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/default/default/w89sdjvavwb8hov7zfkw8c1mm b/.docker/buildx/refs/default/default/w89sdjvavwb8hov7zfkw8c1mm
+deleted file mode 100644
+index 59875b2..0000000
+--- a/.docker/buildx/refs/default/default/w89sdjvavwb8hov7zfkw8c1mm
++++ /dev/null
+@@ -1 +0,0 @@
+-{"Target":"mpc-api","LocalPath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api","DockerfilePath":"/mnt/c/Users/e11di/Documents/GitHub/MPC_apidog/mpc-api/Dockerfile","GroupRef":"lfi55f1ypf1hcplvut6p3f6jf"}
+\ No newline at end of file
+diff --git a/.docker/buildx/refs/version b/.docker/buildx/refs/version
+deleted file mode 100644
+index d8263ee..0000000
+--- a/.docker/buildx/refs/version
++++ /dev/null
+@@ -1 +0,0 @@
+-2
+\ No newline at end of file
+diff --git a/.gitignore b/.gitignore
+index 410689c..4e066c8 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,44 +1,51 @@
+-# Dependencies
+-node_modules/
+-npm-debug.log*
+-yarn-debug.log*
+-yarn-error.log*
+-pnpm-debug.log*
+-
+-# Build outputs
+-dist/
+-build/
+-out/
+-*.log
+-
+-# Environment variables
++# Dependencies
++node_modules/
++npm-debug.log*
++yarn-debug.log*
++yarn-error.log*
++pnpm-debug.log*
++
++# Build outputs
++dist/
++build/
++out/
++*.log
++
++# Environment variables
+ .env
+ .env.local
+ .env.development.local
+ .env.test.local
+ .env.production.local
+ 
+-# OS files
+-.DS_Store
+-Thumbs.db
+-
+-# IDE files
+-.vscode/
+-.idea/
+-*.swp
+-*.swo
+-*~
+-
+-# Testing
+-coverage/
+-.nyc_output/
+-
+-# Temporary files
+-tmp/
+-temp/
+-*.tmp
+-
+-# Keep OpenAPI specs and generated API clients
+-# These are tracked in version control
+-!openapi/
+-!apis/
++# Docker artifacts that are machine-specific and must NOT be committed.
++# These are generated by docker login / buildx and contain auth seeds/cache.
++.docker/
++.docker/**
++.docker/.token_seed
++.docker/buildx-cache-*
++
++# OS files
++.DS_Store
++Thumbs.db
++
++# IDE files
++.vscode/
++.idea/
++*.swp
++*.swo
++*~
++
++# Testing
++coverage/
++.nyc_output/
++
++# Temporary files
++tmp/
++temp/
++*.tmp
++
++# Keep OpenAPI specs and generated API clients
++# These are tracked in version control
++!openapi/
++!apis/
+diff --git a/mpc-api/jest.config.js b/mpc-api/jest.config.js
+new file mode 100644
+index 0000000..38ffd29
+--- /dev/null
++++ b/mpc-api/jest.config.js
+@@ -0,0 +1,6 @@
++module.exports = {
++  preset: 'ts-jest',
++  testEnvironment: 'node',
++  testMatch: ["**/__tests__/**/*.test.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
++  testTimeout: 30000
++};
+diff --git a/mpc-api/package.json b/mpc-api/package.json
+index f4eef1d..8061225 100644
+--- a/mpc-api/package.json
++++ b/mpc-api/package.json
+@@ -1,21 +1,27 @@
+-{
+-  "name": "mpc-api",
+-  "version": "0.1.0",
+-  "description": "MPC API backend service",
+-  "type": "module",
+-  "main": "dist/server.js",
++{
++  "name": "mpc-api",
++  "version": "0.1.0",
++  "description": "MPC API backend service",
++  "type": "module",
++  "main": "dist/server.js",
+   "scripts": {
+     "dev": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
+     "build": "tsc",
+     "start": "node dist/server.js",
++    "test": "jest --runInBand --detectOpenHandles --silent",
+     "test:smoke": "node tests/model_brain_smoke.test.mjs"
+   },
+-  "dependencies": {
+-    "express": "^4.19.2"
+-  },
++  "dependencies": {
++    "express": "^4.19.2"
++  },
+   "devDependencies": {
+     "@types/express": "^4.17.25",
++    "@types/jest": "^29.5.0",
+     "@types/node": "^20.19.25",
++    "@types/supertest": "^2.0.12",
++    "jest": "^29.6.0",
++    "supertest": "^6.3.0",
++    "ts-jest": "^29.1.0",
+     "ts-node-dev": "^2.0.0",
+     "typescript": "^5.4.5"
+   }
