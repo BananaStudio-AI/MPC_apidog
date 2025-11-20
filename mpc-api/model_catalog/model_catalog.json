@@ -1,34 +1,223 @@
 [
   {
-    "alias": "gpt-4-turbo",
-    "provider_id": "openai/gpt-4-turbo",
-    "task_types": ["chat", "reasoning"],
-    "domains": ["general"],
-    "modality": "text",
-    "tier": "flagship"
+    "canonical_id": "openai-gpt-4o-main",
+    "provider_id": "openai/gpt-4o",
+    "provider": "openai",
+    "modality": ["text"],
+    "tasks": ["chat", "reasoning", "analysis"],
+    "domains": ["general", "creative"],
+    "quality_tier": "flagship",
+    "speed_tier": "normal",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_general_flagship", "gpt-4o"]
   },
   {
-    "alias": "claude-3-opus",
-    "provider_id": "anthropic/claude-3-opus",
-    "task_types": ["chat", "analysis"],
+    "canonical_id": "openai-gpt-4o-mini-draft",
+    "provider_id": "openai/gpt-4o-mini",
+    "provider": "openai",
+    "modality": ["text"],
+    "tasks": ["chat", "drafting"],
+    "domains": ["general"],
+    "quality_tier": "draft",
+    "speed_tier": "fast",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_general_draft", "text_hook_fast"]
+  },
+  {
+    "canonical_id": "anthropic-claude-3-5-sonnet",
+    "provider_id": "anthropic/claude-3-5-sonnet-20241022",
+    "provider": "anthropic",
+    "modality": ["text"],
+    "tasks": ["chat", "reasoning", "analysis"],
     "domains": ["general", "enterprise"],
-    "modality": "text",
-    "tier": "flagship"
+    "quality_tier": "flagship",
+    "speed_tier": "normal",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_reasoning_flagship", "claude-3-5-sonnet"]
   },
   {
-    "alias": "llama-3-70b",
-    "provider_id": "meta/llama-3-70b",
-    "task_types": ["chat"],
+    "canonical_id": "google-gemini-1.5-pro",
+    "provider_id": "google/gemini-1.5-pro",
+    "provider": "google",
+    "modality": ["text", "image"],
+    "tasks": ["chat", "reasoning", "multimodal"],
+    "domains": ["general", "creative"],
+    "quality_tier": "flagship",
+    "speed_tier": "normal",
+    "supports": {
+      "images": true,
+      "video": false,
+      "audio": true,
+      "structured_output": true
+    },
+    "aliases": ["text_multimodal_flagship", "gemini-1.5-pro"]
+  },
+  {
+    "canonical_id": "google-gemini-1.5-flash",
+    "provider_id": "google/gemini-1.5-flash",
+    "provider": "google",
+    "modality": ["text", "image"],
+    "tasks": ["chat", "drafting", "multimodal"],
+    "domains": ["general", "creative"],
+    "quality_tier": "strong",
+    "speed_tier": "fast",
+    "supports": {
+      "images": true,
+      "video": false,
+      "audio": true,
+      "structured_output": true
+    },
+    "aliases": ["text_multimodal_fast", "gemini-1.5-flash"]
+  },
+  {
+    "canonical_id": "comet-api-tariff-guard",
+    "provider_id": "comet_api/tariff-guard",
+    "provider": "comet_api",
+    "modality": ["text"],
+    "tasks": ["chat", "tariff_compliance", "reasoning"],
+    "domains": ["tariffs", "legal"],
+    "quality_tier": "flagship",
+    "speed_tier": "normal",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_tariff_precision"]
+  },
+  {
+    "canonical_id": "fal-video-animated-overlay",
+    "provider_id": "fal/video-animated-overlay",
+    "provider": "fal",
+    "modality": ["video", "image"],
+    "tasks": ["video_overlay", "generation"],
+    "domains": ["creative", "marketing"],
+    "quality_tier": "strong",
+    "speed_tier": "normal",
+    "supports": {
+      "images": true,
+      "video": true,
+      "audio": false,
+      "structured_output": false
+    },
+    "aliases": ["video_overlay_flagship"]
+  },
+  {
+    "canonical_id": "fal-video-animated-overlay-fast",
+    "provider_id": "fal/video-animated-overlay-fast",
+    "provider": "fal",
+    "modality": ["video", "image"],
+    "tasks": ["video_overlay", "generation"],
+    "domains": ["creative", "marketing"],
+    "quality_tier": "draft",
+    "speed_tier": "fast",
+    "supports": {
+      "images": true,
+      "video": true,
+      "audio": false,
+      "structured_output": false
+    },
+    "aliases": ["video_overlay_fast"]
+  },
+  {
+    "canonical_id": "replicate-sdxl-brand-assets",
+    "provider_id": "replicate/sdxl-brand",
+    "provider": "replicate",
+    "modality": ["image"],
+    "tasks": ["generation", "creative_assets"],
+    "domains": ["creative", "marketing"],
+    "quality_tier": "strong",
+    "speed_tier": "normal",
+    "supports": {
+      "images": true,
+      "video": false,
+      "audio": false,
+      "structured_output": false
+    },
+    "aliases": ["image_brand_assets", "image_prompt_pack"]
+  },
+  {
+    "canonical_id": "hf-llama-3-8b-chat",
+    "provider_id": "hf/meta-llama-3-8b-instruct",
+    "provider": "hf",
+    "modality": ["text"],
+    "tasks": ["chat", "drafting"],
     "domains": ["general"],
-    "modality": "text",
-    "tier": "strong"
+    "quality_tier": "strong",
+    "speed_tier": "fast",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_general_oss"]
   },
   {
-    "alias": "flux-1-dev",
-    "provider_id": "black-forest-labs/flux-1-dev",
-    "task_types": ["generation"],
-    "domains": ["creative"],
-    "modality": "image",
-    "tier": "draft"
+    "canonical_id": "deepinfra-llama-3-70b",
+    "provider_id": "deepinfra/meta-llama-3-70b-instruct",
+    "provider": "deepinfra",
+    "modality": ["text"],
+    "tasks": ["chat", "reasoning"],
+    "domains": ["general", "enterprise"],
+    "quality_tier": "strong",
+    "speed_tier": "normal",
+    "supports": {
+      "images": false,
+      "video": false,
+      "audio": false,
+      "structured_output": true
+    },
+    "aliases": ["text_general_cost_opt"]
+  },
+  {
+    "canonical_id": "fal-image-brand-pack",
+    "provider_id": "fal/image-brand-pack",
+    "provider": "fal",
+    "modality": ["image"],
+    "tasks": ["generation", "creative_assets"],
+    "domains": ["creative", "marketing"],
+    "quality_tier": "strong",
+    "speed_tier": "normal",
+    "supports": {
+      "images": true,
+      "video": false,
+      "audio": false,
+      "structured_output": false
+    },
+    "aliases": ["image_brand_pack_flagship"]
+  },
+  {
+    "canonical_id": "replicate-video-renderer",
+    "provider_id": "replicate/video-renderer",
+    "provider": "replicate",
+    "modality": ["video"],
+    "tasks": ["video_overlay", "render"],
+    "domains": ["creative", "marketing"],
+    "quality_tier": "draft",
+    "speed_tier": "fast",
+    "supports": {
+      "images": false,
+      "video": true,
+      "audio": false,
+      "structured_output": false
+    },
+    "aliases": ["video_render_fast"]
   }
 ]
