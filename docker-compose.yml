@@ -8,20 +8,21 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - LITELLM_BASE_URL=http://litellm:4000
+      - LITELLM_BASE_URL=http://litellm:12434
     depends_on:
       - litellm
     networks:
       - ai-infra-net
 
   litellm:
-    image: ghcr.io/berriai/litellm:latest
+    image: REGISTRY/REPO:amd64
     container_name: litellm
     ports:
-      - "4000:4000"
+      - "12434:12434"
     environment:
       - LITELLM_CONFIG=/config/config.yaml
-      - PORT=4000
+      - PORT=12434
+      - SOME_ENV_VAR=...
     volumes:
       - ./ai-infra/litellm/config:/config
     networks:

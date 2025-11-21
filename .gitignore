@@ -27,10 +27,6 @@ out/
 
 # Local npm cache (do not commit)
 .npm-cache/
-
-# Local debug artifacts for mpc-api (do not commit)
-mpc-api/.local-home/
-mpc-api/.npmrc
 # OS files
 .DS_Store
 Thumbs.db
@@ -50,11 +46,8 @@ coverage/
 tmp/
 temp/
 *.tmp
-
-# Keep OpenAPI specs and generated API clients
-# These are tracked in version control
-!openapi/
-!apis/
+# Litellm build artifacts
+.tmp-litellm_amd64.tar*
 
 # Local debug artifacts for mpc-api (do not commit)
 mpc-api/.local-home/
