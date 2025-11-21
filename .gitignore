@@ -49,7 +49,6 @@ temp/
 # Litellm build artifacts
 .tmp-litellm_amd64.tar*
 
-# Keep OpenAPI specs and generated API clients
-# These are tracked in version control
-!openapi/
-!apis/
+# Local debug artifacts for mpc-api (do not commit)
+mpc-api/.local-home/
+mpc-api/.npmrc
