@@ -21,10 +21,21 @@ jobs:
       - name: Smoke test
         run: |
           docker run --rm -d --name litellm-smoke -p 12434:12434 bananastudioai/litellm:amd64
-          sleep 25
-          # Probe /v1/models and fail if no JSON returned
+          # Wait for /v1/models to become available, with exponential backoff (max 60s)
+          ATTEMPT=0
           if ! curl -sS http://localhost:12434/v1/models | jq -e . >/dev/null; then
-            docker logs litellm-smoke
-            exit 1
-          fi
+            echo '::error::Smoke test failed: /v1/models did not return valid JSON'
+          DELAY=2
+          until curl -sS http://localhost:12434/v1/models | jq -e . >/dev/null; do
+            ATTEMPT=$((ATTEMPT+1))
+            if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+              echo "Timed out waiting for litellm to become healthy."
+              docker logs litellm-smoke
+              exit 1
+            fi
+            echo "Waiting for litellm to become healthy... (attempt $ATTEMPT)"
+            sleep $DELAY
+            DELAY=$((DELAY*2))
+            if [ "$DELAY" -gt 20 ]; then DELAY=20; fi
+          done
           docker rm -f litellm-smoke
