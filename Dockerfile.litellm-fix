@@ -1,0 +1,10 @@
+# Derive from the upstream LiteLLM image
+FROM ghcr.io/berriai/litellm:latest
+
+# Normalize the entrypoint line endings; CRLF shebang breaks exec()
+RUN sed -i 's/\r$//' /app/docker/prod_entrypoint.sh
+
+# Ensure the service binds externally on the expected port
+ENTRYPOINT ["docker/prod_entrypoint.sh"]
+CMD ["--port", "12434", "--host", "0.0.0.0"]
+EXPOSE 12434

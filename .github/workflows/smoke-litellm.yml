@@ -1,0 +1,30 @@
+name: smoke-litellm
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docker-compose.yml'
+      - 'Dockerfile.litellm-fix'
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log into Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Pull litellm amd64 image
+        run: |
+          docker pull bananastudioai/litellm:amd64
+      - name: Smoke test
+        run: |
+          docker run --rm -d --name litellm-smoke -p 12434:12434 bananastudioai/litellm:amd64
+          sleep 25
+          # Probe /v1/models and fail if no JSON returned
+          if ! curl -sS http://localhost:12434/v1/models | jq -e . >/dev/null; then
+            docker logs litellm-smoke
+            exit 1
+          fi
+          docker rm -f litellm-smoke
