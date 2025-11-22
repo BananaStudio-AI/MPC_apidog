@@ -1,0 +1,41 @@
+name: smoke-litellm
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'docker-compose.yml'
+      - 'Dockerfile.litellm-fix'
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log into Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Pull litellm amd64 image
+        run: |
+          docker pull bananastudioai/litellm:amd64
+      - name: Smoke test
+        run: |
+          docker run --rm -d --name litellm-smoke -p 12434:12434 bananastudioai/litellm:amd64
+          # Wait for /v1/models to become available, with exponential backoff (max 60s)
+          ATTEMPT=0
+          if ! curl -sS http://localhost:12434/v1/models | jq -e . >/dev/null; then
+            echo '::error::Smoke test failed: /v1/models did not return valid JSON'
+          DELAY=2
+          until curl -sS http://localhost:12434/v1/models | jq -e . >/dev/null; do
+            ATTEMPT=$((ATTEMPT+1))
+            if [ "$ATTEMPT" -ge "$MAX_ATTEMPTS" ]; then
+              echo "Timed out waiting for litellm to become healthy."
+              docker logs litellm-smoke
+              exit 1
+            fi
+            echo "Waiting for litellm to become healthy... (attempt $ATTEMPT)"
+            sleep $DELAY
+            DELAY=$((DELAY*2))
+            if [ "$DELAY" -gt 20 ]; then DELAY=20; fi
+          done
+          docker rm -f litellm-smoke

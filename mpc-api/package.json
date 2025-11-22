@@ -8,6 +8,7 @@
     "dev": "ts-node-dev --respawn --transpile-only --esm src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "test": "jest --runInBand --detectOpenHandles --silent",
     "test:smoke": "node tests/model_brain_smoke.test.mjs"
   },
   "dependencies": {
@@ -15,7 +16,12 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.25",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.19.25",
+    "@types/supertest": "^2.0.16",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4",
+    "ts-jest": "^29.4.5",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
   }

@@ -8,47 +8,21 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=development
-      - LITELLM_BASE_URL=http://litellm:4000
-      - LITELLM_API_KEY=${LITELLM_MASTER_KEY:-dev-litellm-master-key}
+      - LITELLM_BASE_URL=http://litellm:12434
     depends_on:
       - litellm
     networks:
       - ai-infra-net
 
-  postgres:
-    image: postgres:15
-    container_name: litellm-postgres
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=litellm
-      - POSTGRES_PASSWORD=change-me-dev-password
-      - POSTGRES_DB=litellm_db
-    volumes:
-      - litellm-pg-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U litellm -d litellm_db"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - ai-infra-net
-
   litellm:
-    image: litellm:amd64
-    platform: linux/amd64
-    command: ["--config", "/config/config.yaml", "--port", "4000", "--host", "0.0.0.0"]
+    image: bananastudioai/litellm:amd64
     container_name: litellm
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
     ports:
-      - "127.0.0.1:4000:4000"
+      - "12434:12434"
     environment:
       - LITELLM_CONFIG=/config/config.yaml
-      - PORT=4000
-      - DATABASE_URL=postgres://litellm:change-me-dev-password@postgres:5432/litellm_db
-      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:-dev-litellm-master-key}
+      - PORT=12434
+      - SOME_ENV_VAR=...
     volumes:
       - ./ai-infra/litellm/config:/config
     networks:
@@ -57,6 +31,3 @@ services:
 networks:
   ai-infra-net:
     driver: bridge
-
-volumes:
-  litellm-pg-data:
