@@ -15,7 +15,7 @@ services:
       - ai-infra-net
 
   litellm:
-    image: REGISTRY/REPO:amd64
+    image: bananastudioai/litellm:amd64
     container_name: litellm
     ports:
       - "12434:12434"
